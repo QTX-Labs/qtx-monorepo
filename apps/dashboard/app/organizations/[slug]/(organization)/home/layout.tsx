@@ -45,7 +45,7 @@ export default function HomeLayout({
             />
             <PageActions>
               <Link
-                href="https://github.com/achromaticlabs/pro"
+                href="https://github.com/quantixlabs/pro"
                 target="_blank"
                 className={buttonVariants({ variant: 'ghost', size: 'icon' })}
               >
@@ -53,7 +53,7 @@ export default function HomeLayout({
                 <span className="sr-only">GitHub</span>
               </Link>
               <Link
-                href="https://x.com/achromaticlabs"
+                href="https://x.com/quantixlabs"
                 target="_blank"
                 className={buttonVariants({ variant: 'ghost', size: 'icon' })}
               >

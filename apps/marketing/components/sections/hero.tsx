@@ -79,7 +79,7 @@ function HeroDescription(): React.JSX.Element {
       transition={{ delay: 0.4, duration: 0.4 }}
       className="mx-auto mt-3 max-w-[560px] text-balance text-center text-lg leading-[26px] text-muted-foreground sm:text-xl lg:mt-6"
     >
-      This is a demo application built with Achromatic. It will save you time
+      This is a demo application built with Quantix. It will save you time
       and effort building your next SaaS.
     </motion.p>
   );

@@ -4,7 +4,7 @@ import { z } from 'zod';
 export const keys = () =>
   createEnv({
     server: {
-      EMAIL_FROM: z.string(), // You can use 'Acme <noreply@mailer.acme.com>'
+      EMAIL_FROM: z.string(), // You can use 'Quantix <noreply@mailer.quantix.com>'
       EMAIL_FEEDBACK_INBOX: z.string().email().optional(),
       EMAIL_NODEMAILER_URL: z.string().optional(),
       EMAIL_POSTMARK_SERVER_TOKEN: z.string().optional(),

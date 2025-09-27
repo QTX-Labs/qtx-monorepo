@@ -6,7 +6,7 @@ export default function ConnectedAccountSecurityAlertEmailPreview(): React.JSX.E
   return (
     <ConnectedAccountSecurityAlertEmail
       action="disconnected"
-      appName="Acme"
+      appName="Quantix"
       name="John Doe"
       provider="Google"
     />

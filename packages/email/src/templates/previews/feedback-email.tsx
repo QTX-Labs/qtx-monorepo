@@ -5,7 +5,7 @@ import { FeedbackEmail } from '../feedback-email';
 export default function FeedbackEmailPreview(): React.JSX.Element {
   return (
     <FeedbackEmail
-      appName="Acme"
+      appName="Quantix"
       category="Feature Request"
       email="john.doe@gmail.com"
       message="I would like to request a feature that allows me to change my email address."

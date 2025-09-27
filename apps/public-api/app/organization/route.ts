@@ -22,7 +22,7 @@ import { withAuth } from '~/lib/with-auth';
  *               properties:
  *                 name:
  *                   type: string
- *                   example: "Acme Corp"
+ *                   example: "Quantix Corp"
  *                 address:
  *                   type: string
  *                   example: "123 Business Street"
@@ -32,11 +32,11 @@ import { withAuth } from '~/lib/with-auth';
  *                 email:
  *                   type: string
  *                   format: email
- *                   example: "contact@acme.com"
+ *                   example: "contact@quantix.com"
  *                 website:
  *                   type: string
  *                   format: uri
- *                   example: "https://acme.com"
+ *                   example: "https://quantix.com"
  *       401:
  *         description: Unauthorized. API key is missing or invalid.
  *       404:

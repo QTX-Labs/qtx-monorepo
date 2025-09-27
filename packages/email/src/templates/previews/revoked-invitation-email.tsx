@@ -5,7 +5,7 @@ import { RevokedInvitationEmail } from '../revoked-invitation-email';
 export default function RevokedInvitationEmailPreview(): React.JSX.Element {
   return (
     <RevokedInvitationEmail
-      appName="Acme"
+      appName="Quantix"
       organizationName="Evil Corp"
     />
   );

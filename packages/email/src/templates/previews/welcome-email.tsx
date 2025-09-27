@@ -5,7 +5,7 @@ import { WelcomeEmail } from '../welcome-email';
 export default function WelcomeEmailPreview(): React.JSX.Element {
   return (
     <WelcomeEmail
-      appName="Acme"
+      appName="Quantix"
       getStartedLink="https://example.com/organizations"
       name="John Doe"
     />
