@@ -28,6 +28,24 @@ export const metadata: Metadata = {
   metadataBase: new URL(baseUrl.Marketing),
   title: APP_NAME,
   description: APP_DESCRIPTION,
+  keywords: [
+    'nómina méxico',
+    'software nómina',
+    'CFDI 4.0',
+    'cálculo IMSS',
+    'cálculo ISR',
+    'portal empleados',
+    'NOM-035',
+    'recursos humanos',
+    'Y Combinator',
+    'startup mexicana',
+    'payroll software',
+    'HR tech',
+    'SaaS México'
+  ],
+  authors: [{ name: 'Quantix', url: 'https://quantix.mx' }],
+  creator: 'Quantix',
+  publisher: 'Quantix',
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png'
@@ -35,8 +53,8 @@ export const metadata: Metadata = {
   manifest: `${baseUrl.Marketing}/manifest`,
   openGraph: {
     type: 'website',
-    locale: 'en_US',
-    siteName: APP_NAME,
+    locale: 'es_MX',
+    siteName: 'Quantix',
     title: APP_NAME,
     description: APP_DESCRIPTION,
     url: baseUrl.Marketing,
@@ -44,12 +62,29 @@ export const metadata: Metadata = {
       url: `${baseUrl.Marketing}/og-image`,
       width: 1200,
       height: 630,
-      alt: APP_NAME
+      alt: 'Quantix - Software de Nómina con IA para México'
     }
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: APP_NAME,
+    description: APP_DESCRIPTION,
+    creator: '@quantix_mx',
+    images: [`${baseUrl.Marketing}/og-image`]
   },
   robots: {
     index: true,
-    follow: true
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1
+    }
+  },
+  alternates: {
+    canonical: baseUrl.Marketing
   }
 };
 
@@ -60,7 +95,7 @@ export default async function RootLayout({
 }: React.PropsWithChildren): Promise<React.JSX.Element> {
   return (
     <html
-      lang="en"
+      lang="es-MX"
       className="size-full min-h-screen"
       suppressHydrationWarning
     >

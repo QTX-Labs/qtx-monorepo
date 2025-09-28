@@ -6,7 +6,9 @@ import { PricingHero } from '~/components/sections/pricing-hero';
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Pricing')
+  title: createTitle('Precios'),
+  description: 'Planes y precios de Quantix. Software de nómina para México con cálculo automático IMSS, ISR, CFDI 4.0. Portal de empleados y CRM incluidos.',
+  keywords: ['precios nómina', 'costo software nómina', 'planes nómina México', 'software recursos humanos precio']
 };
 
 export default function PricingPage(): React.JSX.Element {

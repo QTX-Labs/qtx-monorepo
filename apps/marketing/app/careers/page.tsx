@@ -6,7 +6,9 @@ import { CareersPositions } from '~/components/sections/careers-positions';
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Careers')
+  title: createTitle('Carreras'),
+  description: 'Únete a Quantix, startup Y Combinator construyendo el futuro de nómina con IA. Posiciones en San Francisco y Ciudad de México.',
+  keywords: ['trabajos tech México', 'empleos IA', 'startup Y Combinator', 'trabajo remoto México', 'ingeniería software']
 };
 
 export default function CareersPage(): React.JSX.Element {
