@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Link from 'next/link';
 import {
   CalendarIcon,
   DollarSignIcon,
@@ -19,45 +18,11 @@ import {
 } from '@workspace/ui/components/card';
 import { cn } from '@workspace/ui/lib/utils';
 
-function VercelLogo(): React.JSX.Element {
+function IMSSLogo(): React.JSX.Element {
   return (
-    <svg
-      height="20"
-      width="20"
-      strokeLinejoin="round"
-      viewBox="0 0 16 16"
-      aria-label="Vercel Logo"
-      className="text-black dark:text-white"
-    >
-      <g clipPath="url(#clip0_872_3186)">
-        <circle
-          cx="8"
-          cy="8"
-          r="7.25"
-          fill="currentColor"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M8 4.5L11.5 10.625H4.5L8 4.5Z"
-          fill="currentColor"
-          className="text-white dark:text-black"
-        />
-      </g>
-      <defs>
-        <clipPath id="clip0_872_3186">
-          <rect
-            width="16"
-            height="16"
-            fill="currentColor"
-            className="text-white dark:text-black"
-          />
-        </clipPath>
-      </defs>
-    </svg>
+    <div className="flex h-5 w-5 items-center justify-center rounded bg-green-600 text-xs font-bold text-white">
+      IMSS
+    </div>
   );
 }
 
@@ -72,72 +37,71 @@ export function AiAdvisorCard({
     >
       <CardContent>
         <div className="mb-3 flex items-center gap-2">
-          <VercelLogo />
-          <h2 className="text-xl font-semibold">Vercel</h2>
+          <IMSSLogo />
+          <h2 className="text-xl font-semibold">Empresa Ejemplo S.A.</h2>
         </div>
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <GlobeIcon className="size-4 text-muted-foreground" />
-            <span className="w-20 text-sm text-muted-foreground">Domain</span>
-            <Link
-              href="https://vercel.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-blue-500"
-            >
-              https://vercel.com
-            </Link>
+            <span className="w-20 text-sm text-muted-foreground">RFC</span>
+            <span className="text-sm">EEJ840315KJ3</span>
           </div>
           <div className="flex items-center gap-2">
             <User2Icon className="size-4 text-muted-foreground" />
-            <span className="w-20 text-sm text-muted-foreground">CEO</span>
-            <span className="text-sm">Guillermo Rauch</span>
+            <span className="w-20 text-sm text-muted-foreground">Empleados</span>
+            <span className="text-sm">248 activos</span>
           </div>
           <div className="flex items-center gap-2">
             <CalendarIcon className="size-4 text-muted-foreground" />
-            <span className="w-20 text-sm text-muted-foreground">Founded</span>
-            <span className="text-sm">2015</span>
+            <span className="w-20 text-sm text-muted-foreground">Próx. nómina</span>
+            <span className="text-sm">15 de diciembre</span>
           </div>
           <div className="flex items-center gap-2">
             <LineChartIcon className="size-4 text-muted-foreground" />
-            <span className="w-20 text-sm text-muted-foreground">Est. ARR</span>
-            <span className="text-sm">$100-120M</span>
+            <span className="w-20 text-sm text-muted-foreground">Nómina mes</span>
+            <span className="text-sm">$3.2M MXN</span>
           </div>
           <div className="flex items-center gap-2">
             <MapPinIcon className="size-4 text-muted-foreground" />
-            <span className="w-20 text-sm text-muted-foreground">Location</span>
-            <span className="text-sm">California, USA</span>
+            <span className="w-20 text-sm text-muted-foreground">Ubicación</span>
+            <span className="text-sm">Guadalajara, JAL</span>
           </div>
           <div className="flex items-center gap-2">
             <TagsIcon className="size-4 text-muted-foreground" />
-            <span className="w-20 text-sm text-muted-foreground">Tags</span>
+            <span className="w-20 text-sm text-muted-foreground">Compliance</span>
             <div className="flex gap-1">
               <Badge
                 variant="secondary"
-                className="whitespace-nowrap pl-2 text-xs"
+                className="whitespace-nowrap pl-2 text-xs text-green-600"
               >
-                SaaS
+                SAT ✓
               </Badge>
               <Badge
                 variant="secondary"
-                className="whitespace-nowrap pl-2 text-xs"
+                className="whitespace-nowrap pl-2 text-xs text-green-600"
               >
-                B2B
+                IMSS ✓
+              </Badge>
+              <Badge
+                variant="secondary"
+                className="whitespace-nowrap pl-2 text-xs text-green-600"
+              >
+                IDSE ✓
               </Badge>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <DollarSignIcon className="size-4 text-muted-foreground" />
-            <span className="w-20 text-sm text-muted-foreground">Funding</span>
-            <span className="text-sm">$250M Series E</span>
+            <span className="w-20 text-sm text-muted-foreground">Ahorro anual</span>
+            <span className="text-sm">$480K MXN vs. manual</span>
           </div>
         </div>
       </CardContent>
       <CardFooter className="flex-col items-start space-y-4 rounded-b-xl bg-neutral-50 py-6 dark:bg-neutral-900">
-        <h3 className="text-base font-semibold sm:text-lg">AI Advisor</h3>
+        <h3 className="text-base font-semibold sm:text-lg">Asistente IA de Nómina</h3>
         <div className="min-h-10 max-w-md text-sm text-muted-foreground">
-          Vercel has been contacted 4 times in the past year. Suggested next
-          contact is in 3 days.
+          Próxima declaración IMSS en 3 días. PTU calculado automáticamente.
+          Aguinaldo se procesará el 20 de diciembre. Todo 100% conforme con la ley.
         </div>
       </CardFooter>
     </Card>
