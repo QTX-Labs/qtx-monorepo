@@ -15,34 +15,34 @@ import { cn } from '@workspace/ui/lib/utils';
 
 const DATA = [
   {
-    id: 'lead',
-    label: 'Lead',
-    deals: 45,
+    id: 'cotizacion',
+    label: 'Cotización',
+    deals: 156,
     value: 100
   },
   {
-    id: 'qualified',
-    label: 'Qualified',
-    deals: 32,
-    value: 71
+    id: 'propuesta',
+    label: 'Propuesta',
+    deals: 98,
+    value: 63
   },
   {
-    id: 'proposal',
-    label: 'Proposal',
-    deals: 18,
-    value: 40
+    id: 'negociacion',
+    label: 'Negociación',
+    deals: 42,
+    value: 27
   },
   {
-    id: 'negotiation',
-    label: 'Negotiation',
-    deals: 7,
-    value: 16
+    id: 'contrato',
+    label: 'Contrato',
+    deals: 28,
+    value: 18
   },
   {
-    id: 'closed',
-    label: 'Closed',
-    deals: 3,
-    value: 7
+    id: 'activo',
+    label: 'Cliente Activo',
+    deals: 24,
+    value: 15
   }
 ];
 
@@ -61,12 +61,12 @@ export function BentoPipelinesCard({
       {...other}
     >
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">Pipelines</CardTitle>
+        <CardTitle className="text-xl font-semibold">Portal de Cliente</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="line-clamp-2 text-sm text-muted-foreground lg:max-w-[55%]">
-          Track your sales pipeline stages. Get a detailed breakdown at a
-          glance.
+          Gestión completa del ciclo de vida del cliente. Desde cotización hasta
+          servicio activo.
         </p>
         <div className="relative min-h-[142px] overflow-hidden">
           <div className="group absolute inset-0 top-2 flex flex-col justify-between">

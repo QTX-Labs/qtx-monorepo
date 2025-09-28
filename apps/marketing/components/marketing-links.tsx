@@ -23,39 +23,39 @@ import {
 
 export const MENU_LINKS = [
   {
-    title: 'Product',
+    title: 'Productos',
     items: [
       {
-        title: 'Feature 1',
-        description: 'Short description here',
+        title: 'Sistema de Nómina',
+        description: 'Cálculo automático IMSS, ISR, CFDI 4.0',
         icon: <BoxIcon className="size-5 shrink-0" />,
         href: '#',
         external: false
       },
       {
-        title: 'Feature 2',
-        description: 'Short description here',
+        title: 'CRM Inteligente',
+        description: 'Gestión completa de clientes y ventas',
         icon: <PlayIcon className="size-5 shrink-0" />,
         href: '#',
         external: false
       },
       {
-        title: 'Feature 3',
-        description: 'Short description here',
+        title: 'Portal del Empleado',
+        description: 'Autoservicio para recibos y vacaciones',
         icon: <CircuitBoardIcon className="size-5 shrink-0" />,
         href: '#',
         external: false
       },
       {
-        title: 'Feature 4',
-        description: 'Short description here',
+        title: 'NOM-035 Compliance',
+        description: 'Evaluación de riesgos psicosociales',
         icon: <LayoutIcon className="size-5 shrink-0" />,
         href: '#',
         external: false
       },
       {
-        title: 'Feature 5',
-        description: 'Short description here',
+        title: 'Perks & Beneficios',
+        description: 'Sistema de descuentos para empleados',
         icon: <FileBarChartIcon className="size-5 shrink-0" />,
         href: '#',
         external: false
@@ -63,7 +63,7 @@ export const MENU_LINKS = [
     ]
   },
   {
-    title: 'Resources',
+    title: 'Recursos',
     items: [
       {
         title: 'Contact',
@@ -96,7 +96,7 @@ export const MENU_LINKS = [
     ]
   },
   {
-    title: 'Pricing',
+    title: 'Precios',
     href: routes.marketing.Pricing,
     external: false
   },
@@ -106,7 +106,7 @@ export const MENU_LINKS = [
     external: false
   },
   {
-    title: 'Story',
+    title: 'Historia',
     href: routes.marketing.Story,
     external: false
   }
@@ -114,13 +114,15 @@ export const MENU_LINKS = [
 
 export const FOOTER_LINKS = [
   {
-    title: 'Product',
+    title: 'Productos',
     links: [
-      { name: 'Feature 1', href: '#', external: false },
-      { name: 'Feature 2', href: '#', external: false },
-      { name: 'Feature 3', href: '#', external: false },
-      { name: 'Feature 4', href: '#', external: false },
-      { name: 'Feature 5', href: '#', external: false }
+      { name: 'Sistema de Nómina', href: '#', external: false },
+      { name: 'CRM Inteligente', href: '#', external: false },
+      { name: 'Portal del Empleado', href: '#', external: false },
+      { name: 'NOM-035 Compliance', href: '#', external: false },
+      { name: 'Perks & Beneficios', href: '#', external: false },
+      { name: 'Portal de Cliente', href: '#', external: false },
+      { name: 'Reclutamiento ATS', href: '#', external: false }
     ]
   },
   {

@@ -291,11 +291,11 @@ export function BentoMagicInboxCard({
       {...other}
     >
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">Magic Inbox</CardTitle>
+        <CardTitle className="text-xl font-semibold">Perks & Beneficios</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="line-clamp-2 text-sm text-muted-foreground">
-          Centralize all customer communications in one shared inbox.
+          Sistema de beneficios y descuentos para empleados. Aumenta retención y satisfacción.
         </p>
         <div
           aria-hidden="true"
@@ -342,9 +342,9 @@ export function BentoMagicInboxCard({
             </div>
             {/* Text */}
             <div className="mt-px flex flex-row items-center gap-2 whitespace-nowrap rounded-lg bg-secondary px-3 py-1.5 text-sm text-foreground">
-              Chat
+              Descuentos
               <ArrowLeftRightIcon className="size-3 shrink-0" />
-              Email
+              Beneficios
             </div>
           </div>
         </div>

@@ -59,17 +59,17 @@ export function BentoCustomersCard({
       {...other}
     >
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">Customers</CardTitle>
+        <CardTitle className="text-xl font-semibold">CRM Inteligente</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="line-clamp-2 text-sm text-muted-foreground">
-          Organize your contact and resource data in one place.
+          Gestiona empleados, candidatos y clientes desde un solo lugar.
         </p>
         <div className="space-y-2.5 rounded-lg border p-4 shadow-xs">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <UsersIcon className="size-4 text-muted-foreground" />
-              <span className="text-sm font-medium">Total customers</span>
+              <span className="text-sm font-medium">Empleados activos</span>
             </div>
             <motion.div
               className="flex items-center text-blue-500"
@@ -87,7 +87,7 @@ export function BentoCustomersCard({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            1,234
+            2,847
           </motion.div>
           <div className="flex gap-1">
             <motion.div

@@ -22,50 +22,50 @@ const DATA = [
   {
     type: 'email',
     icon: MailIcon,
-    title: 'Welcome Email',
-    timing: 'Sent upon customer registration'
+    title: 'Evaluación Inicial',
+    timing: 'Al contratar nuevo empleado'
   },
   {
     type: 'message',
     icon: MessageSquareIcon,
-    title: 'Appointment Reminder',
-    timing: '24 hours before appointment'
+    title: 'Encuesta de Clima',
+    timing: 'Evaluación trimestral'
   },
   {
     type: 'email',
     icon: MailIcon,
-    title: 'Follow-up Email',
-    timing: '2 days after initial contact'
+    title: 'Riesgos Psicosociales',
+    timing: 'Análisis mensual'
   },
   {
     type: 'message',
     icon: MessageSquareIcon,
-    title: 'Feedback Request',
-    timing: '48 hours after service completion'
+    title: 'Plan de Acción',
+    timing: 'Post-evaluación'
   },
   {
     type: 'email',
     icon: MailIcon,
-    title: 'Exclusive Offer Email',
-    timing: 'Sent 7 days after inactivity'
+    title: 'Capacitación NOM-035',
+    timing: 'Anual obligatorio'
   },
   {
     type: 'message',
     icon: MessageSquareIcon,
-    title: 'Personalized Check-in',
-    timing: '30 days after last interaction'
+    title: 'Seguimiento Casos',
+    timing: 'Alertas automáticas'
   },
   {
     type: 'email',
     icon: MailIcon,
-    title: 'Special Event Invitation',
-    timing: '14 days before the event'
+    title: 'Reporte STPS',
+    timing: 'Generación automática'
   },
   {
     type: 'message',
     icon: MessageSquareIcon,
-    title: 'Reactivation Campaign',
-    timing: '90 days after inactivity'
+    title: 'Auditoría Compliance',
+    timing: 'Verificación continua'
   }
 ];
 
@@ -84,11 +84,11 @@ export function BentoCampaignsCard({
       {...other}
     >
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">Campaigns</CardTitle>
+        <CardTitle className="text-xl font-semibold">NOM-035 Compliance</CardTitle>
       </CardHeader>
       <CardContent>
         <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">
-          Set up campaigns to notify your customer segment.
+          Cumple con la NOM-035-STPS. Evaluación de riesgos psicosociales automatizada.
         </p>
         <Carousel
           opts={{

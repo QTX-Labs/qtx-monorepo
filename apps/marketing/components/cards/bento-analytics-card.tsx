@@ -18,12 +18,12 @@ import {
 import { cn } from '@workspace/ui/lib/utils';
 
 const DATA = [
-  { name: 'January', value: 400 },
-  { name: 'February', value: 300 },
-  { name: 'March', value: 600 },
-  { name: 'April', value: 400 },
-  { name: 'May', value: 500 },
-  { name: 'June', value: 350 }
+  { name: 'Enero', value: 2800 },
+  { name: 'Febrero', value: 3200 },
+  { name: 'Marzo', value: 3600 },
+  { name: 'Abril', value: 3400 },
+  { name: 'Mayo', value: 3800 },
+  { name: 'Junio', value: 4200 }
 ];
 
 const MotionCard = motion.create(Card);
@@ -41,11 +41,11 @@ export function BentoAnalyticsCard({
       {...other}
     >
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">Analytics</CardTitle>
+        <CardTitle className="text-xl font-semibold">Portal del Empleado</CardTitle>
       </CardHeader>
       <CardContent className="overflow-hidden p-0 pb-6">
         <p className="mb-6 line-clamp-2 px-6 text-sm text-muted-foreground">
-          Get instant insights into your business performance.
+          Autoservicio para empleados: recibos, vacaciones, prestaciones.
         </p>
         <div className="w-full max-w-md">
           <ChartContainer
@@ -92,7 +92,7 @@ export function BentoAnalyticsCard({
                     labelFormatter={(_, payload) => payload[0].payload.name}
                     formatter={(value) => (
                       <>
-                        <strong>{value}</strong> Leads
+                        <strong>{value}</strong> Accesos
                       </>
                     )}
                   />
