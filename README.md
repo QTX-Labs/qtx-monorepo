@@ -1,6 +1,6 @@
-# Introduction
+# QTX Monorepo
 
-Next 15 starter kit based on Next.js, Auth.js and Prisma designed to accelerate the development of web-based (SaaS) applications.
+Next 15 monorepo based on Next.js, Auth.js and Prisma designed to accelerate the development of web-based (SaaS) applications for Quantix Labs.
 
 # Quickstart
 
@@ -8,12 +8,16 @@ Get started in about 30 minutes by following these steps.
 
 ## Preparation
 
-1. Unpack the Archive
+1. Clone the repository
+
+```bash
+git clone https://github.com/QTX-Labs/qtx-monorepo.git
+```
 
 2. Switch to the project's root directory
 
 ```bash
-cd monorepo-next-prisma-authjs
+cd qtx-monorepo
 ```
 
 2. Install PNPM if not already installed
