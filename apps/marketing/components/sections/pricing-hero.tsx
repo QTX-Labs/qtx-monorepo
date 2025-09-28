@@ -13,9 +13,9 @@ export function PricingHero(): React.JSX.Element {
     <GridSection>
       <div className="container space-y-12 py-20">
         <SiteHeading
-          badge="Pricing"
-          title="Plans for your business"
-          description={`From early-stage startups to growing enterprises, ${APP_NAME} has you covered.`}
+          badge="Precios"
+          title="Planes que crecen con tu empresa"
+          description={`Desde microempresas hasta corporativos con miles de empleados, ${APP_NAME} es la solución de nómina perfecta para México.`}
         />
         <PricingTable />
       </div>

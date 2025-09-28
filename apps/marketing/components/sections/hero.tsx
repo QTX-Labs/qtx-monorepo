@@ -48,7 +48,7 @@ function HeroPill(): React.JSX.Element {
             orientation="vertical"
             className="mx-2"
           />
-          Put an announcement here 🎉
+          Nómina 100% mexicana, 100% confiable
           <ChevronRightIcon className="ml-1.5 size-3 shrink-0 text-foreground transition-transform group-hover:translate-x-0.5" />
         </Badge>
       </Link>
@@ -64,8 +64,8 @@ function HeroTitle(): React.JSX.Element {
       transition={{ delay: 0.2, duration: 0.4 }}
     >
       <h1 className="mt-6 text-center text-[48px] font-bold leading-[54px] tracking-[-1.2px] [font-kerning:none] sm:text-[56px] md:text-[64px] lg:text-[76px] lg:leading-[74px] lg:tracking-[-2px]">
-        Your revolutionary
-        <br /> Next.js SaaS
+        La nómina del futuro
+        <br /> para México
       </h1>
     </motion.div>
   );
@@ -79,8 +79,7 @@ function HeroDescription(): React.JSX.Element {
       transition={{ delay: 0.4, duration: 0.4 }}
       className="mx-auto mt-3 max-w-[560px] text-balance text-center text-lg leading-[26px] text-muted-foreground sm:text-xl lg:mt-6"
     >
-      This is a demo application built with Quantix. It will save you time
-      and effort building your next SaaS.
+      Automatiza tu nómina, cumple con SAT e IMSS al 100%, y ahorra hasta 70% del tiempo en procesos de RH. Todo en una plataforma.
     </motion.p>
   );
 }
@@ -102,7 +101,7 @@ function HeroButtons(): React.JSX.Element {
           'h-10 rounded-xl sm:h-9'
         )}
       >
-        Start for free
+        Prueba gratis 30 días
       </Link>
       <Link
         href={routes.marketing.Contact}
@@ -113,7 +112,7 @@ function HeroButtons(): React.JSX.Element {
           'h-10 rounded-xl sm:h-9'
         )}
       >
-        Talk to sales
+        Solicitar demo
       </Link>
     </motion.div>
   );
@@ -219,35 +218,35 @@ function HeroIllustration(): React.JSX.Element {
               className="mx-1 px-2.5 sm:mx-2 sm:px-3"
             >
               <BoxIcon className="mr-2 size-4 shrink-0" />
-              Feature 1
+              Cálculo de Nómina
             </UnderlinedTabsTrigger>
             <UnderlinedTabsTrigger
               value="feature2"
               className="mx-1 px-2.5 sm:mx-2 sm:px-3"
             >
               <PlayIcon className="mr-2 size-4 shrink-0" />
-              Feature 2
+              Timbrado CFDI 4.0
             </UnderlinedTabsTrigger>
             <UnderlinedTabsTrigger
               value="feature3"
               className="mx-1 px-2.5 sm:mx-2 sm:px-3"
             >
               <CircuitBoardIcon className="mr-2 size-4 shrink-0" />
-              Feature 3
+              IMSS e IDSE
             </UnderlinedTabsTrigger>
             <UnderlinedTabsTrigger
               value="feature4"
               className="mx-1 px-2.5 sm:mx-2 sm:px-3"
             >
               <LayoutIcon className="mr-2 size-4 shrink-0" />
-              Feature 4
+              Portal del Empleado
             </UnderlinedTabsTrigger>
             <UnderlinedTabsTrigger
               value="feature5"
               className="mx-1 px-2.5 sm:mx-2 sm:px-3"
             >
               <FileBarChartIcon className="mr-2 size-4 shrink-0" />
-              Feature 5
+              Reportes y Analytics
             </UnderlinedTabsTrigger>
           </UnderlinedTabsList>
           <ScrollBar

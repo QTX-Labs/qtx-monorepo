@@ -13,184 +13,174 @@ import { Marquee } from '~/components/fragments/marquee';
 
 const DATA = [
   {
-    name: 'David Zhang',
-    role: 'VP of Sales at GlobalTech Solutions',
+    name: 'Carlos Hernández',
+    role: 'Director de Finanzas en Grupo Industrial Monterrey',
     img: 'https://randomuser.me/api/portraits/men/91.jpg',
     description: (
       <p>
-        {APP_NAME} has revolutionized how we manage customer relationships.{' '}
+        Con {APP_NAME} procesamos la nómina de 850 empleados en 3 horas.{' '}
         <strong>
-          Our team efficiency has improved by 75% since implementation.
+          Reducimos errores en cálculos de ISR en 99% y eliminamos multas del SAT.
         </strong>{' '}
-        The automated workflows are a game-changer for tech companies.
+        El timbrado CFDI 4.0 ahora es automático e instantáneo.
       </p>
     )
   },
   {
-    name: 'Maria Rodriguez',
-    role: 'Customer Success Director at Cloud Dynamics',
+    name: 'María González',
+    role: 'Gerente de RH en Maquiladora TechParts Juárez',
     img: 'https://randomuser.me/api/portraits/women/12.jpg',
     description: (
       <p>
-        {APP_NAME}'s customer prediction model has drastically improved our
-        targeting strategy.{' '}
-        <strong>We've seen a 50% increase in conversion rates!</strong> Their
-        marketing automation features are unmatched.
+        {APP_NAME} maneja perfectamente nuestros 3 turnos y horas extras.{' '}
+        <strong>Ahorramos 120 horas al mes en procesamiento de nómina.</strong>{' '}
+        La integración con IMSS e IDSE es impecable.
       </p>
     )
   },
   {
-    name: 'James Wilson',
-    role: 'Head of Business Development at Velocity Inc',
+    name: 'Alejandro Ramírez',
+    role: 'Contador Público en Despacho Contable Ramírez y Asociados',
     img: 'https://randomuser.me/api/portraits/men/45.jpg',
     description: (
       <p>
-        As a startup, we needed a system that could scale with us. {APP_NAME}{' '}
-        delivers perfectly.{' '}
-        <strong>Our sales pipeline visibility has improved tenfold.</strong>{' '}
-        Essential tool for any growing business.
+        Manejamos la nómina de 45 PyMEs con {APP_NAME}.{' '}
+        <strong>
+          Reducimos el tiempo de cálculo de PTU y aguinaldo en 80%.
+        </strong>{' '}
+        Nuestros clientes están encantados con el portal del empleado.
       </p>
     )
   },
   {
-    name: 'Sarah Kim',
-    role: 'Senior Account Executive at Digital First',
+    name: 'Patricia López',
+    role: 'Directora de Operaciones en Cadena de Restaurantes La Casa',
     img: 'https://randomuser.me/api/portraits/women/83.jpg',
     description: (
       <p>
-        {APP_NAME}'s multi-language support has made managing global customers
-        effortless.{' '}
+        {APP_NAME} calcula automáticamente propinas, tiempo extra y festivos.{' '}
         <strong>
-          Customer communication is now seamless across all regions.
+          Pasamos auditorías del IMSS sin observaciones desde que lo usamos.
         </strong>{' '}
-        Perfect for international teams.
+        Perfecto para el sector restaurantero.
       </p>
     )
   },
   {
-    name: 'Marcus Johnson',
-    role: 'Sales Operations Manager at Revenue Pulse',
+    name: 'Roberto Martínez',
+    role: 'CFO en Startup Fintech MexPay',
     img: 'https://randomuser.me/api/portraits/men/1.jpg',
     description: (
       <p>
-        {APP_NAME}'s analytics dashboard gives us unprecedented insights into
-        customer behavior.{' '}
+        Como startup, necesitábamos cumplir con regulaciones desde día 1.{' '}
         <strong>
-          Our customer retention has increased by 40% using their predictive
-          analytics.
+          {APP_NAME} nos evitó contratar 2 especialistas en nómina.
         </strong>{' '}
-        Transformative for financial services.
+        Escalamos de 5 a 150 empleados sin problemas.
       </p>
     )
   },
   {
-    name: 'Priya Sharma',
-    role: 'Chief Revenue Officer at Scale Systems',
+    name: 'Ana Sánchez',
+    role: 'Jefa de Capital Humano en Constructora del Bajío',
     img: 'https://randomuser.me/api/portraits/women/5.jpg',
     description: (
       <p>
-        {APP_NAME}'s integration with our existing tools has streamlined our
-        entire operation.{' '}
-        <strong>Customer service response times have been cut in half.</strong>{' '}
-        The automation features are exceptional.
+        Manejamos nómina semanal para 500 trabajadores de construcción.{' '}
+        <strong>Los cálculos de Infonavit y fonacot ahora son perfectos.</strong>{' '}
+        {APP_NAME} se actualiza automáticamente con cambios de ley.
       </p>
     )
   },
   {
-    name: 'Miguel Santos',
-    role: 'Account Management Director at Grow Corp',
+    name: 'Miguel Rodríguez',
+    role: 'Director Administrativo en Hospital Privado San Ángel',
     img: 'https://randomuser.me/api/portraits/men/14.jpg',
     description: (
       <p>
-        {APP_NAME}'s sustainability tracking features help us monitor our
-        environmental impact.{' '}
+        {APP_NAME} maneja guardias, bonos y prestaciones superiores a la ley.{' '}
         <strong>
-          Perfect for managing eco-conscious customer relationships.
+          Redujimos quejas de empleados por errores en nómina a cero.
         </strong>{' '}
-        Leading the way in sustainable business practices.
+        El cálculo de ISR es transparente y preciso.
       </p>
     )
   },
   {
-    name: 'Lisa Thompson',
-    role: 'Inside Sales Manager at Quantum Enterprises',
+    name: 'Laura Fernández',
+    role: 'Socia en Consultoría de RH TalentoMX',
     img: 'https://randomuser.me/api/portraits/women/56.jpg',
     description: (
       <p>
-        {APP_NAME}'s customer segmentation tools have transformed our marketing
-        approach.{' '}
+        Implementamos {APP_NAME} en 20 clientes este año.{' '}
         <strong>
-          Our targeted campaigns now see 85% higher engagement rates.
+          Todos reportan ahorro mínimo del 60% en tiempo de procesamiento.
         </strong>{' '}
-        Revolutionizing how we connect with customers.
+        La migración desde otros sistemas es sorprendentemente fácil.
       </p>
     )
   },
   {
-    name: 'Daniel Park',
-    role: 'Business Operations Lead at Swift Solutions',
+    name: 'Jorge Mendoza',
+    role: 'Gerente General en Transportes del Pacífico',
     img: 'https://randomuser.me/api/portraits/men/18.jpg',
     description: (
       <p>
-        {APP_NAME}'s HIPAA-compliant features make it perfect for healthcare
-        providers.{' '}
+        Con choferes en 8 estados, {APP_NAME} calcula viáticos e ISR local perfectamente.{' '}
         <strong>
-          Secure patient relationship management has never been easier.
+          Evitamos multas de $500,000 MXN por errores en declaraciones.
         </strong>{' '}
-        A milestone in healthcare CRM solutions.
+        Indispensable para empresas de transporte.
       </p>
     )
   },
   {
-    name: 'Emma Anderson',
-    role: 'Director of Client Relations at Peak Partners',
+    name: 'Claudia Torres',
+    role: 'VP de Finanzas en Grupo Educativo Futuro',
     img: 'https://randomuser.me/api/portraits/women/73.jpg',
     description: (
       <p>
-        {APP_NAME}'s education-focused features have doubled our student
-        engagement rates.{' '}
+        Procesamos nómina de maestros, administrativos y personal de apoyo.{' '}
         <strong>
-          Perfect for managing student and institution relationships.
+          El cálculo de prima vacacional y aguinaldo ahora toma minutos.
         </strong>{' '}
-        Transforming educational administration.
+        {APP_NAME} cumple perfectamente con regulaciones SEP.
       </p>
     )
   },
   {
-    name: 'Robert Chen',
-    role: 'Sales Enablement Manager at Catalyst Group',
+    name: 'Fernando García',
+    role: 'Director de Administración en Farmacéutica Nacional',
     img: 'https://randomuser.me/api/portraits/men/25.jpg',
     description: (
       <p>
-        {APP_NAME}'s enterprise-grade security features give us complete peace
-        of mind. <strong>The most secure CRM solution we've ever used.</strong>{' '}
-        Setting new standards in data protection.
+        {APP_NAME} maneja comisiones de ventas y bonos por productividad sin errores.{' '}
+        <strong>Pasamos de 5 días a 5 horas para cerrar la nómina quincenal.</strong>{' '}
+        La integración con bancos para dispersión es excelente.
       </p>
     )
   },
   {
-    name: 'Maya Patel',
-    role: 'Customer Experience Director at Apex Solutions',
+    name: 'Beatriz Morales',
+    role: 'Gerente de Nómina en Centro de Contacto GlobalCall',
     img: 'https://randomuser.me/api/portraits/women/78.jpg',
     description: (
       <p>
-        {APP_NAME}'s project management integration has streamlined our creative
-        workflow.{' '}
-        <strong>Client communication has never been more efficient.</strong>{' '}
-        Perfect for creative agencies.
+        Con 2,000 agentes y alta rotación, {APP_NAME} es un salvavidas.{' '}
+        <strong>Procesamos finiquitos en minutos, no días.</strong>{' '}
+        Los recibos digitales reducen costos de impresión 100%.
       </p>
     )
   },
   {
-    name: "Thomas O'Brien",
-    role: 'Sales Strategy Manager at Future Dynamics',
+    name: 'Ricardo Jiménez',
+    role: 'CEO en Agencia Digital CreativaMX',
     img: 'https://randomuser.me/api/portraits/men/54.jpg',
     description: (
       <p>
-        {APP_NAME}'s startup-friendly pricing and scalability made it an easy
-        choice.{' '}
-        <strong>The perfect CRM solution that grows with your business.</strong>{' '}
-        Essential for modern startups.
+        Como agencia manejamos empleados y freelancers. {APP_NAME} procesa ambos.{' '}
+        <strong>Ahorramos $15,000 MXN mensuales vs. nuestro contador anterior.</strong>{' '}
+        El soporte responde en minutos, no días.
       </p>
     )
   }
@@ -201,7 +191,7 @@ export function Testimonials(): React.JSX.Element {
     <GridSection hideVerticalGridLines>
       <div className="container border-x py-20 md:border-none">
         <h2 className="mb-8 text-center text-3xl font-semibold md:text-5xl lg:text-left">
-          What people say
+          Más de 1,000 empresas mexicanas confían en nosotros
         </h2>
         <div className="relative mt-6 max-h-[640px] overflow-hidden">
           <div className="gap-4 md:columns-2 xl:columns-3 2xl:columns-4">

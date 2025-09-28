@@ -8,21 +8,21 @@ import { TextGenerateWithSelectBoxEffect } from '~/components/fragments/text-gen
 const DATA = [
   {
     icon: <UserPlusIcon className="size-5 shrink-0" />,
-    title: 'Problem 1',
+    title: 'Errores costosos en cálculos',
     description:
-      'Describe a significant problem your ideal customer profile has. Explain how this problem impacts their goals or daily operations.'
+      'Un error en ISR o IMSS puede significar multas de hasta $89,170 MXN por trabajador. El 67% de PyMEs mexicanas han recibido multas por errores en nómina.'
   },
   {
     icon: <BarChartIcon className="size-5 shrink-0" />,
-    title: 'Problem 2',
+    title: 'Procesos manuales interminables',
     description:
-      'Describe a significant problem your ideal customer profile has. Explain how this problem impacts their goals or daily operations.'
+      'Los equipos de RH dedican hasta 15 días al mes procesando nómina manualmente, tiempo que podrían invertir en estrategias de crecimiento.'
   },
   {
     icon: <WorkflowIcon className="size-5 shrink-0" />,
-    title: 'Problem 3',
+    title: 'Cambios regulatorios constantes',
     description:
-      'Describe a significant problem your ideal customer profile has. Explain how this problem impacts their goals or daily operations.'
+      'SAT e IMSS actualizan sus regulaciones 3-5 veces al año. Mantenerse actualizado requiere capacitación constante y sistemas flexibles.'
   }
 ];
 
@@ -31,7 +31,7 @@ export function Problem(): React.JSX.Element {
     <GridSection>
       <div className="px-4 py-20 text-center">
         <h2 className="text-3xl font-semibold md:text-5xl">
-          <TextGenerateWithSelectBoxEffect words="Attention Grabbing Title" />
+          <TextGenerateWithSelectBoxEffect words="Los 3 problemas que te cuestan millones" />
         </h2>
       </div>
       <div className="grid divide-y border-t border-dashed md:grid-cols-3 md:divide-x md:divide-y-0">

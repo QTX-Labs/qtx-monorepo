@@ -14,96 +14,101 @@ import { GridSection } from '~/components/fragments/grid-section';
 
 const DATA = [
   {
-    question: `What pricing plans does ${APP_NAME} offer?`,
+    question: `¿Qué planes de precios ofrece ${APP_NAME}?`,
     answer: (
       <div>
-        We offer three plans:
+        Ofrecemos tres planes diseñados para empresas mexicanas:
         <br />
         <ul className="mt-2 list-disc pl-5">
           <li>
-            <strong>Free:</strong> A starter plan for individuals or small teams
+            <strong>Starter:</strong> Gratis hasta 5 empleados - perfecto para microempresas
           </li>
           <li>
-            <strong>Pro:</strong> Advanced features for growing businesses
+            <strong>Crecimiento:</strong> $99 MXN por empleado/mes - ideal para PyMEs
           </li>
           <li>
-            <strong>Enterprise:</strong> Custom solutions for large
-            organizations
+            <strong>Empresarial:</strong> Precio especial por volumen - para grandes corporativos
           </li>
         </ul>
-        <p className="mt-2">Each plan is designed to scale with your needs.</p>
+        <p className="mt-2">Todos incluyen cumplimiento SAT, IMSS e IDSE garantizado.</p>
       </div>
     )
   },
   {
-    question: "What's included in the Free plan?",
+    question: "¿Qué incluye el plan Starter gratuito?",
     answer: (
       <div>
-        The Free plan is perfect for getting started and includes:
+        El plan Starter es perfecto para comenzar e incluye:
         <ul className="mt-2 list-disc pl-5">
-          <li>AI Contact Scoring for 100 contacts/month</li>
-          <li>Smart Email Analysis for 1,000 emails/month</li>
-          <li>Access for up to 2 team members</li>
+          <li>Hasta 5 empleados sin costo</li>
+          <li>Cálculo automático de ISR, IMSS, aguinaldo y PTU</li>
+          <li>Timbrado CFDI 4.0 ilimitado</li>
+          <li>Portal del empleado básico</li>
+          <li>Soporte por email</li>
         </ul>
       </div>
     )
   },
   {
-    question: 'What features are in the Pro plan?',
+    question: '¿Qué ventajas tiene el plan Crecimiento?',
     answer: (
       <div>
-        The Pro plan is ideal for growing teams and includes:
+        El plan Crecimiento es ideal para PyMEs e incluye:
         <ul className="mt-2 list-disc pl-5">
-          <li>Unlimited AI Contact Scoring and Email Analysis</li>
-          <li>Advanced Lead Predictions</li>
-          <li>Real-time Sentiment Analysis</li>
-          <li>Up to 120 team members</li>
+          <li>Empleados ilimitados a $99 MXN c/u por mes</li>
+          <li>Dispersión de nómina automática</li>
+          <li>Integración con bancos mexicanos</li>
+          <li>Reportes avanzados y analytics</li>
+          <li>Soporte prioritario por WhatsApp</li>
+          <li>Actualizaciones automáticas de tablas ISR/IMSS</li>
         </ul>
       </div>
     )
   },
   {
-    question: 'What does the Enterprise plan offer?',
+    question: '¿Qué ofrece el plan Empresarial?',
     answer: (
       <div>
-        The Enterprise plan is fully customizable and includes:
+        El plan Empresarial es totalmente personalizable:
         <ul className="mt-2 list-disc pl-5">
-          <li>AI Contact Scoring and Email Analysis with custom limits</li>
-          <li>Custom AI models for Lead Predictions</li>
-          <li>Advanced storage solutions</li>
-          <li>24/7 Enterprise Support</li>
-          <li>Unlimited team members</li>
+          <li>Precio especial por volumen (desde $49 MXN por empleado)</li>
+          <li>Multi-empresa y multi-sucursal</li>
+          <li>API para integración con sistemas propios</li>
+          <li>Gerente de cuenta dedicado</li>
+          <li>Capacitación y onboarding personalizado</li>
+          <li>SLA garantizado de 99.9% uptime</li>
         </ul>
-        <p className="mt-2">Contact us to discuss your organization's needs.</p>
+        <p className="mt-2">Contáctanos para una cotización personalizada.</p>
       </div>
     )
   },
   {
-    question: 'What happens if I upgrade or downgrade my plan?',
+    question: '¿Cómo funciona la migración desde otro sistema?',
     answer: (
       <p>
-        If you upgrade, you'll be charged a prorated amount for the remaining
-        time in your billing cycle. If you downgrade, the changes will take
-        effect at the end of your current billing cycle.
+        Ofrecemos migración GRATUITA desde cualquier sistema de nómina.
+        Nuestro equipo te ayuda a importar empleados, históricos y configuraciones.
+        El proceso toma típicamente 24-48 horas y garantizamos cero pérdida de datos.
       </p>
     )
   },
   {
-    question: 'Is there a setup fee?',
+    question: '¿Están actualizados con los cambios del SAT e IMSS?',
     answer: (
       <p>
-        No, there are no setup fees. You can start using {APP_NAME} immediately
-        after signing up.
+        Sí, {APP_NAME} se actualiza automáticamente con cada cambio regulatorio.
+        Nuestro equipo legal monitorea diariamente el DOF y actualiza las tablas
+        de ISR, UMA, salarios mínimos e IMSS sin que tengas que hacer nada.
       </p>
     )
   },
   {
-    question: 'What happens if I exceed my plan limits?',
+    question: '¿Qué pasa si tengo una auditoría del SAT o IMSS?',
     answer: (
       <p>
-        If you exceed your plan limits, you'll receive an alert and can either
-        upgrade to a higher plan or adjust your usage to stay within your
-        current plan.
+        Con {APP_NAME} tienes respaldo completo. Generamos automáticamente todos
+        los reportes necesarios para auditorías. Además, si recibes una multa por
+        error de nuestro sistema, nosotros la pagamos (aplican términos y condiciones).
       </p>
     )
   }
@@ -116,17 +121,17 @@ export function PricingFAQ(): React.JSX.Element {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
           <div className="text-center lg:text-left">
             <h2 className="mb-2.5 text-3xl font-semibold md:text-5xl">
-              Frequently Asked Questions
+              Preguntas Frecuentes
             </h2>
             <p className="mt-6 hidden text-muted-foreground md:block lg:max-w-[75%]">
-              Have questions about our pricing or plans?{' '}
+              ¿Tienes dudas sobre nuestros planes o precios?{' '}
               <Link
                 href={routes.marketing.Contact}
                 className="font-normal text-inherit underline hover:text-foreground"
               >
-                Contact us
+                Contáctanos
               </Link>{' '}
-              - we're here to help you find the perfect fit for your needs.
+              - estamos aquí para ayudarte a encontrar el plan perfecto para tu empresa.
             </p>
           </div>
           <div className="mx-auto flex w-full max-w-xl flex-col">
