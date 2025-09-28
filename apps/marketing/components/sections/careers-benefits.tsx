@@ -9,21 +9,21 @@ import { SiteHeading } from '~/components/fragments/site-heading';
 const DATA = [
   {
     icon: <ZapIcon className="size-5 shrink-0" />,
-    title: 'Innovation at its core',
+    title: 'AI Payroll Pioneers',
     description:
-      'We are committed to pushing boundaries and fostering a culture of creativity.'
+      'Be part of the team automating Mexico\'s entire payroll industry with cutting-edge AI technology.'
   },
   {
     icon: <Users2Icon className="size-5 shrink-0" />,
-    title: 'Inclusive environment',
+    title: 'Work with the Best',
     description:
-      'Our diverse and collaborative team welcomes individuals from all backgrounds.'
+      'Collaborate with ex-OpenAI, Stripe, LinkedIn and CONTPAQi talent. Backed by Y Combinator.'
   },
   {
     icon: <BriefcaseBusinessIcon className="size-5 shrink-0" />,
-    title: 'Opportunities for growth',
+    title: 'Equity + SF Salaries',
     description:
-      'We support continuous learning and career development through mentorship and resources.'
+      'Silicon Valley competitive compensation, generous equity, and the opportunity to build Mexico\'s first AI unicorn.'
   }
 ];
 

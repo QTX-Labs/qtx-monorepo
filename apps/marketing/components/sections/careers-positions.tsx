@@ -8,35 +8,84 @@ import { GridSection } from '~/components/fragments/grid-section';
 
 const DATA = [
   {
-    title: 'Senior Software Engineer',
-    department: 'Engineering',
+    title: 'AI Architect - Payroll Automation',
+    department: 'AI Engineering',
     description:
-      'You will be responsible for the development of new and existing software products.',
+      'Diseña la arquitectura de agentes IA que automatizarán el 90% de procesos de nómina. Experiencia en LLMs, RAG y sistemas multi-agente requerida.',
     type: 'Full-time',
-    location: 'Remote'
+    location: 'San Francisco, CA'
   },
   {
-    title: 'Product Manager',
-    department: 'Engineering',
-    description: 'Help us build the next generation of Quantix products.',
+    title: 'Head of AI Operations',
+    department: 'AI Strategy',
+    description:
+      'Lidera la transformación hacia empresa AI-first. Define estrategia para reemplazar procesos manuales con agentes autónomos.',
     type: 'Full-time',
-    location: 'Remote'
+    location: 'San Francisco, CA'
   },
   {
-    title: 'Content Writer',
-    department: 'Marketing',
+    title: 'ML Engineer - Compliance Automation',
+    department: 'AI Engineering',
     description:
-      'Create engaging content for our blog, website, and social media channels.',
+      'Desarrolla modelos que detecten y corrijan automáticamente errores de compliance SAT/IMSS antes de generar multas.',
     type: 'Full-time',
-    location: 'Remote'
+    location: 'Ciudad de México'
   },
   {
-    title: 'Social Media Manager',
-    department: 'Marketing',
+    title: 'AI Product Manager - Agent Systems',
+    department: 'Product',
     description:
-      'Manage our social media presence and engage with our followers.',
+      'Define roadmap de agentes IA que reemplazarán tareas repetitivas. Experiencia en productos B2B SaaS y sistemas autónomos.',
     type: 'Full-time',
-    location: 'Remote'
+    location: 'San Francisco, CA'
+  },
+  {
+    title: 'Prompt Engineer - Mexican Payroll Expert',
+    department: 'AI Engineering',
+    description:
+      'Optimiza prompts y entrena agentes especializados en legislación mexicana. Conocimiento profundo de NOM, ISR, IMSS requerido.',
+    type: 'Full-time',
+    location: 'Ciudad de México'
+  },
+  {
+    title: 'AI Customer Success Lead',
+    department: 'Customer Success',
+    description:
+      'Diseña sistemas de soporte 100% automatizados con IA. El objetivo: resolver 95% de tickets sin intervención humana.',
+    type: 'Full-time',
+    location: 'Ciudad de México'
+  },
+  {
+    title: 'Senior AI Engineer - Document Intelligence',
+    department: 'AI Engineering',
+    description:
+      'Construye sistemas que lean, entiendan y procesen documentos fiscales mexicanos automáticamente. Computer Vision + NLP.',
+    type: 'Full-time',
+    location: 'San Francisco, CA'
+  },
+  {
+    title: 'Director of AI Talent',
+    department: 'People & AI',
+    description:
+      'Recluta y desarrolla el mejor equipo de IA en LATAM. Define cultura y procesos para empresa conducida por IA.',
+    type: 'Full-time',
+    location: 'Ciudad de México'
+  },
+  {
+    title: 'AI Infrastructure Engineer',
+    department: 'Platform',
+    description:
+      'Escala infraestructura para soportar millones de inferencias diarias. Experiencia en GPU clusters, vector DBs y LLM serving.',
+    type: 'Full-time',
+    location: 'San Francisco, CA'
+  },
+  {
+    title: 'AI Ethics & Compliance Officer',
+    department: 'Legal & AI',
+    description:
+      'Garantiza que nuestros agentes IA cumplan con regulaciones mexicanas y estándares éticos. Define governance de IA.',
+    type: 'Full-time',
+    location: 'Ciudad de México'
   }
 ];
 
@@ -45,8 +94,11 @@ export function CareersPositions(): React.JSX.Element {
     <GridSection>
       <div className="space-y-12 py-20">
         <h2 className="text-center text-3xl font-semibold md:text-4xl">
-          Open Positions
+          Únete a la Primera Empresa de Nómina Conducida por IA
         </h2>
+        <p className="text-center text-lg text-muted-foreground">
+          Buscamos talento excepcional para construir el futuro donde la IA maneja el 95% de las operaciones
+        </p>
         <div className="container mx-auto grid max-w-4xl grid-cols-1 gap-2 divide-y">
           {DATA.map((position, index) => (
             <div
