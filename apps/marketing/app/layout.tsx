@@ -64,9 +64,9 @@ export default async function RootLayout({
       className="size-full min-h-screen"
       suppressHydrationWarning
     >
-      <body className={`${inter.className} size-full`}>
+      <body className={`${inter.className} size-full overflow-x-hidden`}>
         <Providers>
-          <div>
+          <div className="overflow-x-hidden">
             <Navbar />
             {children}
             <Footer />
