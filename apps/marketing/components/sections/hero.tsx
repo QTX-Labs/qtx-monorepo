@@ -34,8 +34,28 @@ function HeroPill(): React.JSX.Element {
       initial={{ filter: 'blur(10px)', opacity: 0, y: -20 }}
       animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="flex items-center justify-center"
+      className="flex flex-col items-center justify-center gap-3"
     >
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <Badge
+          variant="secondary"
+          className="h-7 rounded-full px-3 text-xs font-semibold shadow-sm"
+        >
+          <span className="text-orange-600">Y Combinator W23</span>
+        </Badge>
+        <Badge
+          variant="secondary"
+          className="h-7 rounded-full px-3 text-xs font-semibold shadow-sm"
+        >
+          🇲🇽 Hecho por Mexicanos
+        </Badge>
+        <Badge
+          variant="secondary"
+          className="h-7 rounded-full px-3 text-xs font-semibold shadow-sm"
+        >
+          📍 Silicon Valley
+        </Badge>
+      </div>
       <Link href="#">
         <Badge
           variant="outline"
@@ -48,7 +68,7 @@ function HeroPill(): React.JSX.Element {
             orientation="vertical"
             className="mx-2"
           />
-          Nómina 100% mexicana, 100% confiable
+          Respaldado por inversionistas de Silicon Valley
           <ChevronRightIcon className="ml-1.5 size-3 shrink-0 text-foreground transition-transform group-hover:translate-x-0.5" />
         </Badge>
       </Link>

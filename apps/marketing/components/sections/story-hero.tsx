@@ -8,9 +8,9 @@ export function StoryHero(): React.JSX.Element {
     <GridSection hideVerticalGridLines>
       <div className="container py-24 md:py-32">
         <SiteHeading
-          badge="Our Story"
-          title="Reinventing CRM in the AI era"
-          description="From a bold vision to revolutionize CRM to the fastest-growing platform in history. We're building the intelligent CRM that works for you, not the other way around."
+          badge="Nuestra Historia"
+          title="De México para el mundo, con apoyo de Y Combinator"
+          description="Fundada por mexicanos en Silicon Valley y acelerada por Y Combinator (W23), Quantix está transformando la gestión de capital humano en México. Con el respaldo de inversionistas estadounidenses que creen en el talento mexicano, estamos construyendo el futuro de la nómina y el reclutamiento."
         />
       </div>
     </GridSection>

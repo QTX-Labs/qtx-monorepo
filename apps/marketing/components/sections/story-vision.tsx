@@ -9,24 +9,25 @@ export function StoryVision(): React.JSX.Element {
         <div className="grid gap-16 lg:grid-cols-2">
           <div>
             <h2 className="mb-8 text-sm font-medium uppercase tracking-wider text-muted-foreground">
-              Our vision
+              Nuestra visión
             </h2>
             <p className="text-2xl font-medium leading-relaxed md:text-3xl">
-              "CRM shouldn't just store relationships — it should actively help
-              you build better ones with AI."
+              "La nómina no debería ser un dolor de cabeza mensual — debe ser
+              automática, precisa y 100% compatible con las leyes mexicanas."
             </p>
           </div>
           <div className="space-y-6 text-base text-muted-foreground md:text-lg">
             <p>
-              Traditional CRMs were built for a different era. We're creating
-              the first true AI-native platform that automates the mundane and
-              amplifies what humans do best: building meaningful relationships.
+              Como mexicanos que vivimos el problema, entendemos que las soluciones
+              extranjeras no funcionan para México. Por eso creamos Quantix desde
+              Silicon Valley pero con ADN 100% mexicano, respaldados por Y Combinator
+              y fondos que creen en nosotros.
             </p>
             <p>
-              By combining cutting-edge AI with decades of sales expertise,
-              we've created a CRM that actually helps you sell better —
-              predicting outcomes, suggesting next steps, and handling routine
-              tasks automatically.
+              Nuestra misión es simple: democratizar el acceso a herramientas de
+              clase mundial para que cualquier empresa mexicana, desde una taquería
+              hasta una maquiladora, pueda competir globalmente con procesos de RH
+              eficientes y conformes con la ley.
             </p>
           </div>
         </div>

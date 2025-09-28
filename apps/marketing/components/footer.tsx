@@ -26,7 +26,8 @@ export function Footer(): React.JSX.Element {
           <div className="hidden xl:block">
             <Logo />
             <p className="mt-3 text-xs text-muted-foreground">
-              Our mission is to disrupt the market with AI.
+              Startup mexicana acelerada por Y Combinator (W23).
+              Sede en Silicon Valley, corazón en México.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:col-span-3">
@@ -61,13 +62,13 @@ export function Footer(): React.JSX.Element {
           </div>
           <div className="mt-10 space-y-4 lg:col-span-2 xl:mt-0">
             <h3 className="text-sm font-semibold text-foreground">
-              Subscribe to our newsletter
+              Suscríbete a nuestro newsletter
             </h3>
             <form className="py-2 sm:flex sm:max-w-md">
               <div className="w-full min-w-0">
                 <Input
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="Ingresa tu email"
                   className="w-full"
                 />
               </div>
@@ -76,7 +77,7 @@ export function Footer(): React.JSX.Element {
                   type="button"
                   onClick={handleSubscribe}
                 >
-                  Subscribe
+                  Suscribirse
                 </Button>
               </div>
             </form>
@@ -85,7 +86,7 @@ export function Footer(): React.JSX.Element {
         <div className="mt-8 border-t pt-8">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} {APP_NAME}. All rights reserved.
+              © {new Date().getFullYear()} {APP_NAME}. Todos los derechos reservados. | Y Combinator Portfolio Company
             </p>
             <div className="flex flex-row items-center gap-4">
               {SOCIAL_LINKS.map((link) => (
