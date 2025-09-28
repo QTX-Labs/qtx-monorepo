@@ -19,12 +19,11 @@ export function Solution(): React.JSX.Element {
           <div className="container relative space-y-10">
             <div>
               <h2 className="mb-2.5 text-3xl font-semibold md:text-5xl">
-                The next-gen SaaS
+                Nómina y Reclutamiento del Futuro
               </h2>
               <p className="mt-1 max-w-2xl text-muted-foreground md:mt-6">
-                {APP_NAME} is the engine that builds, scales and grows your
-                company to the next level. Reminder that this is a demo and some
-                of the features below don't exists.
+                {APP_NAME} revoluciona la gestión de capital humano con dos sistemas poderosos:
+                Nómina 100% mexicana y Reclutamiento inteligente sin features inútiles que nadie usa.
               </p>
             </div>
             <div className="mx-auto xl:container xl:rounded-xl xl:bg-neutral-50 xl:p-6 dark:xl:bg-neutral-900">
@@ -65,20 +64,20 @@ export function Solution(): React.JSX.Element {
             <div className="grid gap-10 sm:container lg:grid-cols-2">
               <div className="order-1 lg:order-2">
                 <h2 className="mb-2.5 mt-8 text-3xl font-semibold md:text-5xl">
-                  Your personal operating system
+                  Tu sistema operativo de RH
                 </h2>
                 <p className="mt-1 text-muted-foreground md:mt-6">
-                  Harness the power of AI to transform your business and
-                  automate almost everything with workflows.
+                  Sistema de reclutamiento del futuro: enfocado al usuario, sin features estúpidas.
+                  Solo lo que realmente necesitas para contratar al mejor talento.
                 </p>
                 <ul className="mt-6 list-none flex-wrap items-center gap-6 space-y-3 md:flex md:space-y-0">
                   {[
-                    'AI-driven insights',
-                    'Smart automation',
-                    'Adaptive workflows',
-                    'Predictive analytics',
-                    'Natural language processing',
-                    'Auto task prioritization'
+                    'ATS minimalista y eficiente',
+                    'Filtrado inteligente de candidatos',
+                    'Entrevistas automatizadas',
+                    'Portal de candidatos móvil',
+                    'Integración con bolsas de trabajo',
+                    'Métricas que realmente importan'
                   ].map((feature) => (
                     <li
                       key={feature}
