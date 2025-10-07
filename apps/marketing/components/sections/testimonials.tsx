@@ -188,12 +188,24 @@ const DATA = [
 
 export function Testimonials(): React.JSX.Element {
   return (
-    <GridSection hideVerticalGridLines>
-      <div className="container border-x py-20 md:border-none">
-        <h2 className="mb-8 text-center text-3xl font-semibold md:text-5xl lg:text-left">
-          Más de 1,000 empresas mexicanas confían en nosotros
-        </h2>
-        <div className="relative mt-6 max-h-[640px] overflow-hidden">
+    <GridSection hideVerticalGridLines className="relative overflow-hidden">
+      {/* Decorative blobs */}
+      <div className="absolute left-20 top-40 size-80 animate-pulse-scale rounded-full bg-cool-cyan opacity-5 blur-3xl" />
+      <div className="absolute bottom-40 right-20 size-64 animate-rotate-slow rounded-full bg-neon-lime opacity-5 blur-3xl" />
+
+      <div className="container relative z-10 border-x py-32 md:border-none">
+        {/* Section header */}
+        <div className="mb-16 text-center">
+          <div className="mx-auto mb-6 flex size-20 items-center justify-center rounded-3xl bg-primary/10">
+            <span className="text-4xl">💬</span>
+          </div>
+          <h2 className="mx-auto max-w-4xl text-4xl font-black lowercase leading-tight tracking-super-tight md:text-5xl">
+            más de 1,000 empresas mexicanas confían en nosotros
+          </h2>
+          <div className="mx-auto mt-8 h-1 w-24 rounded-full bg-gradient-to-r from-cool-cyan via-neon-lime to-cool-cyan" />
+        </div>
+
+        <div className="relative mt-12 max-h-[640px] overflow-hidden">
           <div className="gap-4 md:columns-2 xl:columns-3 2xl:columns-4">
             {Array(Math.ceil(DATA.length / 3))
               .fill(0)
@@ -217,7 +229,7 @@ export function Testimonials(): React.JSX.Element {
                         delay: Math.random() * 0.4,
                         duration: 1
                       }}
-                      className="mb-4 flex w-full break-inside-avoid flex-col items-center justify-between gap-6 rounded-xl border bg-background p-4 dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#ffffff1f_inset]"
+                      className="group mb-4 flex w-full break-inside-avoid flex-col items-center justify-between gap-6 rounded-2xl border-2 border-border bg-card p-6 shadow-lg transition-all hover:scale-[1.02] hover:border-cool-cyan/50 hover:shadow-xl dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#ffffff1f_inset]"
                     >
                       <div className="select-none text-sm font-normal text-muted-foreground">
                         {testimonial.description}

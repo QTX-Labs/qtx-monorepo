@@ -13,18 +13,27 @@ import { GridSection } from '~/components/fragments/grid-section';
 
 export function Solution(): React.JSX.Element {
   return (
-    <GridSection>
-      <div className="bg-diagonal-lines">
-        <div className="flex flex-col gap-24 bg-background py-20 lg:mx-12 lg:border-x">
-          <div className="container relative space-y-10">
-            <div>
-              <h2 className="mb-2.5 text-3xl font-semibold md:text-5xl">
-                Nómina y Reclutamiento del Futuro
+    <GridSection className="relative overflow-hidden">
+      {/* Decorative background */}
+      <div className="absolute left-0 top-0 size-[600px] -translate-x-1/2 -translate-y-1/2 animate-rotate-slow rounded-full bg-cool-cyan opacity-5 blur-3xl" />
+      <div className="absolute bottom-0 right-0 size-[800px] translate-x-1/2 translate-y-1/2 animate-float-large rounded-full bg-neon-lime opacity-5 blur-3xl" />
+
+      <div className="relative z-10 bg-gradient-to-b from-background via-muted/10 to-background">
+        <div className="flex flex-col gap-32 py-32">
+          <div className="container relative space-y-16">
+            {/* Section header with icon */}
+            <div className="text-center">
+              <div className="mx-auto mb-6 flex size-20 items-center justify-center rounded-3xl bg-neon-lime/10">
+                <span className="text-4xl">✨</span>
+              </div>
+              <h2 className="mb-6 text-4xl font-black lowercase leading-tight tracking-super-tight md:text-6xl">
+                nómina y reclutamiento del futuro
               </h2>
-              <p className="mt-1 max-w-2xl text-muted-foreground md:mt-6">
+              <p className="mx-auto mt-6 max-w-3xl text-lg text-muted-foreground">
                 {APP_NAME} revoluciona la gestión de capital humano con dos sistemas poderosos:
                 Nómina 100% mexicana y Reclutamiento inteligente sin features inútiles que nadie usa.
               </p>
+              <div className="mx-auto mt-8 h-1 w-24 rounded-full bg-gradient-to-r from-neon-lime via-cool-cyan to-neon-lime" />
             </div>
             <div className="mx-auto xl:container xl:rounded-xl xl:bg-neutral-50 xl:p-6 dark:xl:bg-neutral-900">
               <div className="grid auto-rows-[minmax(200px,auto)] grid-cols-12 gap-6">
@@ -60,13 +69,21 @@ export function Solution(): React.JSX.Element {
                 />
               </div>
             </div>
-            <div className="mx-auto w-full max-w-4xl border-t border-dashed" />
-            <div className="grid gap-10 sm:container lg:grid-cols-2">
+            {/* Visual divider */}
+            <div className="relative py-12">
+              <div className="absolute left-1/2 top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-neon-lime to-cool-cyan" />
+              <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+            </div>
+
+            <div className="grid gap-16 sm:container lg:grid-cols-2 lg:items-center">
               <div className="order-1 lg:order-2">
-                <h2 className="mb-2.5 mt-8 text-3xl font-semibold md:text-5xl">
-                  Tu sistema operativo de RH
+                <div className="mb-6 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-neon-lime/20 to-cool-cyan/20">
+                  <span className="text-3xl">🎯</span>
+                </div>
+                <h2 className="mb-4 text-3xl font-black lowercase tracking-tight md:text-5xl">
+                  tu sistema operativo de RH
                 </h2>
-                <p className="mt-1 text-muted-foreground md:mt-6">
+                <p className="mt-4 text-lg text-muted-foreground">
                   Sistema de reclutamiento del futuro: enfocado al usuario, sin features estúpidas.
                   Solo lo que realmente necesitas para contratar al mejor talento.
                 </p>

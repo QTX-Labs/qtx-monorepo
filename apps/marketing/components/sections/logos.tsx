@@ -112,23 +112,33 @@ const DATA = [
 
 export function Logos(): React.JSX.Element {
   return (
-    <GridSection className="bg-diagonal-lines">
-      <div className="flex flex-col items-center justify-between gap-2 bg-background p-8 sm:flex-row sm:py-4">
-        <BlurFade className="mb-6 sm:mb-0">
-          <p className="max-w-[220px] text-center text-sm text-muted-foreground sm:text-left">
-            Trusted by fast-growing companies around the world
-          </p>
-        </BlurFade>
-        <div className="grid grid-cols-2 gap-6 md:grid-cols-4 lg:max-w-4xl lg:gap-10">
-          {DATA.map(({ icon: Icon }, index) => (
-            <BlurFade
-              key={index}
-              delay={0.2 + index * 0.2}
-              className="flex items-center justify-center text-neutral-700 dark:text-neutral-300"
-            >
-              <Icon className="h-6 w-auto" />
-            </BlurFade>
-          ))}
+    <GridSection className="relative overflow-hidden bg-muted/30">
+      {/* Decorative blob */}
+      <div className="absolute left-1/2 top-1/2 size-64 -translate-x-1/2 -translate-y-1/2 animate-pulse-scale rounded-full bg-primary opacity-5 blur-3xl" />
+
+      <div className="container relative z-10">
+        <div className="flex flex-col items-center justify-between gap-8 py-12 sm:flex-row sm:gap-4">
+          <BlurFade className="mb-2 sm:mb-0">
+            <div className="text-center sm:text-left">
+              <p className="text-xs font-bold uppercase tracking-wider text-primary">
+                confianza mundial
+              </p>
+              <p className="mt-2 max-w-[280px] text-sm font-medium lowercase tracking-tight text-foreground">
+                empresas de alto crecimiento confían en nuestra tecnología
+              </p>
+            </div>
+          </BlurFade>
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:max-w-4xl lg:gap-12">
+            {DATA.map(({ icon: Icon }, index) => (
+              <BlurFade
+                key={index}
+                delay={0.2 + index * 0.2}
+                className="flex items-center justify-center text-foreground/60 transition-all hover:scale-110 hover:text-foreground"
+              >
+                <Icon className="h-6 w-auto" />
+              </BlurFade>
+            ))}
+          </div>
         </div>
       </div>
     </GridSection>

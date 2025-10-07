@@ -48,21 +48,28 @@ const DATA = [
 
 export function FAQ(): React.JSX.Element {
   return (
-    <GridSection>
-      <div className="container py-20">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+    <GridSection className="relative overflow-hidden">
+      {/* Decorative blob */}
+      <div className="absolute right-10 top-20 size-96 animate-float-large rounded-full bg-sunny-yellow opacity-5 blur-3xl" />
+
+      <div className="container relative z-10 py-32">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="text-center lg:text-left">
-            <h2 className="mb-2.5 text-3xl font-semibold md:text-5xl">
-              Preguntas Frecuentes
+            <div className="mx-auto mb-6 flex size-20 items-center justify-center rounded-3xl bg-sunny-yellow/10 lg:mx-0">
+              <span className="text-4xl">❓</span>
+            </div>
+            <h2 className="mb-6 text-4xl font-black lowercase tracking-super-tight md:text-5xl">
+              preguntas frecuentes
             </h2>
-            <p className="mt-6 hidden text-muted-foreground md:block lg:max-w-[75%]">
-              ¿No encontraste lo que buscabas? {' '}
+            <div className="mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-sunny-yellow via-warm-orange to-sunny-yellow lg:mx-0" />
+            <p className="mt-8 hidden text-muted-foreground md:block lg:max-w-[85%]">
+              ¿No encontraste lo que buscabas?{' '}
               <Link
                 href={routes.marketing.Contact}
-                className="font-normal text-inherit underline hover:text-foreground"
+                className="font-semibold text-primary underline hover:text-primary/80"
               >
                 Contáctanos
-              </Link>{' '}
+              </Link>
               , estamos para ayudarte.
             </p>
           </div>
