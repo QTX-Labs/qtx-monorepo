@@ -242,7 +242,7 @@ function MainMobileMenu({
           ))}
         </ul>
         <div className="flex w-full items-center justify-between gap-2 border-y border-border/40 p-4">
-          <div className="text-base font-medium">Theme</div>
+          <div className="text-base font-medium">Tema</div>
           <ThemeSwitcher />
         </div>
       </div>
@@ -321,7 +321,7 @@ function DocsMobileMenu({
           ))}
         </ul>
         <div className="flex w-full items-center justify-between gap-2 border-y border-border/40 p-4">
-          <div className="text-base font-medium">Theme</div>
+          <div className="text-base font-medium">Tema</div>
           <ThemeSwitcher />
         </div>
       </div>

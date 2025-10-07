@@ -26,13 +26,13 @@ import { MobileMenu } from '~/components/mobile-menu';
 export function Navbar(): React.JSX.Element {
   const pathname = usePathname();
   return (
-    <section className="sticky inset-x-0 top-0 z-40 border-b bg-background py-4">
+    <section className="sticky inset-x-0 top-0 z-40 border-b bg-background/80 py-4 backdrop-blur-lg transition-all">
       <div className="container">
         <nav className="hidden justify-between lg:flex">
           <div className="flex items-center gap-x-9">
             <Link
               href={routes.marketing.Index}
-              className="flex items-center gap-2"
+              className="group flex items-center gap-2 transition-transform hover:scale-105"
             >
               <Logo />
             </Link>
@@ -146,7 +146,7 @@ export function Navbar(): React.JSX.Element {
                 'rounded-xl'
               )}
             >
-              Sign in
+              Iniciar sesión
             </Link>
             <Link
               href={routes.dashboard.auth.SignUp}
@@ -157,7 +157,7 @@ export function Navbar(): React.JSX.Element {
                 'rounded-xl'
               )}
             >
-              Start for free
+              Empieza gratis
             </Link>
           </div>
         </nav>

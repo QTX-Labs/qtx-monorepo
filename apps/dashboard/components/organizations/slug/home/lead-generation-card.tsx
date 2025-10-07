@@ -57,13 +57,16 @@ export function LeadGenerationCard({
 
   return (
     <Card
-      className={cn('pt-0', className)}
+      className={cn('relative overflow-hidden pt-0 shadow-lg transition-all hover:shadow-xl', className)}
       {...other}
     >
+      {/* Decorative blob */}
+      <div className="absolute right-0 top-0 size-32 rounded-full bg-neon-lime opacity-5 blur-3xl" />
+
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0! sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle className="text-sm">Lead generation</CardTitle>
-          <CardDescription>New contacts added to the pool.</CardDescription>
+          <CardTitle className="text-sm font-bold lowercase tracking-tight">lead generation</CardTitle>
+          <CardDescription>new contacts added to the pool.</CardDescription>
         </div>
         <div className="flex">
           {['people', 'companies'].map((value) => {
@@ -72,18 +75,18 @@ export function LeadGenerationCard({
               <button
                 key={chart}
                 data-active={activeChart === chart}
-                className="cursor-pointer relative z-10 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+                className="cursor-pointer relative z-10 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left transition-all even:border-l data-[active=true]:bg-primary/5 hover:bg-accent/30 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
                 onClick={() => setActiveChart(chart)}
               >
                 <span
                   suppressHydrationWarning
-                  className="text-xs text-muted-foreground"
+                  className="text-xs font-medium lowercase tracking-tight text-muted-foreground"
                 >
                   {chartConfig[chart].label}
                 </span>
                 <span
                   suppressHydrationWarning
-                  className="text-lg font-bold leading-none sm:text-2xl"
+                  className="bg-gradient-to-r from-primary to-neon-lime bg-clip-text text-lg font-black leading-none text-transparent sm:text-2xl"
                 >
                   {total[value as keyof typeof total].toLocaleString()}
                 </span>

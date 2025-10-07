@@ -9,35 +9,60 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  /* HR Design System - Light Mode */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+
+  /* Primary: Electric Blue #0046FF */
+  --primary: oklch(0.42 0.22 264.5);
+  --primary-foreground: oklch(1 0 0);
+  --primary-dark: oklch(0.35 0.22 264.5);
+  --primary-darker: oklch(0.28 0.22 264.5);
+
+  /* Secondary */
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
+
+  /* Muted */
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+
+  /* Accent: Neon Lime #00FF85 */
+  --accent: oklch(0.88 0.22 158);
+  --accent-foreground: oklch(0.145 0 0);
+
+  /* Accent Colors */
+  --neon-lime: oklch(0.88 0.22 158);
+  --sunny-yellow: oklch(0.88 0.20 95);
+  --warm-orange: oklch(0.72 0.18 48);
+  --heart-red: oklch(0.60 0.22 12);
+  --cool-cyan: oklch(0.70 0.14 210);
+
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(1 0 0);
+
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;
+  --ring: oklch(0.42 0.22 264.5);
+
+  /* Charts using HR accent colors */
+  --chart-1: oklch(0.88 0.22 158);
+  --chart-2: oklch(0.88 0.20 95);
+  --chart-3: oklch(0.72 0.18 48);
+  --chart-4: oklch(0.60 0.22 12);
+  --chart-5: oklch(0.70 0.14 210);
+
+  --radius: 1rem;
+
+  /* Sidebar */
   --sidebar: oklch(1 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.42 0.22 264.5);
+  --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
@@ -45,38 +70,62 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  /* HR Design System - Dark Mode with Electric Blue */
+  --background: oklch(0.42 0.22 264.5);
+  --foreground: oklch(1 0 0);
+  --card: oklch(0.35 0.22 264.5);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0.35 0.22 264.5);
+  --popover-foreground: oklch(1 0 0);
+
+  /* Primary: White on electric blue */
+  --primary: oklch(1 0 0);
+  --primary-foreground: oklch(0.42 0.22 264.5);
+  --primary-dark: oklch(0.95 0 0);
+  --primary-darker: oklch(0.90 0 0);
+
+  /* Secondary with darker blue tint */
+  --secondary: oklch(0.35 0.22 264.5);
+  --secondary-foreground: oklch(1 0 0);
+
+  /* Muted */
+  --muted: oklch(0.35 0.22 264.5);
+  --muted-foreground: oklch(0.85 0 0);
+
+  /* Accent: Neon Lime */
+  --accent: oklch(0.88 0.22 158);
+  --accent-foreground: oklch(0.145 0 0);
+
+  /* Accent Colors */
+  --neon-lime: oklch(0.88 0.22 158);
+  --sunny-yellow: oklch(0.88 0.20 95);
+  --warm-orange: oklch(0.72 0.18 48);
+  --heart-red: oklch(0.60 0.22 12);
+  --cool-cyan: oklch(0.70 0.14 210);
+
+  --destructive: oklch(0.60 0.22 12);
+  --destructive-foreground: oklch(1 0 0);
+
+  --border: oklch(0.50 0.15 264.5);
+  --input: oklch(0.50 0.15 264.5);
+  --ring: oklch(0.88 0.22 158);
+
+  /* Charts using HR accent colors */
+  --chart-1: oklch(0.88 0.22 158);
+  --chart-2: oklch(0.88 0.20 95);
+  --chart-3: oklch(0.72 0.18 48);
+  --chart-4: oklch(0.60 0.22 12);
+  --chart-5: oklch(0.70 0.14 210);
+
+  /* Sidebar */
+  --sidebar: oklch(0.35 0.22 264.5);
+  --sidebar-foreground: oklch(1 0 0);
+  --sidebar-primary: oklch(0.88 0.22 158);
+  --sidebar-primary-foreground: oklch(0.145 0 0);
+  --sidebar-accent: oklch(0.42 0.22 264.5);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(0.50 0.15 264.5);
+  --sidebar-ring: oklch(0.88 0.22 158);
 }
 
 @theme inline {
@@ -88,12 +137,19 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-darker: var(--primary-darker);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-neon-lime: var(--neon-lime);
+  --color-sunny-yellow: var(--sunny-yellow);
+  --color-warm-orange: var(--warm-orange);
+  --color-heart-red: var(--heart-red);
+  --color-cool-cyan: var(--cool-cyan);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -108,6 +164,8 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 16px);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -232,4 +290,113 @@ input[type='number'] {
     var(--background) 1px,
     var(--background) 8px
   );
+}
+
+/* HR Design System - Organic Shapes & Decorative Elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes float-large {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-scale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.05); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-float-large {
+  animation: float-large 4s ease-in-out infinite;
+}
+
+.animate-rotate-slow {
+  animation: rotate-slow 30s linear infinite;
+}
+
+.animate-pulse-scale {
+  animation: pulse-scale 2s ease-in-out infinite;
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Organic blob shapes */
+.blob-shape {
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+}
+
+.blob-shape-2 {
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+}
+
+.blob-shape-3 {
+  border-radius: 40% 60% 70% 30% / 40% 70% 30% 60%;
+}
+
+/* 3D effect styles */
+.soft-3d {
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.soft-3d-hover {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.soft-3d-hover:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 12px rgba(0, 0, 0, 0.15),
+    0 3px 6px rgba(0, 0, 0, 0.1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+/* Gradient backgrounds for organic elements */
+.bg-neon-lime-gradient {
+  background: linear-gradient(135deg, var(--neon-lime) 0%, var(--cool-cyan) 100%);
+}
+
+.bg-sunny-gradient {
+  background: linear-gradient(135deg, var(--sunny-yellow) 0%, var(--warm-orange) 100%);
+}
+
+.bg-electric-blue-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-darker) 100%);
+}
+
+/* Text utilities for HR Design System */
+.text-lowercase {
+  text-transform: lowercase;
+}
+
+.tracking-tighter {
+  letter-spacing: -0.02em;
+}
+
+.tracking-super-tight {
+  letter-spacing: -0.04em;
 }

@@ -82,10 +82,18 @@ function HeroTitle(): React.JSX.Element {
       initial={{ filter: 'blur(10px)', opacity: 0, y: 20 }}
       animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
       transition={{ delay: 0.2, duration: 0.4 }}
+      className="relative"
     >
-      <h1 className="mt-6 text-center text-[48px] font-bold leading-[54px] tracking-[-1.2px] [font-kerning:none] sm:text-[56px] md:text-[64px] lg:text-[76px] lg:leading-[74px] lg:tracking-[-2px]">
-        La nómina del futuro
-        <br /> para México
+      {/* Decorative blob shapes */}
+      <div className="absolute -left-20 -top-10 size-32 animate-float-large rounded-full bg-neon-lime opacity-20 blur-2xl" />
+      <div className="absolute -right-16 top-0 size-24 animate-float rounded-full bg-sunny-yellow opacity-20 blur-2xl" />
+
+      <h1 className="relative mt-6 text-center text-[48px] font-black lowercase leading-[54px] tracking-super-tight sm:text-[56px] md:text-[64px] lg:text-[76px] lg:leading-[74px]">
+        <span className="text-primary">la nómina del futuro</span>
+        <br />
+        <span className="bg-gradient-to-r from-primary via-neon-lime to-primary bg-clip-text text-transparent">
+          para México
+        </span>
       </h1>
     </motion.div>
   );
@@ -110,7 +118,7 @@ function HeroButtons(): React.JSX.Element {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.6, duration: 0.4 }}
-      className="mx-auto flex w-full flex-col gap-2 px-7 sm:w-auto sm:flex-row sm:px-0"
+      className="mx-auto flex w-full flex-col gap-3 px-7 sm:w-auto sm:flex-row sm:px-0"
     >
       <Link
         href={routes.dashboard.auth.SignUp}
@@ -118,10 +126,16 @@ function HeroButtons(): React.JSX.Element {
           buttonVariants({
             variant: 'default'
           }),
-          'h-10 rounded-xl sm:h-9'
+          'group h-12 rounded-2xl bg-primary px-8 text-base font-bold lowercase tracking-tight shadow-lg transition-all hover:scale-105 hover:shadow-xl sm:h-11'
         )}
       >
-        Prueba gratis 30 días
+        <span className="relative">
+          prueba gratis 30 días
+          <span className="absolute -right-2 -top-1 flex size-2">
+            <span className="absolute inline-flex size-full animate-ping rounded-full bg-neon-lime opacity-75"></span>
+            <span className="relative inline-flex size-2 rounded-full bg-neon-lime"></span>
+          </span>
+        </span>
       </Link>
       <Link
         href={routes.marketing.Contact}
@@ -129,10 +143,10 @@ function HeroButtons(): React.JSX.Element {
           buttonVariants({
             variant: 'outline'
           }),
-          'h-10 rounded-xl sm:h-9'
+          'h-12 rounded-2xl border-2 border-primary px-8 text-base font-bold lowercase tracking-tight transition-all hover:scale-105 hover:bg-primary/10 sm:h-11'
         )}
       >
-        Solicitar demo
+        solicitar demo
       </Link>
     </motion.div>
   );

@@ -66,29 +66,29 @@ export const MENU_LINKS = [
     title: 'Recursos',
     items: [
       {
-        title: 'Contact',
-        description: 'Reach out for assistance',
+        title: 'Contacto',
+        description: 'Contáctanos para asistencia',
         icon: <SendHorizonalIcon className="size-5 shrink-0" />,
         href: routes.marketing.Contact,
         external: false
       },
       {
         title: 'Roadmap',
-        description: 'See what is coming next',
+        description: 'Ve lo que viene próximamente',
         icon: <LayoutIcon className="size-5 shrink-0" />,
         href: routes.marketing.Roadmap,
         external: true
       },
       {
-        title: 'Docs',
-        description: 'Learn how to use our platform',
+        title: 'Documentación',
+        description: 'Aprende a usar nuestra plataforma',
         icon: <BookOpenIcon className="size-5 shrink-0" />,
         href: routes.marketing.Docs,
         external: false
       },
       {
-        title: 'API Reference',
-        description: 'Build integrations with our API',
+        title: 'Referencia API',
+        description: 'Construye integraciones con nuestra API',
         icon: <CodeIcon className="size-5 shrink-0" />,
         href: baseUrl.PublicApi,
         external: true
@@ -126,37 +126,37 @@ export const FOOTER_LINKS = [
     ]
   },
   {
-    title: 'Resources',
+    title: 'Recursos',
     links: [
-      { name: 'Contact', href: routes.marketing.Contact, external: false },
+      { name: 'Contacto', href: routes.marketing.Contact, external: false },
       { name: 'Roadmap', href: routes.marketing.Roadmap, external: true },
-      { name: 'Docs', href: routes.marketing.Docs, external: false },
-      { name: 'API Reference', href: baseUrl.PublicApi, external: true }
+      { name: 'Documentación', href: routes.marketing.Docs, external: false },
+      { name: 'Referencia API', href: baseUrl.PublicApi, external: true }
     ]
   },
   {
-    title: 'About',
+    title: 'Acerca de',
     links: [
-      { name: 'Story', href: routes.marketing.Story, external: false },
+      { name: 'Historia', href: routes.marketing.Story, external: false },
       { name: 'Blog', href: routes.marketing.Blog, external: false },
-      { name: 'Careers', href: routes.marketing.Careers, external: false }
+      { name: 'Carreras', href: routes.marketing.Careers, external: false }
     ]
   },
   {
     title: 'Legal',
     links: [
       {
-        name: 'Terms of Use',
+        name: 'Términos de Uso',
         href: routes.marketing.TermsOfUse,
         external: false
       },
       {
-        name: 'Privacy Policy',
+        name: 'Política de Privacidad',
         href: routes.marketing.PrivacyPolicy,
         external: false
       },
       {
-        name: 'Cookie Policy',
+        name: 'Política de Cookies',
         href: routes.marketing.CookiePolicy,
         external: false
       }
