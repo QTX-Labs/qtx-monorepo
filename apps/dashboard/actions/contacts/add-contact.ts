@@ -14,9 +14,16 @@ export const addContact = authOrganizationActionClient
     await createContactAndCaptureEvent(
       {
         record: parsedInput.record,
+        type: parsedInput.type,
         name: parsedInput.name,
+        businessName: parsedInput.businessName,
         email: parsedInput.email,
         phone: parsedInput.phone,
+        fiscalAddress: parsedInput.fiscalAddress,
+        fiscalPostalCode: parsedInput.fiscalPostalCode,
+        rfc: parsedInput.rfc,
+        businessActivity: parsedInput.businessActivity,
+        taxRegime: parsedInput.taxRegime,
         organization: {
           connect: {
             id: ctx.organization.id

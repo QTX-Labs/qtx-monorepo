@@ -37,6 +37,11 @@ enum ContactStage {
   WON            @map("won")
 }
 
+enum ContactType {
+  EMISOR   @map("emisor")
+  RECEPTOR @map("receptor")
+}
+
 enum ContactTaskStatus {
   OPEN      @map("open")
   COMPLETED @map("completed")
@@ -140,25 +145,32 @@ model ChangeEmailRequest {
 }
 
 model Contact {
-  id             String             @id(map: "PK_Contact") @default(uuid()) @db.Uuid
-  organizationId String             @db.Uuid
-  record         ContactRecord      @default(PERSON)
-  image          String?            @db.VarChar(2048)
-  name           String             @db.VarChar(255)
-  email          String?            @db.VarChar(255)
-  address        String?            @db.VarChar(255)
-  phone          String?            @db.VarChar(32)
-  stage          ContactStage       @default(LEAD)
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
-  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  activities     ContactActivity[]
-  comments       ContactComment[]
-  notes          ContactNote[]
-  pageVisits     ContactPageVisit[]
-  tags           ContactTag[]
-  favorites      Favorite[]
-  tasks          ContactTask[]
+  id               String             @id(map: "PK_Contact") @default(uuid()) @db.Uuid
+  organizationId   String             @db.Uuid
+  record           ContactRecord      @default(PERSON)
+  type             ContactType?
+  image            String?            @db.VarChar(2048)
+  name             String             @db.VarChar(255)
+  businessName     String?            @db.VarChar(255)
+  email            String?            @db.VarChar(255)
+  address          String?            @db.VarChar(255)
+  fiscalAddress    String?            @db.VarChar(500)
+  fiscalPostalCode String?            @db.VarChar(16)
+  rfc              String?            @db.VarChar(13)
+  businessActivity String?            @db.Text
+  taxRegime        String?            @db.VarChar(255)
+  phone            String?            @db.VarChar(32)
+  stage            ContactStage       @default(LEAD)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  organization     Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  activities       ContactActivity[]
+  comments         ContactComment[]
+  notes            ContactNote[]
+  pageVisits       ContactPageVisit[]
+  tags             ContactTag[]
+  favorites        Favorite[]
+  tasks            ContactTask[]
 
   @@index([organizationId], map: "IX_Contact_organizationId")
 }

@@ -4,7 +4,7 @@ import NiceModal, { type NiceModalHocProps } from '@ebay/nice-modal-react';
 import { BuildingIcon, UserIcon } from 'lucide-react';
 import { type SubmitHandler } from 'react-hook-form';
 
-import { ContactRecord } from '@workspace/database';
+import { ContactRecord, ContactType } from '@workspace/database';
 import { Button } from '@workspace/ui/components/button';
 import {
   Dialog,
@@ -32,6 +32,14 @@ import {
 } from '@workspace/ui/components/form';
 import { Input } from '@workspace/ui/components/input';
 import { RadioCardItem, RadioCards } from '@workspace/ui/components/radio-card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@workspace/ui/components/select';
+import { Textarea } from '@workspace/ui/components/textarea';
 import { toast } from '@workspace/ui/components/sonner';
 import { useMediaQuery } from '@workspace/ui/hooks/use-media-query';
 import { MediaQueries } from '@workspace/ui/lib/media-queries';
@@ -56,9 +64,16 @@ export const AddContactModal = NiceModal.create<AddContactModalProps>(() => {
     mode: 'onSubmit',
     defaultValues: {
       record: ContactRecord.PERSON,
+      type: undefined,
       name: '',
+      businessName: '',
       email: '',
-      phone: ''
+      phone: '',
+      fiscalAddress: '',
+      fiscalPostalCode: '',
+      rfc: '',
+      businessActivity: '',
+      taxRegime: ''
     }
   });
   const title = 'Add contact';
@@ -116,14 +131,39 @@ export const AddContactModal = NiceModal.create<AddContactModalProps>(() => {
       />
       <FormField
         control={methods.control}
+        name="type"
+        render={({ field }) => (
+          <FormItem className="flex w-full flex-col">
+            <FormLabel>Tipo</FormLabel>
+            <Select
+              onValueChange={field.onChange}
+              value={field.value}
+              disabled={methods.formState.isSubmitting}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar tipo" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value={ContactType.EMISOR}>Emisor</SelectItem>
+                <SelectItem value={ContactType.RECEPTOR}>Receptor</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={methods.control}
         name="name"
         render={({ field }) => (
           <FormItem className="flex w-full flex-col">
-            <FormLabel required>Name</FormLabel>
+            <FormLabel required>Nombre Comercial</FormLabel>
             <FormControl>
               <Input
                 type="text"
-                maxLength={64}
+                maxLength={255}
                 required
                 disabled={methods.formState.isSubmitting}
                 {...field}
@@ -131,6 +171,24 @@ export const AddContactModal = NiceModal.create<AddContactModalProps>(() => {
             </FormControl>
             {(methods.formState.touchedFields.name ||
               methods.formState.submitCount > 0) && <FormMessage />}
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={methods.control}
+        name="businessName"
+        render={({ field }) => (
+          <FormItem className="flex w-full flex-col">
+            <FormLabel>Razón Social</FormLabel>
+            <FormControl>
+              <Input
+                type="text"
+                maxLength={255}
+                disabled={methods.formState.isSubmitting}
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -157,11 +215,98 @@ export const AddContactModal = NiceModal.create<AddContactModalProps>(() => {
         name="phone"
         render={({ field }) => (
           <FormItem className="flex w-full flex-col">
-            <FormLabel>Phone</FormLabel>
+            <FormLabel>Teléfono</FormLabel>
             <FormControl>
               <Input
                 type="tel"
                 maxLength={32}
+                disabled={methods.formState.isSubmitting}
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={methods.control}
+        name="rfc"
+        render={({ field }) => (
+          <FormItem className="flex w-full flex-col">
+            <FormLabel>RFC</FormLabel>
+            <FormControl>
+              <Input
+                type="text"
+                maxLength={13}
+                disabled={methods.formState.isSubmitting}
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={methods.control}
+        name="fiscalAddress"
+        render={({ field }) => (
+          <FormItem className="flex w-full flex-col">
+            <FormLabel>Dirección Fiscal</FormLabel>
+            <FormControl>
+              <Textarea
+                maxLength={500}
+                disabled={methods.formState.isSubmitting}
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={methods.control}
+        name="fiscalPostalCode"
+        render={({ field }) => (
+          <FormItem className="flex w-full flex-col">
+            <FormLabel>Código Postal Fiscal</FormLabel>
+            <FormControl>
+              <Input
+                type="text"
+                maxLength={16}
+                disabled={methods.formState.isSubmitting}
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={methods.control}
+        name="businessActivity"
+        render={({ field }) => (
+          <FormItem className="flex w-full flex-col">
+            <FormLabel>Giro / Actividad Empresarial</FormLabel>
+            <FormControl>
+              <Textarea
+                disabled={methods.formState.isSubmitting}
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={methods.control}
+        name="taxRegime"
+        render={({ field }) => (
+          <FormItem className="flex w-full flex-col">
+            <FormLabel>Régimen Fiscal</FormLabel>
+            <FormControl>
+              <Input
+                type="text"
+                maxLength={255}
                 disabled={methods.formState.isSubmitting}
                 {...field}
               />

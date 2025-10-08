@@ -4,7 +4,7 @@ import { unstable_cache as cache } from 'next/cache';
 
 import { getAuthOrganizationContext } from '@workspace/auth/context';
 import { ValidationError } from '@workspace/common/errors';
-import { ContactRecord, Prisma } from '@workspace/database';
+import { ContactRecord, ContactType, Prisma } from '@workspace/database';
 import { prisma } from '@workspace/database/client';
 
 import {
@@ -19,7 +19,7 @@ import {
 } from '~/schemas/contacts/get-contacts-schema';
 import type { ContactDto } from '~/types/dtos/contact-dto';
 
-export async function getContacts(input: GetContactsSchema): Promise<{
+export async function getClientesContacts(input: GetContactsSchema): Promise<{
   contacts: ContactDto[];
   filteredCount: number;
   totalCount: number;
@@ -48,6 +48,7 @@ export async function getContacts(input: GetContactsSchema): Promise<{
           take: parsedInput.pageSize,
           where: {
             organizationId: ctx.organization.id,
+            type: ContactType.RECEPTOR,
             record: mapRecords(parsedInput.records),
             tags:
               parsedInput.tags && parsedInput.tags.length > 0
@@ -86,6 +87,7 @@ export async function getContacts(input: GetContactsSchema): Promise<{
         prisma.contact.count({
           where: {
             organizationId: ctx.organization.id,
+            type: ContactType.RECEPTOR,
             record: mapRecords(parsedInput.records),
             tags:
               parsedInput.tags && parsedInput.tags.length > 0
@@ -96,7 +98,8 @@ export async function getContacts(input: GetContactsSchema): Promise<{
         }),
         prisma.contact.count({
           where: {
-            organizationId: ctx.organization.id
+            organizationId: ctx.organization.id,
+            type: ContactType.RECEPTOR
           }
         })
       ]);
@@ -126,6 +129,7 @@ export async function getContacts(input: GetContactsSchema): Promise<{
     Caching.createOrganizationKeyParts(
       OrganizationCacheKey.Contacts,
       ctx.organization.id,
+      'clientes',
       parsedInput.pageIndex.toString(),
       parsedInput.pageSize.toString(),
       parsedInput.sortBy,

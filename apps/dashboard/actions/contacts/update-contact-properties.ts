@@ -28,9 +28,16 @@ export const updateContactProperties = authOrganizationActionClient
       parsedInput.id,
       {
         record: parsedInput.record,
+        type: parsedInput.type,
         name: parsedInput.name,
+        businessName: parsedInput.businessName,
         email: parsedInput.email,
         address: parsedInput.address,
+        fiscalAddress: parsedInput.fiscalAddress,
+        fiscalPostalCode: parsedInput.fiscalPostalCode,
+        rfc: parsedInput.rfc,
+        businessActivity: parsedInput.businessActivity,
+        taxRegime: parsedInput.taxRegime,
         phone: parsedInput.phone
       },
       ctx.session.user.id

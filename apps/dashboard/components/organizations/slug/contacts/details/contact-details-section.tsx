@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { FormProvider, type SubmitHandler } from 'react-hook-form';
 
-import { ContactRecord } from '@workspace/database';
+import { ContactRecord, ContactType } from '@workspace/database';
 import { Avatar, AvatarFallback } from '@workspace/ui/components/avatar';
 import { Button } from '@workspace/ui/components/button';
 import {
@@ -24,6 +24,7 @@ import {
 } from '@workspace/ui/components/form';
 import { ImageDropzone } from '@workspace/ui/components/image-dropzone';
 import { Input } from '@workspace/ui/components/input';
+import { Textarea } from '@workspace/ui/components/textarea';
 import {
   Select,
   SelectContent,
@@ -169,10 +170,17 @@ function Properties(contact: ContactDto): React.JSX.Element {
     defaultValues: {
       id: contact.id,
       record: contact.record,
+      type: contact.type,
       name: contact.name,
+      businessName: contact.businessName,
       email: contact.email,
       phone: contact.phone,
-      address: contact.address
+      address: contact.address,
+      fiscalAddress: contact.fiscalAddress,
+      fiscalPostalCode: contact.fiscalPostalCode,
+      rfc: contact.rfc,
+      businessActivity: contact.businessActivity,
+      taxRegime: contact.taxRegime
     }
   });
   const canSubmit = !methods.formState.isSubmitting;
@@ -387,7 +395,6 @@ function Properties(contact: ContactDto): React.JSX.Element {
                         <Input
                           type="text"
                           maxLength={255}
-                          required
                           className="h-7"
                           disabled={methods.formState.isSubmitting}
                           {...field}
@@ -402,6 +409,212 @@ function Properties(contact: ContactDto): React.JSX.Element {
               )
             }
             placeholder="No address available"
+          />
+          <Property
+            icon={<IdCardIcon className="size-3 shrink-0" />}
+            term="Tipo"
+            details={
+              editMode ? (
+                <FormField
+                  control={methods.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormControl>
+                        <Select
+                          value={field.value ?? ''}
+                          onValueChange={field.onChange}
+                          disabled={methods.formState.isSubmitting}
+                        >
+                          <SelectTrigger className="h-7! w-full">
+                            <SelectValue placeholder="Seleccionar" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value={ContactType.EMISOR}>Emisor</SelectItem>
+                            <SelectItem value={ContactType.RECEPTOR}>Receptor</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : (
+                contact.type ?? ''
+              )
+            }
+            placeholder="No type available"
+          />
+          <Property
+            icon={<IdCardIcon className="size-3 shrink-0" />}
+            term="Razón Social"
+            details={
+              editMode ? (
+                <FormField
+                  control={methods.control}
+                  name="businessName"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormControl>
+                        <Input
+                          type="text"
+                          maxLength={255}
+                          className="h-7"
+                          disabled={methods.formState.isSubmitting}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : (
+                contact.businessName
+              )
+            }
+            placeholder="No business name"
+          />
+          <Property
+            icon={<IdCardIcon className="size-3 shrink-0" />}
+            term="RFC"
+            details={
+              editMode ? (
+                <FormField
+                  control={methods.control}
+                  name="rfc"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormControl>
+                        <Input
+                          type="text"
+                          maxLength={13}
+                          className="h-7"
+                          disabled={methods.formState.isSubmitting}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : (
+                contact.rfc
+              )
+            }
+            placeholder="No RFC"
+          />
+          <Property
+            icon={<LayoutListIcon className="size-3 shrink-0" />}
+            term="Dir. Fiscal"
+            details={
+              editMode ? (
+                <FormField
+                  control={methods.control}
+                  name="fiscalAddress"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormControl>
+                        <Textarea
+                          maxLength={500}
+                          className="min-h-[60px]"
+                          disabled={methods.formState.isSubmitting}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : (
+                contact.fiscalAddress
+              )
+            }
+            placeholder="No fiscal address"
+          />
+          <Property
+            icon={<IdCardIcon className="size-3 shrink-0" />}
+            term="C.P. Fiscal"
+            details={
+              editMode ? (
+                <FormField
+                  control={methods.control}
+                  name="fiscalPostalCode"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormControl>
+                        <Input
+                          type="text"
+                          maxLength={16}
+                          className="h-7"
+                          disabled={methods.formState.isSubmitting}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : (
+                contact.fiscalPostalCode
+              )
+            }
+            placeholder="No postal code"
+          />
+          <Property
+            icon={<LayoutListIcon className="size-3 shrink-0" />}
+            term="Giro"
+            details={
+              editMode ? (
+                <FormField
+                  control={methods.control}
+                  name="businessActivity"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormControl>
+                        <Textarea
+                          className="min-h-[60px]"
+                          disabled={methods.formState.isSubmitting}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : (
+                contact.businessActivity
+              )
+            }
+            placeholder="No business activity"
+          />
+          <Property
+            icon={<IdCardIcon className="size-3 shrink-0" />}
+            term="Régimen Fiscal"
+            details={
+              editMode ? (
+                <FormField
+                  control={methods.control}
+                  name="taxRegime"
+                  render={({ field }) => (
+                    <FormItem className="flex w-full flex-col">
+                      <FormControl>
+                        <Input
+                          type="text"
+                          maxLength={255}
+                          className="h-7"
+                          disabled={methods.formState.isSubmitting}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : (
+                contact.taxRegime
+              )
+            }
+            placeholder="No tax regime"
           />
         </dl>
       </form>

@@ -1,5 +1,6 @@
 import {
   BellIcon,
+  BuildingIcon,
   CodeIcon,
   CreditCardIcon,
   HomeIcon,
@@ -28,6 +29,16 @@ export function createMainNavItems(slug: string): NavItem[] {
       title: 'Home',
       href: replaceOrgSlug(routes.dashboard.organizations.slug.Home, slug),
       icon: HomeIcon
+    },
+    {
+      title: 'Clientes',
+      href: replaceOrgSlug(routes.dashboard.organizations.slug.Clientes, slug),
+      icon: UsersIcon
+    },
+    {
+      title: 'Mis Empresas',
+      href: replaceOrgSlug(routes.dashboard.organizations.slug.MisEmpresas, slug),
+      icon: BuildingIcon
     },
     {
       title: 'Contacts',
