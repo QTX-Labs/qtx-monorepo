@@ -1,18 +1,11 @@
 import * as React from 'react';
-import {
-  Body,
-  Button,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Link,
-  Preview,
-  Section,
-  Text
-} from '@react-email/components';
-import { Tailwind } from '@react-email/tailwind';
+import { Section, Text, Hr, Link } from '@react-email/components';
+
+import { EmailLayout } from '../components/EmailLayout';
+import { HeroHeading } from '../components/HeroHeading';
+import { EmailButton } from '../components/EmailButton';
+import { DecorativeBlob } from '../components/DecorativeBlob';
+import { colors, fonts } from '../components/design-system';
 
 export type InvitationEmailProps = {
   appName: string;
@@ -30,57 +23,137 @@ export function InvitationEmail({
   inviteLink
 }: InvitationEmailProps): React.JSX.Element {
   return (
-    <Html>
-      <Head />
-      <Preview>
-        Join {organizationName} on {appName}
-      </Preview>
-      <Tailwind>
-        <Body className="m-auto bg-white px-2 font-sans">
-          <Container className="mx-auto my-[40px] max-w-[465px] rounded-sm border border-solid border-[#eaeaea] p-[20px]">
-            <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
-              Join <strong>{organizationName}</strong> on{' '}
-              <strong>{appName}</strong>
-            </Heading>
-            <Text className="text-[14px] leading-[24px] text-black">
-              Hello,
-            </Text>
-            <Text className="text-[14px] leading-[24px] text-black">
-              <strong>{invitedByName}</strong> (
-              <Link
-                href={`mailto:${invitedByEmail}`}
-                className="text-blue-600 no-underline"
-              >
-                {invitedByEmail}
-              </Link>
-              ) has invited you to join the <strong>{organizationName}</strong>{' '}
-              organization on <strong>{appName}</strong>.
-            </Text>
-            <Section className="my-[32px] text-center">
-              <Button
-                href={inviteLink}
-                className="rounded-sm bg-[#000000] px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
-              >
-                Accept
-              </Button>
-            </Section>
-            <Text className="text-[14px] leading-[24px] text-black">
-              or copy and paste this URL into your browser:{' '}
-              <Link
-                href={inviteLink}
-                className="text-blue-600 no-underline"
-              >
-                {inviteLink}
-              </Link>
-            </Text>
-            <Hr className="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />
-            <Text className="text-[12px] leading-[24px] text-[#666666]">
-              If you were not expecting this invitation, you can ignore this
-              email.
-            </Text>
-          </Container>
-        </Body>
-      </Tailwind>
-    </Html>
+    <EmailLayout preview={`${invitedByName} te invita a ${organizationName}`}>
+      <div style={{ position: 'relative', padding: '40px 0' }}>
+        {/* Decorative elements */}
+        <DecorativeBlob
+          color={colors.accents.warmOrange}
+          size={250}
+          position="top-left"
+        />
+        <DecorativeBlob
+          color={colors.accents.coolCyan}
+          size={300}
+          position="bottom-right"
+        />
+
+        {/* Hero */}
+        <Section style={{ position: 'relative', zIndex: 10 }}>
+          <HeroHeading
+            script="you're invited to join"
+            main={organizationName}
+            scriptColor={colors.accents.sunnyYellow}
+          />
+        </Section>
+
+        {/* Content card */}
+        <Section
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '24px',
+            padding: '40px',
+            marginTop: '40px',
+            position: 'relative'
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: fonts.script,
+              fontSize: '28px',
+              color: colors.accents.neonLime,
+              textAlign: 'center',
+              margin: '0 0 30px 0'
+            }}
+          >
+            hola 👋
+          </Text>
+
+          <Text
+            style={{
+              fontFamily: fonts.body,
+              fontSize: '18px',
+              color: colors.neutrals.white,
+              textAlign: 'center',
+              lineHeight: '1.6',
+              margin: '0 0 20px 0'
+            }}
+          >
+            <strong style={{ color: colors.accents.neonLime }}>
+              {invitedByName}
+            </strong>{' '}
+            te ha invitado a unirte al equipo de{' '}
+            <strong style={{ color: colors.accents.sunnyYellow }}>
+              {organizationName}
+            </strong>{' '}
+            en {appName}.
+          </Text>
+
+          <Text
+            style={{
+              fontFamily: fonts.body,
+              fontSize: '16px',
+              color: colors.neutrals.nearWhite,
+              textAlign: 'center',
+              lineHeight: '1.6',
+              margin: '0 0 40px 0'
+            }}
+          >
+            acepta la invitación para comenzar a colaborar con el equipo.
+          </Text>
+
+          <EmailButton
+            href={inviteLink}
+            backgroundColor={colors.accents.warmOrange}
+            textColor={colors.neutrals.white}
+          >
+            aceptar invitación 🚀
+          </EmailButton>
+
+          <Text
+            style={{
+              fontFamily: fonts.body,
+              fontSize: '14px',
+              color: 'rgba(255, 255, 255, 0.7)',
+              textAlign: 'center',
+              lineHeight: '1.6',
+              margin: '30px 0 0 0'
+            }}
+          >
+            o copia y pega este enlace:{' '}
+            <Link
+              href={inviteLink}
+              style={{
+                color: colors.accents.neonLime,
+                textDecoration: 'underline'
+              }}
+            >
+              {inviteLink}
+            </Link>
+          </Text>
+        </Section>
+
+        {/* Footer */}
+        <Section style={{ marginTop: '40px' }}>
+          <Hr
+            style={{
+              borderColor: 'rgba(255, 255, 255, 0.2)',
+              margin: '40px 0 20px 0'
+            }}
+          />
+          <Text
+            style={{
+              fontFamily: fonts.body,
+              fontSize: '14px',
+              color: 'rgba(255, 255, 255, 0.6)',
+              textAlign: 'center',
+              margin: 0
+            }}
+          >
+            si no esperabas esta invitación, puedes ignorar este correo
+          </Text>
+        </Section>
+      </div>
+    </EmailLayout>
   );
 }

@@ -1,17 +1,11 @@
 import * as React from 'react';
-import {
-  Body,
-  Button,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Preview,
-  Section,
-  Text
-} from '@react-email/components';
-import { Tailwind } from '@react-email/tailwind';
+import { Section, Text, Hr } from '@react-email/components';
+
+import { EmailLayout } from '../components/EmailLayout';
+import { HeroHeading } from '../components/HeroHeading';
+import { EmailButton } from '../components/EmailButton';
+import { DecorativeBlob } from '../components/DecorativeBlob';
+import { colors, fonts } from '../components/design-system';
 
 export type WelcomeEmailProps = {
   appName: string;
@@ -25,42 +19,117 @@ export function WelcomeEmail({
   getStartedLink
 }: WelcomeEmailProps): React.JSX.Element {
   return (
-    <Html>
-      <Head />
-      <Preview>Welcome to {appName}!</Preview>
-      <Tailwind>
-        <Body className="m-auto bg-white px-2 font-sans">
-          <Container className="mx-auto my-[40px] max-w-[465px] rounded-sm border border-solid border-[#eaeaea] p-[20px]">
-            <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
-              Welcome to {appName}!
-            </Heading>
-            <Text className="text-[14px] leading-[24px] text-black">
-              Hello {name},
-            </Text>
-            <Text className="text-[14px] leading-[24px] text-black">
-              Thank you for signing up! We're excited to have you on board. Your
-              account has been successfully created, and you're ready to start
-              exploring our platform.
-            </Text>
-            <Section className="my-[32px] text-center">
-              <Button
-                href={getStartedLink}
-                className="rounded-sm bg-[#000000] px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
-              >
-                Get started
-              </Button>
-            </Section>
-            <Text className="text-[14px] leading-[24px] text-black">
-              If you have any questions or need assistance, please don't
-              hesitate to reach out to our support team.
-            </Text>
-            <Hr className="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />
-            <Text className="text-[12px] leading-[24px] text-[#666666]">
-              You receive this email because you signed up on {appName}.
-            </Text>
-          </Container>
-        </Body>
-      </Tailwind>
-    </Html>
+    <EmailLayout preview={`¡Bienvenido a ${appName}, ${name}!`}>
+      <div style={{ position: 'relative', padding: '40px 0' }}>
+        {/* Decorative blobs */}
+        <DecorativeBlob
+          color={colors.accents.sunnyYellow}
+          size={300}
+          position="top-right"
+        />
+        <DecorativeBlob
+          color={colors.accents.neonLime}
+          size={200}
+          position="bottom-left"
+        />
+
+        {/* Hero */}
+        <Section style={{ position: 'relative', zIndex: 10 }}>
+          <HeroHeading
+            script="welcome to"
+            main={appName}
+            scriptColor={colors.accents.neonLime}
+          />
+        </Section>
+
+        {/* Content */}
+        <Section
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '24px',
+            padding: '40px',
+            marginTop: '40px',
+            position: 'relative'
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: fonts.script,
+              fontSize: '24px',
+              color: colors.accents.sunnyYellow,
+              textAlign: 'center',
+              margin: '0 0 20px 0'
+            }}
+          >
+            hola {name} 👋
+          </Text>
+
+          <Text
+            style={{
+              fontFamily: fonts.body,
+              fontSize: '18px',
+              color: colors.neutrals.white,
+              textAlign: 'center',
+              lineHeight: '1.6',
+              margin: '0 0 20px 0'
+            }}
+          >
+            gracias por unirte a nuestra comunidad. estamos emocionados de
+            tenerte con nosotros.
+          </Text>
+
+          <Text
+            style={{
+              fontFamily: fonts.body,
+              fontSize: '18px',
+              color: colors.neutrals.white,
+              textAlign: 'center',
+              lineHeight: '1.6',
+              margin: '0 0 40px 0'
+            }}
+          >
+            tu cuenta está lista y puedes comenzar a explorar todas las
+            funciones que tenemos para ti.
+          </Text>
+
+          <EmailButton href={getStartedLink}>empezar ahora ✨</EmailButton>
+
+          <Text
+            style={{
+              fontFamily: fonts.body,
+              fontSize: '16px',
+              color: colors.neutrals.nearWhite,
+              textAlign: 'center',
+              lineHeight: '1.6',
+              margin: '20px 0 0 0'
+            }}
+          >
+            si tienes preguntas, estamos aquí para ayudarte.
+          </Text>
+        </Section>
+
+        {/* Footer */}
+        <Section style={{ marginTop: '40px' }}>
+          <Hr
+            style={{
+              borderColor: 'rgba(255, 255, 255, 0.2)',
+              margin: '40px 0 20px 0'
+            }}
+          />
+          <Text
+            style={{
+              fontFamily: fonts.body,
+              fontSize: '14px',
+              color: 'rgba(255, 255, 255, 0.6)',
+              textAlign: 'center',
+              margin: 0
+            }}
+          >
+            recibes este correo porque te registraste en {appName}
+          </Text>
+        </Section>
+      </div>
+    </EmailLayout>
   );
 }
