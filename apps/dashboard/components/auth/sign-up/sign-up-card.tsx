@@ -62,20 +62,20 @@ export function SignUpCard({
       if (result.validationErrors?.email?._errors?.[0]) {
         setErrorMessage(result.validationErrors?.email?._errors?.[0]);
       } else {
-        setErrorMessage('An error occured during sign up.');
+        setErrorMessage('Ocurrió un error durante el registro.');
       }
     }
   };
   const handleSignInWithGoogle = async (): Promise<void> => {
     const result = await continueWithGoogle();
     if (result?.serverError || result?.validationErrors) {
-      setErrorMessage('An error occured during Google sign up.');
+      setErrorMessage('Ocurrió un error durante el registro con Google.');
     }
   };
   const handleSignInWithMicrosoft = async (): Promise<void> => {
     const result = await continueWithMicrosoft();
     if (result?.serverError || result?.validationErrors) {
-      setErrorMessage('An error occured during Microsoft sign up.');
+      setErrorMessage('Ocurrió un error durante el registro con Microsoft.');
     }
   };
   return (
@@ -88,10 +88,10 @@ export function SignUpCard({
     >
       <CardHeader>
         <CardTitle className="text-base lg:text-lg">
-          Create your account
+          Crea tu cuenta
         </CardTitle>
         <CardDescription>
-          Please fill in the details to get started.
+          Por favor completa los detalles para comenzar.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
@@ -105,7 +105,7 @@ export function SignUpCard({
               name="name"
               render={({ field }) => (
                 <FormItem className="flex w-full flex-col">
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Nombre</FormLabel>
                   <FormControl>
                     <InputWithAdornments
                       type="text"
@@ -125,7 +125,7 @@ export function SignUpCard({
               name="email"
               render={({ field }) => (
                 <FormItem className="flex w-full flex-col">
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Correo electrónico</FormLabel>
                   <FormControl>
                     <InputWithAdornments
                       type="email"
@@ -146,7 +146,7 @@ export function SignUpCard({
                 name="password"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Contraseña</FormLabel>
                     <FormControl>
                       <InputPassword
                         maxLength={72}
@@ -178,7 +178,7 @@ export function SignUpCard({
               disabled={methods.formState.isSubmitting}
               loading={methods.formState.isSubmitting}
             >
-              Create account
+              Crear cuenta
             </Button>
           </form>
         </FormProvider>
@@ -213,12 +213,12 @@ export function SignUpCard({
         </div>
       </CardContent>
       <CardFooter className="flex justify-center gap-1 text-sm text-muted-foreground">
-        <span>Already have an account?</span>
+        <span>¿Ya tienes una cuenta?</span>
         <Link
-          href={routes.dashboard.auth.SignIn}
+          href="/auth/sign-in"
           className="text-foreground underline"
         >
-          Sign in
+          Inicia sesión
         </Link>
       </CardFooter>
     </Card>

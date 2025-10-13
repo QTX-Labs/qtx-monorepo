@@ -105,7 +105,7 @@ export function SignInCard({
     setIsLoading(true);
     const result = await continueWithGoogle();
     if (result?.serverError || result?.validationErrors) {
-      toast.error("Couldn't continue with Google");
+      toast.error("No se pudo continuar con Google");
     }
     setIsLoading(false);
   };
@@ -116,7 +116,7 @@ export function SignInCard({
     setIsLoading(true);
     const result = await continueWithMicrosoft();
     if (result?.serverError || result?.validationErrors) {
-      toast.error("Couldn't continue with Google");
+      toast.error("No se pudo continuar con Microsoft");
     }
     setIsLoading(false);
   };
@@ -130,10 +130,10 @@ export function SignInCard({
     >
       <CardHeader>
         <CardTitle className="text-base lg:text-lg">
-          Sign in to your account
+          Inicia sesión en tu cuenta
         </CardTitle>
         <CardDescription>
-          Welcome back! Please sign in to continue.
+          ¡Bienvenido de nuevo! Por favor inicia sesión para continuar.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
@@ -147,7 +147,7 @@ export function SignInCard({
               name="email"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Correo electrónico</FormLabel>
                   <FormControl>
                     <InputWithAdornments
                       {...field}
@@ -169,12 +169,12 @@ export function SignInCard({
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <div className="flex flex-row items-center justify-between">
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Contraseña</FormLabel>
                     <Link
-                      href={routes.dashboard.auth.forgetPassword.Index}
+                      href="/auth/forgot-password"
                       className="ml-auto inline-block text-sm underline"
                     >
-                      Forgot password?
+                      ¿Olvidaste tu contraseña?
                     </Link>
                   </div>
                   <FormControl>
@@ -204,7 +204,7 @@ export function SignInCard({
                         'ml-0.5 h-fit gap-0.5 px-0.5 py-0 text-foreground underline'
                       )}
                     >
-                      Verify email
+                      Verificar correo
                       <ArrowRightIcon className="size-3 shrink-0" />
                     </Link>
                   )}
@@ -219,7 +219,7 @@ export function SignInCard({
               loading={methods.formState.isSubmitting}
               onClick={methods.handleSubmit(onSubmit)}
             >
-              Sign in
+              Iniciar sesión
             </Button>
           </form>
         </FormProvider>
@@ -254,12 +254,12 @@ export function SignInCard({
         </div>
       </CardContent>
       <CardFooter className="flex justify-center gap-1 text-sm text-muted-foreground">
-        <span>Don't have an account?</span>
+        <span>¿No tienes una cuenta?</span>
         <Link
-          href={routes.dashboard.auth.SignUp}
+          href="/auth/sign-up"
           className="text-foreground underline"
         >
-          Sign up
+          Regístrate
         </Link>
       </CardFooter>
     </Card>

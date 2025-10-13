@@ -8,7 +8,7 @@ import { SignUpCard } from '~/components/auth/sign-up/sign-up-card';
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Sign up')
+  title: createTitle('Registrarse')
 };
 
 export default function SignUpPage(): React.JSX.Element {
@@ -16,29 +16,29 @@ export default function SignUpPage(): React.JSX.Element {
     <>
       <SignUpCard />
       <div className="px-2 text-xs text-muted-foreground">
-        By signing up, you agree to our{' '}
+        Al registrarte, aceptas nuestros{' '}
         <Link
           prefetch={false}
           href={routes.marketing.TermsOfUse}
           className="text-foreground underline"
         >
-          Terms of Use
+          Términos de Uso
         </Link>{' '}
-        and{' '}
+        y{' '}
         <Link
           prefetch={false}
           href={routes.marketing.PrivacyPolicy}
           className="text-foreground underline"
         >
-          Privacy Policy
+          Política de Privacidad
         </Link>
-        . Need help?{' '}
+        . ¿Necesitas ayuda?{' '}
         <Link
           prefetch={false}
           href={routes.marketing.Contact}
           className="text-foreground underline"
         >
-          Get in touch
+          Contáctanos
         </Link>
         .
       </div>

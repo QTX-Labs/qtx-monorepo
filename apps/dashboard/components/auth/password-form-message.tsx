@@ -27,24 +27,24 @@ export function PasswordFormMessage({
     if (isPasswordValid) {
       return {
         met: true,
-        text: 'All requirements met'
+        text: 'Todos los requisitos cumplidos'
       };
     }
     if (!hasMinimumLength) {
       return {
         met: false,
-        text: `${MINIMUM_PASSWORD_LENGTH} or more characters`
+        text: `${MINIMUM_PASSWORD_LENGTH} o más caracteres`
       };
     }
     if (!containsLowerAndUpperCase) {
       return {
         met: false,
-        text: 'Uppercase and lowercase letters'
+        text: 'Letras mayúsculas y minúsculas'
       };
     }
     return {
       met: false,
-      text: 'At least one number'
+      text: 'Al menos un número'
     };
   };
 

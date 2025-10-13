@@ -5,30 +5,30 @@ import { passwordValidator } from '@workspace/auth/password';
 export const signUpSchema = z.object({
   name: z
     .string({
-      required_error: 'Name is required.',
-      invalid_type_error: 'Name must be a string.'
+      required_error: 'El nombre es requerido.',
+      invalid_type_error: 'El nombre debe ser una cadena de texto.'
     })
     .trim()
-    .min(1, 'Name is required.')
-    .max(64, 'Maximum 64 characters allowed.'),
+    .min(1, 'El nombre es requerido.')
+    .max(64, 'Máximo 64 caracteres permitidos.'),
   email: z
     .string({
-      required_error: 'Email is required.',
-      invalid_type_error: 'Email must be a string.'
+      required_error: 'El correo electrónico es requerido.',
+      invalid_type_error: 'El correo electrónico debe ser una cadena de texto.'
     })
     .trim()
-    .min(1, 'Email is required.')
-    .max(255, 'Maximum 255 characters allowed.')
-    .email('Enter a valid email address.'),
+    .min(1, 'El correo electrónico es requerido.')
+    .max(255, 'Máximo 255 caracteres permitidos.')
+    .email('Ingresa una dirección de correo electrónico válida.'),
   password: z
     .string({
-      required_error: 'Password is required.',
-      invalid_type_error: 'Password must be a string.'
+      required_error: 'La contraseña es requerida.',
+      invalid_type_error: 'La contraseña debe ser una cadena de texto.'
     })
-    .min(1, 'Password is required.')
-    .max(72, 'Maximum 72 characters allowed.')
+    .min(1, 'La contraseña es requerida.')
+    .max(72, 'Máximo 72 caracteres permitidos.')
     .refine((arg) => passwordValidator.validate(arg).success, {
-      message: 'Password does not meet requirements.'
+      message: 'La contraseña no cumple con los requisitos.'
     })
 });
 
