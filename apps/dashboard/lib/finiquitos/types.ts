@@ -1,0 +1,134 @@
+/**
+ * Tipos para el sistema de cálculo de finiquitos
+ */
+
+import { SalaryFrequency, BorderZone } from '@workspace/database';
+
+/**
+ * Input para calcular un finiquito
+ */
+export interface FiniquitoInput {
+  // Datos básicos
+  hireDate: Date;
+  terminationDate: Date;
+
+  // Datos salariales
+  salary: number;
+  salaryFrequency: SalaryFrequency;
+  borderZone: BorderZone;
+  fiscalDailySalary?: number; // Si no se provee, usa salario mínimo según zona
+  daysFactor?: number;
+
+  // Prestaciones
+  aguinaldoDays?: number;
+  vacationDays?: number;
+  vacationPremium?: number;
+  pendingVacationDays?: number;
+  workedDays?: number;
+
+  // Gratificación (bidireccional - solo uno debe tener valor)
+  gratificationType?: any; // GratificationType from database
+  gratificationDays?: number;
+  gratificationPesos?: number;
+
+  // Indemnización (días)
+  severanceDays?: number;
+
+  // Prima de antigüedad (días)
+  seniorityPremiumDays?: number;
+
+  // Deducciones
+  isrAmount?: number;
+  imssAmount?: number;
+  subsidyAmount?: number;
+  infonavitAmount?: number;
+  otherDeductions?: number;
+}
+
+/**
+ * Resultado del cálculo de percepciones
+ */
+export interface PerceptionsCalculation {
+  // Factores
+  aguinaldoFactor: number;
+  vacationFactor: number;
+  vacationPremiumFactor: number;
+
+  // Montos
+  aguinaldoAmount: number;
+  vacationAmount: number;
+  vacationPremiumAmount: number;
+  pendingVacationAmount: number;
+  pendingPremiumAmount: number;
+  workedDaysAmount: number;
+  gratificationAmount: number;
+  severanceAmount: number;
+  seniorityPremiumAmount: number;
+
+  // Total
+  totalPerceptions: number;
+}
+
+/**
+ * Resultado del cálculo de deducciones
+ */
+export interface DeductionsCalculation {
+  isr: number;
+  imss: number;
+  subsidy: number;
+  infonavit: number;
+  otherDeductions: number;
+  totalDeductions: number;
+}
+
+/**
+ * Salarios calculados
+ */
+export interface SalaryCalculation {
+  fiscalDailySalary: number;
+  realDailySalary: number;
+  integratedDailySalary: number;
+}
+
+/**
+ * Metadata del cálculo
+ */
+export interface CalculationMetadata {
+  daysWorked: number;
+  yearsWorked: number;
+  daysFactor: number;
+  gratificationDays?: number;
+  gratificationPesos?: number;
+}
+
+/**
+ * Resultado completo del cálculo de finiquito
+ */
+export interface FiniquitoCalculationResult {
+  // Salarios
+  salaries: SalaryCalculation;
+
+  // Metadata
+  metadata: CalculationMetadata;
+
+  // Percepciones (dos columnas)
+  fiscalPerceptions: PerceptionsCalculation;
+  realPerceptions: PerceptionsCalculation;
+
+  // Deducciones
+  deductions: DeductionsCalculation;
+
+  // Totales
+  totals: {
+    netPayFiscal: number;
+    netPayReal: number;
+    netPayTotal: number;
+  };
+
+  // Legacy compatibility
+  fiscalNetAmount: number;
+  realNetAmount: number;
+  totalToPay: number;
+  gratificationDays?: number;
+  gratificationPesos?: number;
+}

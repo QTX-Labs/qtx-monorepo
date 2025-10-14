@@ -49,6 +49,7 @@
     "./send-revoked-invitation-email": "./src/send-revoked-invitation-email.ts",
     "./send-verify-email-address-email": "./src/send-verify-email-address-email.ts",
     "./send-welcome-email": "./src/send-welcome-email.ts",
+    "./send-test-email": "./src/send-test-email.ts",
     "./templates/confirm-email-address-change-email": "./src/templates/confirm-email-address-change-email.tsx",
     "./templates/connected-account-security-alert-email": "./src/templates/connected-account-security-alert-email.tsx",
     "./templates/feedback-email": "./src/templates/feedback-email.tsx",

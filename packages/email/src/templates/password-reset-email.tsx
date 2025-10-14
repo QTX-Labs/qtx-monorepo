@@ -1,18 +1,11 @@
 import * as React from 'react';
-import {
-  Body,
-  Button,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Link,
-  Preview,
-  Section,
-  Text
-} from '@react-email/components';
-import { Tailwind } from '@react-email/tailwind';
+import { Section, Text, Hr, Link } from '@react-email/components';
+
+import { EmailLayout } from '../components/EmailLayout';
+import { HeroHeading } from '../components/HeroHeading';
+import { EmailButton } from '../components/EmailButton';
+import { DecorativeBlob } from '../components/DecorativeBlob';
+import { colors, fonts } from '../components/design-system';
 
 export type PasswordResetEmailProps = {
   appName: string;
@@ -26,48 +19,132 @@ export function PasswordResetEmail({
   resetPasswordLink
 }: PasswordResetEmailProps): React.JSX.Element {
   return (
-    <Html>
-      <Head />
-      <Preview>{appName} reset your password</Preview>
-      <Tailwind>
-        <Body className="m-auto bg-white px-2 font-sans">
-          <Container className="mx-auto my-[40px] max-w-[465px] rounded-sm border border-solid border-[#eaeaea] p-[20px]">
-            <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
-              Reset Instructions
-            </Heading>
-            <Text className="text-[14px] leading-[24px] text-black">
-              Hello {name},
-            </Text>
-            <Text className="text-[14px] leading-[24px] text-black">
-              Someone recently requested a password change for your {appName}{' '}
-              account. If this was you, you can set a new password here:
-            </Text>
-            <Section className="my-[32px] text-center">
-              <Button
-                className="rounded-sm bg-[#000000] px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
-                href={resetPasswordLink}
-              >
-                Reset password
-              </Button>
-            </Section>
-            <Text className="text-[14px] leading-[24px] text-black">
-              or copy and paste this URL into your browser:{' '}
-              <Link
-                href={resetPasswordLink}
-                className="text-blue-600 no-underline"
-              >
-                {resetPasswordLink}
-              </Link>
-            </Text>
-            <Hr className="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />
-            <Text className="text-[12px] leading-[24px] text-[#666666]">
-              If you don't want to change your password or didn't request this,
-              just ignore and delete this message. To keep your account secure,
-              please don't forward this email to anyone.
-            </Text>
-          </Container>
-        </Body>
-      </Tailwind>
-    </Html>
+    <EmailLayout preview={`Restablecer contraseña de ${appName}`}>
+      <div style={{ position: 'relative', padding: '40px 0' }}>
+        {/* Decorative elements */}
+        <DecorativeBlob
+          color={colors.accents.heartRed}
+          size={280}
+          position="top-right"
+        />
+        <DecorativeBlob
+          color={colors.accents.warmOrange}
+          size={220}
+          position="bottom-left"
+        />
+
+        {/* Hero */}
+        <Section style={{ position: 'relative', zIndex: 10 }}>
+          <HeroHeading
+            script="reset your"
+            main="password"
+            scriptColor={colors.accents.sunnyYellow}
+          />
+        </Section>
+
+        {/* Content card */}
+        <Section
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '24px',
+            padding: '40px',
+            marginTop: '40px',
+            position: 'relative'
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: fonts.script,
+              fontSize: '26px',
+              color: colors.accents.neonLime,
+              textAlign: 'center',
+              margin: '0 0 30px 0'
+            }}
+          >
+            hola {name} 🔐
+          </Text>
+
+          <Text
+            style={{
+              fontFamily: fonts.body,
+              fontSize: '18px',
+              color: colors.neutrals.white,
+              textAlign: 'center',
+              lineHeight: '1.6',
+              margin: '0 0 20px 0'
+            }}
+          >
+            alguien solicitó cambiar la contraseña de tu cuenta en {appName}.
+          </Text>
+
+          <Text
+            style={{
+              fontFamily: fonts.body,
+              fontSize: '16px',
+              color: colors.neutrals.nearWhite,
+              textAlign: 'center',
+              lineHeight: '1.6',
+              margin: '0 0 40px 0'
+            }}
+          >
+            si fuiste tú, puedes crear una nueva contraseña aquí:
+          </Text>
+
+          <EmailButton
+            href={resetPasswordLink}
+            backgroundColor={colors.accents.warmOrange}
+            textColor={colors.neutrals.white}
+          >
+            restablecer contraseña 🔑
+          </EmailButton>
+
+          <Text
+            style={{
+              fontFamily: fonts.body,
+              fontSize: '14px',
+              color: 'rgba(255, 255, 255, 0.7)',
+              textAlign: 'center',
+              lineHeight: '1.6',
+              margin: '30px 0 0 0'
+            }}
+          >
+            o copia y pega este enlace:{' '}
+            <Link
+              href={resetPasswordLink}
+              style={{
+                color: colors.accents.neonLime,
+                textDecoration: 'underline'
+              }}
+            >
+              {resetPasswordLink}
+            </Link>
+          </Text>
+        </Section>
+
+        {/* Security note */}
+        <Section style={{ marginTop: '40px' }}>
+          <Hr
+            style={{
+              borderColor: 'rgba(255, 255, 255, 0.2)',
+              margin: '40px 0 20px 0'
+            }}
+          />
+          <Text
+            style={{
+              fontFamily: fonts.body,
+              fontSize: '14px',
+              color: 'rgba(255, 255, 255, 0.6)',
+              textAlign: 'center',
+              lineHeight: '1.6',
+              margin: 0
+            }}
+          >
+            si no solicitaste este cambio, ignora este correo. para mantener tu
+            cuenta segura, no compartas este mensaje.
+          </Text>
+        </Section>
+      </div>
+    </EmailLayout>
   );
 }

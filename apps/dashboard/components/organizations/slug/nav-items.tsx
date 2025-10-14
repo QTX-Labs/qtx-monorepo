@@ -3,6 +3,7 @@ import {
   BuildingIcon,
   CodeIcon,
   CreditCardIcon,
+  FileTextIcon,
   HomeIcon,
   LockKeyholeIcon,
   SettingsIcon,
@@ -39,6 +40,11 @@ export function createMainNavItems(slug: string): NavItem[] {
       title: 'Mis Empresas',
       href: replaceOrgSlug(routes.dashboard.organizations.slug.MisEmpresas, slug),
       icon: BuildingIcon
+    },
+    {
+      title: 'Finiquitos',
+      href: replaceOrgSlug(routes.dashboard.organizations.slug.Finiquitos, slug),
+      icon: FileTextIcon
     },
     {
       title: 'Contacts',

@@ -80,6 +80,23 @@ enum WebhookTrigger {
   CONTACT_DELETED @map("contactDeleted")
 }
 
+enum SalaryFrequency {
+  DAILY      @map("daily")
+  WEEKLY     @map("weekly")
+  BIWEEKLY   @map("biweekly")
+  MONTHLY    @map("monthly")
+}
+
+enum BorderZone {
+  FRONTERIZA     @map("fronteriza")
+  NO_FRONTERIZA  @map("no_fronteriza")
+}
+
+enum GratificationType {
+  DAYS   @map("days")
+  PESOS  @map("pesos")
+}
+
 // ---- Models ---- //
 
 model Account {
@@ -391,6 +408,8 @@ model Organization {
   orders            Order[]
   subscriptions     Subscription[]
   webhooks          Webhook[]
+  employees         Employee[]
+  finiquitos        Finiquito[]
 
   @@index([billingCustomerId], map: "IX_Organization_billingCustomerId")
 }
@@ -492,6 +511,7 @@ model User {
   notifications                Notification[]
   pageVisits                   ContactPageVisit[]
   sessions                     Session[]
+  finiquitos                   Finiquito[]
 }
 
 model UserImage {
@@ -543,4 +563,160 @@ model WorkTimeSlot {
   workHours   WorkHours @relation(fields: [workHoursId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([workHoursId], map: "IX_WorkTimeSlot_workHoursId")
+}
+
+// ---- Finiquitos Module ---- //
+
+model Employee {
+  id               String      @id(map: "PK_Employee") @default(uuid()) @db.Uuid
+  organizationId   String      @db.Uuid
+  fullName         String      @db.VarChar(255)
+  rfc              String?     @db.VarChar(13)
+  curp             String?     @db.VarChar(18)
+  email            String?     @db.VarChar(255)
+  phone            String?     @db.VarChar(32)
+  address          String?     @db.VarChar(500)
+  hireDate         DateTime?   @db.Date
+  terminationDate  DateTime?   @db.Date
+  currentSalary    Decimal?    @db.Decimal(12, 2)
+  salaryFrequency  SalaryFrequency?
+  isActive         Boolean     @default(true)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  finiquitos       Finiquito[]
+
+  @@index([organizationId], map: "IX_Employee_organizationId")
+  @@index([fullName], map: "IX_Employee_fullName")
+  @@index([rfc], map: "IX_Employee_rfc")
+}
+
+model Finiquito {
+  id                          String            @id(map: "PK_Finiquito") @default(uuid()) @db.Uuid
+  organizationId              String            @db.Uuid
+  employeeId                  String?           @db.Uuid
+  userId                      String            @db.Uuid
+
+  // Datos básicos del empleado (snapshot)
+  employeeName                String            @db.VarChar(255)
+  empresaName                 String            @db.VarChar(255)
+  empresaRFC                  String?           @db.VarChar(13)
+  clientName                  String            @db.VarChar(255)
+  hireDate                    DateTime          @db.Date
+  terminationDate             DateTime          @db.Date
+
+  // Datos salariales
+  salary                      Decimal           @db.Decimal(12, 2)
+  salaryFrequency             SalaryFrequency
+  borderZone                  BorderZone        @default(NO_FRONTERIZA)
+  fiscalDailySalary           Decimal           @db.Decimal(12, 2)
+  realDailySalary             Decimal           @db.Decimal(12, 2)
+  integratedDailySalary       Decimal           @db.Decimal(12, 2)
+  pendingWorkDays             Int               @default(0)
+
+  // Prestaciones
+  aguinaldoDays               Int               @default(15)
+  vacationDays                Int               @default(12)
+  vacationPremiumPercentage   Decimal           @db.Decimal(5, 4) @default(0.25)
+  pendingVacationDays         Int               @default(0)
+
+  // Gratificación (bidireccional)
+  gratificationDays           Decimal?          @db.Decimal(12, 4)
+  gratificationPesos          Decimal?          @db.Decimal(12, 2)
+
+  // Indemnización (flexible)
+  severanceMonths             Int               @default(0)
+  severanceDaysPerYear        Int               @default(0)
+  severanceTotalFiscal        Decimal           @db.Decimal(12, 2) @default(0)
+  severanceTotalReal          Decimal           @db.Decimal(12, 2) @default(0)
+
+  // Prima de antigüedad
+  seniorityPremiumFiscal      Decimal           @db.Decimal(12, 2) @default(0)
+  seniorityPremiumReal        Decimal           @db.Decimal(12, 2) @default(0)
+
+  // Cálculos - Columna FISCAL
+  fiscalAguinaldoFactor       Decimal           @db.Decimal(12, 4)
+  fiscalAguinaldoAmount       Decimal           @db.Decimal(12, 2)
+  fiscalVacationFactor        Decimal           @db.Decimal(12, 4)
+  fiscalVacationAmount        Decimal           @db.Decimal(12, 2)
+  fiscalVacationPremiumFactor Decimal           @db.Decimal(12, 4)
+  fiscalVacationPremiumAmount Decimal           @db.Decimal(12, 2)
+  fiscalPendingVacationAmount Decimal           @db.Decimal(12, 2) @default(0)
+  fiscalPendingPremiumAmount  Decimal           @db.Decimal(12, 2) @default(0)
+  fiscalWorkedDaysAmount      Decimal           @db.Decimal(12, 2) @default(0)
+  fiscalTotalPerceptions      Decimal           @db.Decimal(12, 2)
+
+  // Cálculos - Columna REAL
+  realAguinaldoFactor         Decimal           @db.Decimal(12, 4)
+  realAguinaldoAmount         Decimal           @db.Decimal(12, 2)
+  realVacationFactor          Decimal           @db.Decimal(12, 4)
+  realVacationAmount          Decimal           @db.Decimal(12, 2)
+  realVacationPremiumFactor   Decimal           @db.Decimal(12, 4)
+  realVacationPremiumAmount   Decimal           @db.Decimal(12, 2)
+  realPendingVacationAmount   Decimal           @db.Decimal(12, 2) @default(0)
+  realPendingPremiumAmount    Decimal           @db.Decimal(12, 2) @default(0)
+  realWorkedDaysAmount        Decimal           @db.Decimal(12, 2) @default(0)
+  realGratificationAmount     Decimal           @db.Decimal(12, 2) @default(0)
+  realTotalPerceptions        Decimal           @db.Decimal(12, 2)
+
+  // Deducciones
+  fiscalISR                   Decimal           @db.Decimal(12, 2) @default(0)
+  fiscalIMSS                  Decimal           @db.Decimal(12, 2) @default(0)
+  fiscalSubsidy               Decimal           @db.Decimal(12, 2) @default(0)
+  fiscalInfonavit             Decimal           @db.Decimal(12, 2) @default(0)
+  fiscalOtherDeductions       Decimal           @db.Decimal(12, 2) @default(0)
+  fiscalTotalDeductions       Decimal           @db.Decimal(12, 2) @default(0)
+
+  realISR                     Decimal           @db.Decimal(12, 2) @default(0)
+  realIMSS                    Decimal           @db.Decimal(12, 2) @default(0)
+  realSubsidy                 Decimal           @db.Decimal(12, 2) @default(0)
+  realInfonavit               Decimal           @db.Decimal(12, 2) @default(0)
+  realOtherDeductions         Decimal           @db.Decimal(12, 2) @default(0)
+  realTotalDeductions         Decimal           @db.Decimal(12, 2) @default(0)
+
+  // Netos y total
+  fiscalNetAmount             Decimal           @db.Decimal(12, 2)
+  realNetAmount               Decimal           @db.Decimal(12, 2)
+  totalToPay                  Decimal           @db.Decimal(12, 2)
+
+  // Metadata
+  daysWorked                  Int
+  yearsWorked                 Decimal           @db.Decimal(8, 4)
+  daysFactor                  Decimal           @db.Decimal(5, 2) @default(30.4)
+  daysFactorModified          Boolean           @default(false)
+  daysFactorModificationReason String?          @db.Text
+
+  // PDF y archivos
+  pdfUrl                      String?           @db.VarChar(2048)
+  version                     Int               @default(1)
+
+  // Timestamps
+  createdAt                   DateTime          @default(now())
+  updatedAt                   DateTime          @updatedAt
+
+  // Relaciones
+  organization                Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employee                    Employee?         @relation(fields: [employeeId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  user                        User              @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  attachments                 FiniquitoAttachment[]
+
+  @@index([organizationId], map: "IX_Finiquito_organizationId")
+  @@index([employeeId], map: "IX_Finiquito_employeeId")
+  @@index([userId], map: "IX_Finiquito_userId")
+  @@index([terminationDate], map: "IX_Finiquito_terminationDate")
+  @@index([employeeName], map: "IX_Finiquito_employeeName")
+}
+
+model FiniquitoAttachment {
+  id            String     @id(map: "PK_FiniquitoAttachment") @default(uuid()) @db.Uuid
+  finiquitoId   String     @db.Uuid
+  fileName      String     @db.VarChar(255)
+  fileUrl       String     @db.VarChar(2048)
+  fileSize      Int
+  mimeType      String     @db.VarChar(100)
+  description   String?    @db.Text
+  uploadedAt    DateTime   @default(now())
+  finiquito     Finiquito  @relation(fields: [finiquitoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([finiquitoId], map: "IX_FiniquitoAttachment_finiquitoId")
 }

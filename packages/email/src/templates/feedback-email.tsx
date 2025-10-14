@@ -1,15 +1,10 @@
 import * as React from 'react';
-import {
-  Body,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Preview,
-  Text
-} from '@react-email/components';
-import { Tailwind } from '@react-email/tailwind';
+import { Section, Text, Hr } from '@react-email/components';
+
+import { EmailLayout } from '../components/EmailLayout';
+import { HeroHeading } from '../components/HeroHeading';
+import { DecorativeBlob } from '../components/DecorativeBlob';
+import { colors, fonts } from '../components/design-system';
 
 export type FeedbackEmailProps = {
   appName: string;
@@ -29,38 +24,151 @@ export function FeedbackEmail({
   message
 }: FeedbackEmailProps): React.JSX.Element {
   return (
-    <Html>
-      <Head />
-      <Preview>Feedback</Preview>
-      <Tailwind>
-        <Body className="m-auto bg-white px-2 font-sans">
-          <Container className="mx-auto my-[40px] max-w-[465px] rounded-sm border border-solid border-[#eaeaea] p-[20px]">
-            <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
-              Feedback
-            </Heading>
-            <Text className="text-[14px] leading-[24px] text-black">
-              Organization: {organizationName}
+    <EmailLayout preview="Nuevo comentario recibido">
+      <div style={{ position: 'relative', padding: '40px 0' }}>
+        {/* Decorative elements */}
+        <DecorativeBlob
+          color={colors.accents.sunnyYellow}
+          size={270}
+          position="top-left"
+        />
+        <DecorativeBlob
+          color={colors.accents.neonLime}
+          size={250}
+          position="bottom-right"
+        />
+
+        {/* Hero */}
+        <Section style={{ position: 'relative', zIndex: 10 }}>
+          <HeroHeading
+            script="new"
+            main="feedback"
+            scriptColor={colors.accents.sunnyYellow}
+          />
+        </Section>
+
+        {/* Content card */}
+        <Section
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '24px',
+            padding: '40px',
+            marginTop: '40px',
+            position: 'relative'
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: fonts.script,
+              fontSize: '24px',
+              color: colors.accents.sunnyYellow,
+              textAlign: 'center',
+              margin: '0 0 30px 0'
+            }}
+          >
+            comentario recibido 💬
+          </Text>
+
+          <div
+            style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+              borderRadius: '16px',
+              padding: '24px',
+              marginBottom: '20px'
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: fonts.body,
+                fontSize: '14px',
+                color: colors.neutrals.nearWhite,
+                margin: '0 0 8px 0'
+              }}
+            >
+              <strong style={{ color: colors.accents.neonLime }}>
+                Organización:
+              </strong>{' '}
+              {organizationName}
             </Text>
-            <Text className="text-[14px] leading-[24px] text-black">
-              Name: {name}
+            <Text
+              style={{
+                fontFamily: fonts.body,
+                fontSize: '14px',
+                color: colors.neutrals.nearWhite,
+                margin: '0 0 8px 0'
+              }}
+            >
+              <strong style={{ color: colors.accents.neonLime }}>
+                Nombre:
+              </strong>{' '}
+              {name}
             </Text>
-            <Text className="text-[14px] leading-[24px] text-black">
-              Email: {email}
+            <Text
+              style={{
+                fontFamily: fonts.body,
+                fontSize: '14px',
+                color: colors.neutrals.nearWhite,
+                margin: '0 0 8px 0'
+              }}
+            >
+              <strong style={{ color: colors.accents.neonLime }}>Email:</strong>{' '}
+              {email}
             </Text>
-            <Text className="text-[14px] leading-[24px] text-black">
-              Category: {category}
+            <Text
+              style={{
+                fontFamily: fonts.body,
+                fontSize: '14px',
+                color: colors.neutrals.nearWhite,
+                margin: '0 0 8px 0'
+              }}
+            >
+              <strong style={{ color: colors.accents.neonLime }}>
+                Categoría:
+              </strong>{' '}
+              {category}
             </Text>
-            <Text className="text-[14px] leading-[24px] text-black">
-              Message: {message}
-            </Text>
-            <Hr className="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />
-            <Text className="text-[12px] leading-[24px] text-[#666666]">
-              You receive this email because someone submitted feedback on{' '}
-              {appName}.
-            </Text>
-          </Container>
-        </Body>
-      </Tailwind>
-    </Html>
+          </div>
+
+          <Text
+            style={{
+              fontFamily: fonts.body,
+              fontSize: '16px',
+              color: colors.neutrals.white,
+              lineHeight: '1.6',
+              margin: '20px 0 0 0',
+              whiteSpace: 'pre-wrap'
+            }}
+          >
+            <strong style={{ color: colors.accents.sunnyYellow }}>
+              Mensaje:
+            </strong>
+            <br />
+            {message}
+          </Text>
+        </Section>
+
+        {/* Footer */}
+        <Section style={{ marginTop: '40px' }}>
+          <Hr
+            style={{
+              borderColor: 'rgba(255, 255, 255, 0.2)',
+              margin: '40px 0 20px 0'
+            }}
+          />
+          <Text
+            style={{
+              fontFamily: fonts.body,
+              fontSize: '14px',
+              color: 'rgba(255, 255, 255, 0.6)',
+              textAlign: 'center',
+              margin: 0
+            }}
+          >
+            recibes este correo porque alguien envió comentarios en {appName}
+          </Text>
+        </Section>
+      </div>
+    </EmailLayout>
   );
 }

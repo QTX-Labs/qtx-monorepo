@@ -172,6 +172,7 @@ function FormMessage({ className, children, ...props }: FormMessageProps) {
 export {
   useFormField,
   FormProvider,
+  FormProvider as Form,
   FormItem,
   FormLabel,
   FormControl,

@@ -1,0 +1,415 @@
+{
+  "designSystem": {
+    "identity": {
+      "name": "Human-First HR Design System",
+      "philosophy": "Bold, playful, emotionally intelligent - HR that feels like talking to a friend, not a department. High energy meets high empathy.",
+      "targetUse": "HR communications, employee engagement, culture content, onboarding, celebrations, internal campaigns",
+      "emotionalTone": "Optimistic, warm, energizing, authentic, approachable"
+    },
+
+    "colorSystem": {
+      "primary": {
+        "electric-blue": {
+          "hex": "#0046FF",
+          "usage": "Primary background, main brand color, hero sections",
+          "psychology": "Trust, innovation, energy, professionalism with personality",
+          "variations": {
+            "base": "#0046FF",
+            "dark": "#0038CC",
+            "darker": "#002A99",
+            "decorative": "#003ACC"
+          }
+        }
+      },
+
+      "accents": {
+        "neon-lime": {
+          "hex": "#00FF85",
+          "alternates": ["#00E676", "#1DE9B6", "#00FFA3"],
+          "usage": "Highlight text, decorative shapes, CTAs, success states, growth themes",
+          "pairs": "Electric blue background, white text",
+          "emotion": "Fresh, vibrant, new beginnings, growth"
+        },
+        "sunny-yellow": {
+          "hex": "#FFD600",
+          "alternates": ["#FFEB3B", "#FFC400"],
+          "usage": "Celebration, recognition, positivity, ideas/innovation themes",
+          "emotion": "Joy, optimism, celebration, bright ideas"
+        },
+        "warm-orange": {
+          "hex": "#FF9100",
+          "alternates": ["#FF6F00", "#FF8A00"],
+          "usage": "Energy, urgency, alerts (positive), excitement themes",
+          "emotion": "Enthusiasm, warmth, action"
+        },
+        "heart-red": {
+          "hex": "#E91E63",
+          "alternates": ["#F44336", "#D32F2F"],
+          "usage": "Love/care themes, valentines, appreciation, benefits",
+          "emotion": "Passion, care, appreciation, love"
+        },
+        "cool-cyan": {
+          "hex": "#00BCD4",
+          "usage": "Wellness, calm, trust, secondary accents",
+          "emotion": "Calm, clarity, wellness"
+        }
+      },
+
+      "neutrals": {
+        "white": "#FFFFFF",
+        "near-white": "#F8F9FA",
+        "usage": "Text on blue, card backgrounds (when needed)"
+      },
+
+      "colorRules": {
+        "primaryCombinations": [
+          "Electric blue BG + white type + neon lime accents",
+          "Electric blue BG + white type + sunny yellow elements",
+          "Electric blue BG + mix of all accent colors (playful)",
+          "White BG + electric blue elements + accent highlights"
+        ],
+        "contrast": "ALWAYS high contrast - white on blue, never light-on-light",
+        "accentUsage": "Use 2-3 accent colors per composition for visual interest",
+        "gradients": "Subtle tonal gradients within accent colors (yellow to orange, lime to teal)"
+      }
+    },
+
+    "typography": {
+      "philosophy": "Personality-driven type mixing - casual script for emotion + bold sans for impact",
+
+      "fontPairings": {
+        "primary": {
+          "display": {
+            "family": "Bold geometric sans-serif",
+            "examples": ["Poppins Bold", "Montserrat Black", "Proxima Nova Black", "Sofia Pro Black"],
+            "weights": [700, 800, 900],
+            "usage": "Main headlines, key words, hero text",
+            "characteristics": "Very bold, rounded terminals, friendly but strong",
+            "size": "72-120px for hero, 48-72px for headers"
+          },
+          "script": {
+            "family": "Casual handwritten/brush script",
+            "examples": ["Pacifico", "Caveat", "Satisfy", "Dancing Script", "Allura"],
+            "weights": [400],
+            "usage": "Introductory phrases, emotional context, personal touches",
+            "characteristics": "Flowing, organic, human touch",
+            "size": "36-60px as accent to main headline"
+          },
+          "body": {
+            "family": "Clean sans-serif",
+            "examples": ["Inter", "Poppins Regular", "Open Sans"],
+            "weights": [400, 500, 600],
+            "usage": "Supporting text, descriptions, longer content",
+            "size": "16-24px"
+          }
+        }
+      },
+
+      "typographicHierarchy": {
+        "hero-combo": {
+          "structure": "Script above + Bold sans below",
+          "example": "'welcome to' (script, neon lime) + 'february' (bold white)",
+          "spacing": "Minimal gap between script and main word (-10 to -20px overlap)",
+          "alignment": "Center or left, depending on composition"
+        },
+        "single-word-impact": {
+          "structure": "One massive bold word with decorative elements",
+          "example": "'Reacting' with emoji icons around",
+          "size": "As large as possible while maintaining readability",
+          "color": "Pure white on electric blue"
+        }
+      },
+
+      "letterSpacing": {
+        "bold-display": "-2% to -1% (tighter for impact)",
+        "script": "Default (natural flow)",
+        "body": "0% to +2% (legibility)"
+      },
+
+      "caseUsage": {
+        "headlines": "lowercase preferred (more approachable, modern)",
+        "script": "lowercase only (maintains handwritten feel)",
+        "body": "Sentence case",
+        "principle": "Avoid ALL CAPS except for tiny labels/tags"
+      }
+    },
+
+    "visualElements": {
+      "organicShapes": {
+        "type": "Blob shapes, rounded organic forms",
+        "characteristics": [
+          "Irregular, hand-drawn feel",
+          "Smooth curves, no sharp angles",
+          "Various sizes (small to large)",
+          "Can contain depth (subtle inner shapes)"
+        ],
+        "colors": "Accent colors - neon lime, yellow, orange, cyan",
+        "usage": [
+          "Decorative background elements",
+          "Frame/border for content",
+          "Visual interest and movement",
+          "Brand recognition"
+        ],
+        "placement": "Edges, corners, behind text, asymmetric balance"
+      },
+
+      "circles": {
+        "type": "Perfect circles with subtle depth",
+        "sizes": ["Small (40-80px)", "Medium (100-200px)", "Large (300-500px)", "XL (600-1000px)"],
+        "styles": {
+          "solid-fill": "Accent colors, clean edge",
+          "tonal-gradient": "Same color family, lighter in center",
+          "decorative-background": "Darker blue than main BG, huge scale, partial visibility"
+        },
+        "usage": [
+          "Icon containers",
+          "Decorative background shapes (oversized, cropped)",
+          "Speech bubbles",
+          "Emphasis elements"
+        ]
+      },
+
+      "3D-elements": {
+        "philosophy": "Quasi-3D with soft shadows and highlights - not hyper-realistic, playful 3D",
+        "techniques": {
+          "gradient-shading": "Light source from top-left, darker at bottom-right",
+          "highlights": "Bright spot or edge on top surface",
+          "shadows": "Soft drop shadow, 15-30% opacity",
+          "depth": "Layered elements with slight offset"
+        },
+        "application": [
+          "Hearts, stars, emoji-style icons",
+          "Geometric shapes (cubes, spheres)",
+          "Decorative elements"
+        ],
+        "color-treatment": "Base color + 2-3 tones (lighter highlight, darker shadow)"
+      },
+
+      "iconography": {
+        "style": "Simplified, bold, emoji-influenced",
+        "characteristics": [
+          "Thick outlines or solid shapes",
+          "Minimal detail",
+          "Circular containers often",
+          "Expressive and emotional",
+          "2-3 color max per icon"
+        ],
+        "themes-for-HR": {
+          "people": "Stylized figures, team symbols",
+          "growth": "Arrows, plants, stairs, graphs",
+          "celebration": "Stars, confetti, hearts, balloons",
+          "communication": "Speech bubbles, megaphones, messages",
+          "wellness": "Hearts (health), lotus, sun, moon",
+          "learning": "Books, lightbulbs, graduation caps",
+          "time": "Calendars, clocks, timelines"
+        },
+        "size": "80-200px as focal elements"
+      },
+
+      "decorativeElements": {
+        "confetti": {
+          "shapes": "Small rectangles, lines, dots, mini shapes",
+          "colors": "Accent colors",
+          "pattern": "Scattered, random rotation",
+          "usage": "Celebrations, announcements, excitement"
+        },
+        "lines-dashes": {
+          "style": "Thick lines or dashes (8-20px thick)",
+          "colors": "Bright accents",
+          "usage": "Direction, energy, emphasis, movement"
+        },
+        "starbursts": {
+          "style": "Radiating lines or pointed star shapes",
+          "colors": "Yellow/orange primarily",
+          "usage": "Impact, new, featured, announcement"
+        }
+      }
+    },
+
+    "composition": {
+      "layouts": {
+        "hero-centered": {
+          "structure": "Center-aligned, dominant headline, decorative elements around edges",
+          "background": "Electric blue with oversized decorative circles",
+          "focal-point": "Typography + key icon/shape",
+          "balance": "Asymmetric decoration, symmetric main content"
+        },
+        "minimal-impact": {
+          "structure": "Massive single word, minimal decoration, maximum negative space",
+          "principle": "Let the word breathe, add only 3-5 small elements"
+        }
+      },
+
+      "spacing": {
+        "philosophy": "Generous breathing room, not cramped",
+        "margins": "80-120px from edges for main content",
+        "element-gaps": "40-80px between distinct visual groups",
+        "tight-spacing": "Only for script+bold combo (overlap allowed)"
+      },
+
+      "layering": {
+        "depth-order": [
+          "Background (electric blue + huge decorative circles)",
+          "Mid-ground shapes (blobs, large icons)",
+          "Typography (main focal point)",
+          "Foreground elements (small decorative, 3D elements)"
+        ],
+        "overlap": "Intentional overlap creates depth and interest"
+      },
+
+      "balance": {
+        "approach": "Dynamic asymmetry - feels balanced but not mirror-image",
+        "weight-distribution": "Heavy element one side balanced by multiple small elements other side",
+        "visual-flow": "Eye movement in Z or circular pattern"
+      }
+    },
+
+    "templates-for-HR": {
+      "welcome-onboarding": {
+        "headline": "'welcome to' (script) + 'our team' (bold)",
+        "elements": ["Hand wave icon", "Colorful confetti", "Friendly shapes"],
+        "colors": "Blue BG + neon lime + yellow",
+        "mood": "Excited, warm, inclusive"
+      },
+
+      "monthly-theme": {
+        "headline": "'month name' large and bold",
+        "elements": ["Theme-appropriate icon (heart for Feb, sun for summer)", "Decorative shapes", "Short inspirational quote"],
+        "colors": "Blue BG + theme-appropriate accent",
+        "mood": "Seasonal, rhythmic, anticipatory"
+      },
+
+      "celebration-recognition": {
+        "headline": "'celebrating' (script) + 'name/achievement' (bold)",
+        "elements": ["Stars, confetti, trophy/medal icon", "3D celebratory elements"],
+        "colors": "Blue BG + yellow + orange + lime",
+        "mood": "Joyful, proud, energetic"
+      },
+
+      "announcement": {
+        "headline": "Single impactful word + supporting icon",
+        "elements": ["Megaphone, starburst, attention indicators", "Minimal shapes"],
+        "colors": "Blue BG + orange/yellow for urgency",
+        "mood": "Important, clear, action-oriented"
+      },
+
+      "learning-development": {
+        "headline": "'growing' or 'learning' (script) + 'together' (bold)",
+        "elements": ["Lightbulb, book, upward arrow", "Growth metaphors"],
+        "colors": "Blue BG + lime (growth) + yellow (ideas)",
+        "mood": "Aspirational, encouraging, forward-thinking"
+      },
+
+      "wellness-benefits": {
+        "headline": "'caring for' (script) + 'you' (bold)",
+        "elements": ["Hearts, lotus, wellness icons", "Soft circular shapes"],
+        "colors": "Blue BG + red/pink hearts + cyan wellness",
+        "mood": "Nurturing, supportive, calm-energy"
+      },
+
+      "culture-values": {
+        "headline": "Core value word (bold) + supporting phrase (script)",
+        "elements": ["Abstract shapes representing concept", "People icons"],
+        "colors": "Blue BG + multi-accent for diversity",
+        "mood": "Authentic, inspiring, inclusive"
+      }
+    },
+
+    "animation-motion": {
+      "philosophy": "Playful but not chaotic - things should float, bounce, pulse",
+      "micro-interactions": {
+        "float": "Gentle up-down motion (10-20px range, 3-4s duration)",
+        "rotate": "Slow rotation for decorative elements (360° in 20-30s)",
+        "pulse": "Scale 1.0 to 1.1 and back (2s duration)",
+        "bounce": "Elastic entrance for main elements"
+      },
+      "page-transitions": {
+        "fade-slide": "Fade in while sliding up 40px",
+        "stagger": "Elements appear in sequence (0.1s delay between)"
+      },
+      "hover-states": {
+        "scale-up": "1.05x with slight lift shadow",
+        "color-shift": "Brighten by 10-15%",
+        "float-up": "Transform translateY(-4px)"
+      }
+    },
+
+    "contentGuidelines": {
+      "tone-of-voice": {
+        "principle": "Talk like a human, not a policy document",
+        "characteristics": [
+          "Warm and genuine",
+          "Encouraging without being cheesy",
+          "Direct but kind",
+          "Celebration-forward",
+          "Growth-minded"
+        ],
+        "do": [
+          "Use first person plural ('we', 'our', 'us')",
+          "Short, punchy sentences",
+          "Questions that engage",
+          "Specific appreciation",
+          "Transparent communication"
+        ],
+        "dont": [
+          "Corporate jargon",
+          "Long paragraphs on graphics",
+          "Passive voice",
+          "Generic platitudes",
+          "Over-formal language"
+        ]
+      },
+
+      "messaging-hierarchy": {
+        "primary": "1-3 words max (the main bold headline)",
+        "secondary": "Short phrase in script (emotional context)",
+        "supporting": "1-2 sentence max (if needed, in body text)",
+        "principle": "Say less, mean more"
+      }
+    },
+
+    "accessibilityConsiderations": {
+      "colorContrast": {
+        "white-on-blue": "AAA rating (>7:1)",
+        "accent-on-blue": "Lime, yellow must be adjusted for legibility if used for text",
+        "solution": "Use white for all critical text, accents for decoration only"
+      },
+      "typography": {
+        "minimumSize": "16px for body text",
+        "boldWeight": "700+ for display ensures legibility",
+        "scriptUsage": "Always paired with clear sans-serif, never alone for critical info"
+      },
+      "alternatives": {
+        "pattern": "If color-coding info, add icon or pattern too",
+        "text": "All icon-only communications need text alternative"
+      }
+    },
+
+    "fileFormats": {
+      "social-graphics": "1080x1080px (Instagram), 1200x628px (LinkedIn), 1600x900px (wide)",
+      "presentation": "1920x1080px (16:9 standard)",
+      "email-headers": "600px width, variable height",
+      "print": "300dpi, CMYK color mode for physical materials",
+      "digital-screens": "72dpi, RGB, various sizes for TV screens/kiosks"
+    },
+
+    "brandConsistency": {
+      "non-negotiables": [
+        "Electric blue as primary background",
+        "High contrast white typography",
+        "At least one organic/playful shape per composition",
+        "Sans-serif bold + script pairing",
+        "Generous negative space",
+        "Lowercase typography preference"
+      ],
+      "flexibleElements": [
+        "Which accent colors to use (pick 1-3 per piece)",
+        "Specific decorative elements (but must be playful)",
+        "Layout orientation (center vs. asymmetric)",
+        "Amount of 3D elements"
+      ]
+    },
+
+    "aiImplementationPrompt": "When creating HR graphics with this system: Start with electric blue (#0046FF) background. Add huge, subtle decorative circles in darker blue at edges (partially cropped). Place main headline in massive bold white sans-serif, lowercase. Add emotional context with casual script in neon lime above or beside. Scatter 2-4 organic blob shapes in bright accents (lime, yellow, orange). Include 1-2 3D-style icons or emojis relevant to theme. Keep generous margins (100px+). Use asymmetric balance - heavy headline one side, playful elements balancing the other. Maximum 3 accent colors. White text only, never light-on-light. This should feel like optimistic startup culture meets professional HR - energetic but trustworthy, playful but purposeful. Think 'HR that makes people actually want to engage.'"
+  }
+}
