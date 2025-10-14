@@ -49,21 +49,21 @@ export const identityProviderLabels: Record<Provider, string> = {
 };
 
 export const authErrorLabels: Record<AuthErrorCode, string> = {
-  [AuthErrorCode.NewEmailConflict]: 'Email already exists.',
-  [AuthErrorCode.UnverifiedEmail]: 'Email is not verified.',
-  [AuthErrorCode.IncorrectEmailOrPassword]: 'Email or password is not correct.',
-  [AuthErrorCode.TotpCodeRequired]: 'TOTP code is required.',
-  [AuthErrorCode.IncorrectTotpCode]: 'The TOTP code is not correct.',
-  [AuthErrorCode.MissingRecoveryCodes]: 'Missing recovery codes.',
-  [AuthErrorCode.IncorrectRecoveryCode]: 'The recovery code is not correct.',
-  [AuthErrorCode.RequestExpired]: 'Request has expired.',
-  [AuthErrorCode.RateLimitExceeded]: 'Rate limit exceeded.',
-  [AuthErrorCode.IllegalOAuthProvider]: 'Illegal OAuth provider.',
+  [AuthErrorCode.NewEmailConflict]: 'El correo electrónico ya existe.',
+  [AuthErrorCode.UnverifiedEmail]: 'El correo electrónico no está verificado.',
+  [AuthErrorCode.IncorrectEmailOrPassword]: 'El correo electrónico o la contraseña no son correctos.',
+  [AuthErrorCode.TotpCodeRequired]: 'Se requiere el código TOTP.',
+  [AuthErrorCode.IncorrectTotpCode]: 'El código TOTP no es correcto.',
+  [AuthErrorCode.MissingRecoveryCodes]: 'Faltan códigos de recuperación.',
+  [AuthErrorCode.IncorrectRecoveryCode]: 'El código de recuperación no es correcto.',
+  [AuthErrorCode.RequestExpired]: 'La solicitud ha expirado.',
+  [AuthErrorCode.RateLimitExceeded]: 'Se ha excedido el límite de intentos.',
+  [AuthErrorCode.IllegalOAuthProvider]: 'Proveedor OAuth no válido.',
   [AuthErrorCode.InternalServerError]:
-    'Something went wrong. Please try again later.',
-  [AuthErrorCode.MissingOAuthEmail]: 'Missing OAuth email.',
-  [AuthErrorCode.AlreadyLinked]: 'OAuth account has been already linked.',
+    'Algo salió mal. Por favor, inténtalo de nuevo más tarde.',
+  [AuthErrorCode.MissingOAuthEmail]: 'Falta el correo electrónico de OAuth.',
+  [AuthErrorCode.AlreadyLinked]: 'La cuenta OAuth ya ha sido vinculada.',
   [AuthErrorCode.RequiresExplicitLinking]:
-    'Please sign in first to link this account',
-  [AuthErrorCode.UnknownError]: 'Unknown error.'
+    'Por favor, inicia sesión primero para vincular esta cuenta',
+  [AuthErrorCode.UnknownError]: 'Error desconocido.'
 };

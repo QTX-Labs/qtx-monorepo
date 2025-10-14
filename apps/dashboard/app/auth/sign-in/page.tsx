@@ -5,7 +5,7 @@ import { SignInCard } from '~/components/auth/sign-in/sign-in-card';
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Sign in')
+  title: createTitle('Iniciar sesión')
 };
 
 export default async function SignInPage(): Promise<React.JSX.Element> {

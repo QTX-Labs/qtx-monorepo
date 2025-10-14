@@ -14,7 +14,7 @@ export function OrContinueWith({
       )}
       {...other}
     >
-      Or continue with
+      O continúa con
     </p>
   );
 }
