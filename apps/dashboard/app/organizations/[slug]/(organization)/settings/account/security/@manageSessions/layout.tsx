@@ -7,8 +7,8 @@ export default function ManageSessionsLayout({
 }: React.PropsWithChildren): React.JSX.Element {
   return (
     <AnnotatedSection
-      title="Manage sessions"
-      description="Sign out your active sessions on other browsers and devices."
+      title="Administrar sesiones"
+      description="Cierra tus sesiones activas en otros navegadores y dispositivos."
     >
       {children}
     </AnnotatedSection>

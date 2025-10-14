@@ -7,8 +7,8 @@ export default function BillingEmailLayout({
 }: React.PropsWithChildren): React.JSX.Element {
   return (
     <AnnotatedSection
-      title="Email recipient"
-      description="All billing correspondence will go to this email."
+      title="Destinatario de email"
+      description="Toda la correspondencia de facturación se enviará a este correo."
     >
       {children}
     </AnnotatedSection>

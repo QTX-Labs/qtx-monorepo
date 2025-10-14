@@ -7,8 +7,8 @@ export default function OrganizationDetailsLayout({
 }: React.PropsWithChildren): React.JSX.Element {
   return (
     <AnnotatedSection
-      title="Details"
-      description="Basic details about your organization."
+      title="Detalles"
+      description="Detalles básicos sobre tu organización."
     >
       {children}
     </AnnotatedSection>

@@ -15,7 +15,7 @@ import { OrganizationPageTitle } from '~/components/organizations/slug/organizat
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Notifications')
+  title: createTitle('Notificaciones')
 };
 
 export type NotificationsLayoutProps = {
@@ -34,9 +34,9 @@ export default function NotificationsLayout({
           <OrganizationPageTitle
             index={{
               route: routes.dashboard.organizations.slug.settings.account.Index,
-              title: 'Account'
+              title: 'Cuenta'
             }}
-            title="Notifications"
+            title="Notificaciones"
           />
         </PagePrimaryBar>
       </PageHeader>

@@ -8,7 +8,7 @@ export default function WebooksLayout({
   return (
     <AnnotatedSection
       title="Webhooks"
-      description="Register POST endpoints to be notified on asynchronous events."
+      description="Registra endpoints POST para ser notificado sobre eventos asíncronos."
     >
       {children}
     </AnnotatedSection>

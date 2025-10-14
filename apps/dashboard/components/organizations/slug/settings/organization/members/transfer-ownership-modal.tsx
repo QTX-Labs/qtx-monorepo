@@ -50,7 +50,7 @@ export const TransferOwnershipModal =
         targetId: member.id
       }
     });
-    const title = 'Transfer ownership?';
+    const title = '¿Transferir propiedad?';
     const canSubmit =
       !methods.formState.isSubmitting &&
       (!methods.formState.isSubmitted || methods.formState.isDirty);
@@ -60,17 +60,17 @@ export const TransferOwnershipModal =
       }
       const result = await transferOwnership(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Ownership transfered');
+        toast.success('Propiedad transferida');
         modal.handleClose();
       } else {
-        toast.error("Couldn't transfer ownership");
+        toast.error('No se pudo transferir la propiedad');
       }
     };
     const renderDescription = (
       <>
-        Are you sure you want to transfer ownership to{' '}
+        ¿Estás seguro de que deseas transferir la propiedad a{' '}
         <strong className="text-foreground font-medium">{member.name}</strong>?
-        You will lose all owner privileges.
+        Perderás todos los privilegios de propietario.
       </>
     );
     const renderForm = (
@@ -93,7 +93,7 @@ export const TransferOwnershipModal =
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -102,7 +102,7 @@ export const TransferOwnershipModal =
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Confirm transfer
+          Confirmar transferencia
         </Button>
       </>
     );

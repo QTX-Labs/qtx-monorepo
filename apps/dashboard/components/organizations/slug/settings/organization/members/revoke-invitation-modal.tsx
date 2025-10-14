@@ -49,7 +49,7 @@ export const RevokeInvitationModal =
         id: invitation.id
       }
     });
-    const title = 'Revoke this invitation?';
+    const title = '¿Revocar esta invitación?';
     const canSubmit =
       !methods.formState.isSubmitting && methods.formState.isValid;
     const onSubmit: SubmitHandler<RevokeInvitationSchema> = async (values) => {
@@ -58,19 +58,19 @@ export const RevokeInvitationModal =
       }
       const result = await revokeInvitation(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Invitation revoked');
+        toast.success('Invitación revocada');
         modal.handleClose();
       } else {
-        toast.error("Couldn't revoke invitation");
+        toast.error('No se pudo revocar la invitación');
       }
     };
     const renderDescription = (
       <>
-        The invitation for{' '}
+        La invitación para{' '}
         <strong className="text-foreground font-medium">
           {invitation.email}
         </strong>{' '}
-        will be permanently revoked, are you sure you want to continue?
+        será revocada permanentemente, ¿estás seguro de que deseas continuar?
       </>
     );
     const renderForm = (
@@ -93,7 +93,7 @@ export const RevokeInvitationModal =
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -102,7 +102,7 @@ export const RevokeInvitationModal =
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Yes, revoke
+          Sí, revocar
         </Button>
       </>
     );

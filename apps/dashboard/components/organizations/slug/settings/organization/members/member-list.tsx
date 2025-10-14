@@ -105,7 +105,7 @@ function MemberListItem({
             variant="secondary"
             className="hidden rounded-3xl sm:inline-block"
           >
-            Owner
+            Propietario
           </Badge>
         )}
         <Badge
@@ -120,10 +120,10 @@ function MemberListItem({
               type="button"
               variant="ghost"
               className="size-8 p-0"
-              title="Open menu"
+              title="Abrir menú"
             >
               <MoreHorizontalIcon className="size-4 shrink-0" />
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Abrir menú</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -132,7 +132,7 @@ function MemberListItem({
               disabled={profile.role !== Role.ADMIN || member.isOwner}
               onClick={handleShowChangeRoleModal}
             >
-              Change role
+              Cambiar rol
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
@@ -141,7 +141,7 @@ function MemberListItem({
                 !profile.isOwner || member.role !== Role.ADMIN || member.isOwner
               }
             >
-              Transfer ownership
+              Transferir propiedad
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -149,8 +149,8 @@ function MemberListItem({
               onClick={handleShowRemoveMemberModal}
             >
               {profile.id === member.id
-                ? 'Leave organization'
-                : 'Remove member'}
+                ? 'Salir de la organización'
+                : 'Eliminar miembro'}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

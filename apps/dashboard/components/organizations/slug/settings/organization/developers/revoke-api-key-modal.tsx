@@ -49,7 +49,7 @@ export const RevokeApiKeyModal = NiceModal.create<RevokeApiKeyModalProps>(
         id: apiKey.id
       }
     });
-    const title = 'Revoke this API key?';
+    const title = '¿Revocar esta clave API?';
     const canSubmit =
       !methods.formState.isSubmitting && methods.formState.isValid;
     const onSubmit: SubmitHandler<RevokeApiKeySchema> = async (values) => {
@@ -58,19 +58,19 @@ export const RevokeApiKeyModal = NiceModal.create<RevokeApiKeyModalProps>(
       }
       const result = await revokeApiKey(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('API key revoked');
+        toast.success('Clave API revocada');
         modal.handleClose();
       } else {
-        toast.error("Couldn't revoke API key");
+        toast.error('No se pudo revocar la clave API');
       }
     };
     const renderDescription = (
       <>
-        The API key{' '}
+        La clave API{' '}
         <strong className="text-foreground font-medium">
           {apiKey.description}
         </strong>{' '}
-        will be permanently deleted, are you sure you want to continue?
+        será eliminada permanentemente, ¿estás seguro de que deseas continuar?
       </>
     );
     const renderForm = (
@@ -93,7 +93,7 @@ export const RevokeApiKeyModal = NiceModal.create<RevokeApiKeyModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -102,7 +102,7 @@ export const RevokeApiKeyModal = NiceModal.create<RevokeApiKeyModalProps>(
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Yes, revoke
+          Sí, revocar
         </Button>
       </>
     );

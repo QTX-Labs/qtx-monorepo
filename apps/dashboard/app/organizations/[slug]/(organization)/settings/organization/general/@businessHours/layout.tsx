@@ -7,8 +7,8 @@ export default function BusinessHoursLayout({
 }: React.PropsWithChildren): React.JSX.Element {
   return (
     <AnnotatedSection
-      title="Business hours"
-      description="Working hours of your organization."
+      title="Horario de trabajo"
+      description="Horario laboral de tu organización."
     >
       {children}
     </AnnotatedSection>

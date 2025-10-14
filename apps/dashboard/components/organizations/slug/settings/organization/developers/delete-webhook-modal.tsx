@@ -49,9 +49,9 @@ export const DeleteWebhookModal = NiceModal.create<DeleteWebhookModalProps>(
         id: webhook.id
       }
     });
-    const title = 'Delete this webhook?';
+    const title = '¿Eliminar este webhook?';
     const description =
-      'The webhook will be permanently deleted, are you sure you want to continue?';
+      'El webhook será eliminado permanentemente, ¿estás seguro de que deseas continuar?';
     const canSubmit =
       !methods.formState.isSubmitting && methods.formState.isValid;
     const onSubmit: SubmitHandler<DeleteWebhookSchema> = async (values) => {
@@ -60,10 +60,10 @@ export const DeleteWebhookModal = NiceModal.create<DeleteWebhookModalProps>(
       }
       const result = await deleteWebhook(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Webhook deleted');
+        toast.success('Webhook eliminado');
         modal.handleClose();
       } else {
-        toast.error("Couldn't delete webhook");
+        toast.error('No se pudo eliminar el webhook');
       }
     };
     const renderForm = (
@@ -86,7 +86,7 @@ export const DeleteWebhookModal = NiceModal.create<DeleteWebhookModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -95,7 +95,7 @@ export const DeleteWebhookModal = NiceModal.create<DeleteWebhookModalProps>(
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Yes, delete
+          Sí, eliminar
         </Button>
       </>
     );

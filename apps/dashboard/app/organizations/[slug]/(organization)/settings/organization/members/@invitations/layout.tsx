@@ -7,8 +7,8 @@ export default function InvitationsLayout({
 }: React.PropsWithChildren): React.JSX.Element {
   return (
     <AnnotatedSection
-      title="Invitations"
-      description="Manage invitations of users who haven't accepted yet."
+      title="Invitaciones"
+      description="Administra las invitaciones de usuarios que aún no han aceptado."
     >
       {children}
     </AnnotatedSection>

@@ -33,7 +33,7 @@ export function InvoicesCard({
           </ScrollArea>
         ) : (
           <EmptyText className="p-6 h-full flex items-center">
-            No invoices received yet.
+            Aún no se han recibido facturas.
           </EmptyText>
         )}
       </CardContent>

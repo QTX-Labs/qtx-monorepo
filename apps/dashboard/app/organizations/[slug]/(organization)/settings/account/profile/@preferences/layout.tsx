@@ -7,8 +7,8 @@ export default function PreferencesLayout({
 }: React.PropsWithChildren): React.JSX.Element {
   return (
     <AnnotatedSection
-      title="Preferences"
-      description="Change your preferred language and theme."
+      title="Preferencias"
+      description="Cambia tu idioma y tema preferidos."
     >
       {children}
     </AnnotatedSection>

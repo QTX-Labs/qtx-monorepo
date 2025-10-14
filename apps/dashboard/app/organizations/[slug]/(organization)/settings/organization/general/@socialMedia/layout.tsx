@@ -7,8 +7,8 @@ export default function SocialMediaLayout({
 }: React.PropsWithChildren): React.JSX.Element {
   return (
     <AnnotatedSection
-      title="Social media"
-      description="Add your organization's social media links."
+      title="Redes sociales"
+      description="Agrega los enlaces de redes sociales de tu organización."
     >
       {children}
     </AnnotatedSection>

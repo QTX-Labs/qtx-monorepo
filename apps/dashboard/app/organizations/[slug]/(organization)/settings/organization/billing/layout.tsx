@@ -15,7 +15,7 @@ import { OrganizationPageTitle } from '~/components/organizations/slug/organizat
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Billing')
+  title: createTitle('Facturación')
 };
 
 export type BillingLayoutProps = {
@@ -39,9 +39,9 @@ export default async function BillingLayout({
             index={{
               route:
                 routes.dashboard.organizations.slug.settings.organization.Index,
-              title: 'Organization'
+              title: 'Organización'
             }}
-            title="Billing"
+            title="Facturación"
           />
         </PagePrimaryBar>
       </PageHeader>

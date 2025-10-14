@@ -43,9 +43,9 @@ export const CopyCreatedApiKeyModal =
           onAnimationEndCapture={modal.handleAnimationEndCapture}
         >
           <AlertDialogHeader>
-            <AlertDialogTitle>API key created</AlertDialogTitle>
+            <AlertDialogTitle>Clave API creada</AlertDialogTitle>
             <AlertDialogDescription className="sr-only">
-              Copy the API key before closing the modal.
+              Copia la clave API antes de cerrar el modal.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="flex flex-col items-start gap-4">
@@ -53,14 +53,13 @@ export const CopyCreatedApiKeyModal =
               <AlertCircleIcon className="size-[18px] shrink-0" />
               <AlertDescription className="inline">
                 <h3 className="mb-2 font-semibold">
-                  We'll show you this key just once
+                  Mostraremos esta clave solo una vez
                 </h3>
-                Please copy your key and store it in a safe place. For security
-                reasons we cannot show it again.
+                Por favor copia tu clave y guárdala en un lugar seguro. Por razones de seguridad no podremos mostrarla nuevamente.
               </AlertDescription>
             </Alert>
             <div className="flex w-full flex-col space-y-2">
-              <Label>API key</Label>
+              <Label>Clave API</Label>
               <InputWithAdornments
                 readOnly
                 type="text"
@@ -70,7 +69,7 @@ export const CopyCreatedApiKeyModal =
                     type="button"
                     variant="ghost"
                     size="icon"
-                    aria-label="Copy api key"
+                    aria-label="Copiar clave API"
                     className="-mr-2.5 size-8"
                     onClick={handleCopy}
                   >
@@ -80,7 +79,7 @@ export const CopyCreatedApiKeyModal =
               />
             </div>
             <p className="text-sm text-muted-foreground">
-              Please copy the API key before you close the dialog.
+              Por favor copia la clave API antes de cerrar el diálogo.
             </p>
           </div>
           <AlertDialogFooter>
@@ -89,7 +88,7 @@ export const CopyCreatedApiKeyModal =
               variant="default"
               onClick={modal.handleClose}
             >
-              Got it
+              Entendido
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

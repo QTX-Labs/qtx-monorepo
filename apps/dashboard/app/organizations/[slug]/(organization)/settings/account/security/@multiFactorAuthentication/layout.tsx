@@ -7,8 +7,8 @@ export default function MultiFactorAuthenticationLayout({
 }: React.PropsWithChildren): React.JSX.Element {
   return (
     <AnnotatedSection
-      title="Multi-factor authentication"
-      description="Add an extra layer of security to your login by requiring an additional factor."
+      title="Autenticación multifactor"
+      description="Agrega una capa adicional de seguridad a tu inicio de sesión requiriendo un factor adicional."
     >
       {children}
     </AnnotatedSection>

@@ -70,9 +70,9 @@ export const EditInvitationModal = NiceModal.create<EditInvitationModalProps>(
         role: invitation.role
       }
     });
-    const title = 'Update invitation';
+    const title = 'Actualizar invitación';
     const description =
-      'Edit the invitation by changing the form fields below.';
+      'Edita la invitación cambiando los campos del formulario a continuación.';
     const canSubmit =
       !methods.formState.isSubmitting &&
       (!methods.formState.isSubmitted || methods.formState.isDirty);
@@ -82,10 +82,10 @@ export const EditInvitationModal = NiceModal.create<EditInvitationModalProps>(
       }
       const result = await updateInvitation(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Invitation updated');
+        toast.success('Invitación actualizada');
         modal.handleClose();
       } else {
-        toast.error("Couldn't update invitation");
+        toast.error('No se pudo actualizar la invitación');
       }
     };
     const renderForm = (
@@ -100,7 +100,7 @@ export const EditInvitationModal = NiceModal.create<EditInvitationModalProps>(
           {...methods.register('id')}
         />
         <div className="flex flex-col gap-2 pt-2">
-          <FormLabel required>Email</FormLabel>
+          <FormLabel required>Correo electrónico</FormLabel>
           <Input
             type="email"
             required
@@ -113,7 +113,7 @@ export const EditInvitationModal = NiceModal.create<EditInvitationModalProps>(
           name="role"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
-              <FormLabel required>Role</FormLabel>
+              <FormLabel required>Rol</FormLabel>
               <FormControl>
                 <Select
                   required
@@ -152,7 +152,7 @@ export const EditInvitationModal = NiceModal.create<EditInvitationModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -161,7 +161,7 @@ export const EditInvitationModal = NiceModal.create<EditInvitationModalProps>(
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Save
+          Guardar
         </Button>
       </>
     );

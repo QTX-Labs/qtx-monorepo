@@ -72,8 +72,8 @@ function ApiKeyListItem({
           className="text-xs font-normal text-muted-foreground"
         >
           {apiKey.expiresAt
-            ? `Expires on ${format(apiKey.expiresAt, 'dd MMM yyyy')}`
-            : 'Never expires'}
+            ? `Expira el ${format(apiKey.expiresAt, 'dd MMM yyyy')}`
+            : 'Nunca expira'}
         </div>
       </div>
       <DropdownMenu modal={false}>
@@ -82,10 +82,10 @@ function ApiKeyListItem({
             type="button"
             variant="ghost"
             className="size-8 p-0"
-            title="Open menu"
+            title="Abrir menú"
           >
             <MoreHorizontalIcon className="size-4 shrink-0" />
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">Abrir menú</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -93,14 +93,14 @@ function ApiKeyListItem({
             className="cursor-pointer"
             onClick={handleShowUpdateApiKeyModal}
           >
-            Edit
+            Editar
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="text-destructive! cursor-pointer"
             onClick={handleShowRevokeApiKeyModal}
           >
-            Revoke
+            Revocar
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

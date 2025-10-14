@@ -68,7 +68,7 @@ export function OrganizationSlugCard({
         if (!result?.data?.isAvailable) {
           methods.setError('slug', {
             type: 'validate',
-            message: 'This slug is already taken.'
+            message: 'Este slug ya está en uso.'
           });
           return;
         }
@@ -76,7 +76,7 @@ export function OrganizationSlugCard({
     }
     const result = await updateOrganizationSlug(values);
     if (result?.serverError || result?.validationErrors) {
-      toast.error("Couldn't update slug");
+      toast.error('No se pudo actualizar el slug');
     }
   };
   return (
@@ -125,7 +125,7 @@ export function OrganizationSlugCard({
             loading={methods.formState.isSubmitting}
             onClick={methods.handleSubmit(onSubmit)}
           >
-            Save
+            Guardar
           </Button>
         </CardFooter>
       </Card>
@@ -143,7 +143,7 @@ function useShowSlugUpdatedOnQueryParam(): void {
 
   React.useEffect(() => {
     if (updated === 'true' && !hasShownToast.current) {
-      toast.success('Slug updated');
+      toast.success('Slug actualizado');
       hasShownToast.current = true;
 
       // Clean up the query parameter

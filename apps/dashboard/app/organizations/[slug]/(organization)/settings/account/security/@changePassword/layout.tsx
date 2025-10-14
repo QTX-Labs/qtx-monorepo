@@ -7,8 +7,8 @@ export default function ChangePasswordLayout({
 }: React.PropsWithChildren): React.JSX.Element {
   return (
     <AnnotatedSection
-      title="Change password"
-      description="To make an update, enter your existing password followed by a new one. If you don't know your existing password, sign out and use the forgot password link."
+      title="Cambiar contraseña"
+      description="Para realizar una actualización, ingresa tu contraseña actual seguida de una nueva. Si no conoces tu contraseña actual, cierra sesión y usa el enlace de olvidé mi contraseña."
     >
       {children}
     </AnnotatedSection>

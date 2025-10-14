@@ -8,7 +8,7 @@ export default function OrganizationLogoLayout({
   return (
     <AnnotatedSection
       title="Logo"
-      description="Update your organization's logo to make it easier to identify."
+      description="Actualiza el logo de tu organización para que sea más fácil de identificar."
     >
       {children}
     </AnnotatedSection>

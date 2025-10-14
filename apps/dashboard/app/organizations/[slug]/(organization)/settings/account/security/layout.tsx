@@ -16,7 +16,7 @@ import { OrganizationPageTitle } from '~/components/organizations/slug/organizat
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Security')
+  title: createTitle('Seguridad')
 };
 
 export type SecurityLayoutProps = {
@@ -39,9 +39,9 @@ export default function SecurityLayout({
           <OrganizationPageTitle
             index={{
               route: routes.dashboard.organizations.slug.settings.account.Index,
-              title: 'Account'
+              title: 'Cuenta'
             }}
-            title="Security"
+            title="Seguridad"
           />
         </PagePrimaryBar>
       </PageHeader>

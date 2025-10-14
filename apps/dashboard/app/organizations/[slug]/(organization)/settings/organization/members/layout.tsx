@@ -35,9 +35,9 @@ export default function MembersLayout({
             index={{
               route:
                 routes.dashboard.organizations.slug.settings.organization.Index,
-              title: 'Organization'
+              title: 'Organización'
             }}
-            title="Members"
+            title="Miembros"
           />
         </PagePrimaryBar>
       </PageHeader>

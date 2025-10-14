@@ -64,8 +64,8 @@ export const EditWebhookModal = NiceModal.create<EditWebhookModalProps>(
         secret: webhook.secret
       }
     });
-    const title = 'Edit webhook';
-    const description = 'Edit the webhook by changing the form fields below.';
+    const title = 'Editar webhook';
+    const description = 'Edita el webhook cambiando los campos del formulario abajo.';
     const canSubmit =
       !methods.formState.isSubmitting &&
       (!methods.formState.isSubmitted || methods.formState.isDirty);
@@ -75,10 +75,10 @@ export const EditWebhookModal = NiceModal.create<EditWebhookModalProps>(
       }
       const result = await updateWebhook(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Webhook updated');
+        toast.success('Webhook actualizado');
         modal.handleClose();
       } else {
-        toast.error("Couldn't update webhook");
+        toast.error('No se pudo actualizar el webhook');
       }
     };
     const renderForm = (
@@ -116,7 +116,7 @@ export const EditWebhookModal = NiceModal.create<EditWebhookModalProps>(
           name="triggers"
           render={({ field }) => (
             <div className="space-y-1.5">
-              <FormLabel>Triggers</FormLabel>
+              <FormLabel>Eventos</FormLabel>
               {Object.values(WebhookTrigger).map((value) => (
                 <FormItem
                   key={value}
@@ -148,7 +148,7 @@ export const EditWebhookModal = NiceModal.create<EditWebhookModalProps>(
           name="secret"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Secret</FormLabel>
+              <FormLabel>Secreto</FormLabel>
               <FormControl>
                 <Input
                   type="text"
@@ -170,7 +170,7 @@ export const EditWebhookModal = NiceModal.create<EditWebhookModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -179,7 +179,7 @@ export const EditWebhookModal = NiceModal.create<EditWebhookModalProps>(
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Save
+          Guardar
         </Button>
       </>
     );

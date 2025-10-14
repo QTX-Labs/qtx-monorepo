@@ -74,14 +74,14 @@ export const EnableAuthenticatorAppModal =
         }
       });
       const copyToClipboard = useCopyToClipboard();
-      const title = 'Authenticator app';
+      const title = 'App autenticadora';
       const description =
-        'Add an authenticator app by filling out the form below.';
+        'Agrega una app autenticadora completando el formulario a continuación.';
       const canSubmit =
         !methods.formState.isSubmitting && methods.formState.isValid;
       const handleCopySecret = async (): Promise<void> => {
         await copyToClipboard(secret);
-        toast.success('Copied!');
+        toast.success('¡Copiado!');
       };
       const onSubmit: SubmitHandler<EnableAuthenticatorAppSchema> = async (
         values
@@ -92,7 +92,7 @@ export const EnableAuthenticatorAppModal =
 
         const result = await enableAuthenticatorApp(values);
         if (!result?.serverError && !result?.validationErrors && result?.data) {
-          toast.success('Authenticator app enabled');
+          toast.success('App autenticadora activada');
           modal.resolve(result.data.recoveryCodes);
           modal.handleClose();
         } else {
@@ -101,7 +101,7 @@ export const EnableAuthenticatorAppModal =
               message: result.validationErrors.totpCode._errors[0]
             });
           } else {
-            toast.error("Couldn't enable authenticator app");
+            toast.error('No se pudo activar la app autenticadora');
           }
         }
       };
@@ -111,7 +111,7 @@ export const EnableAuthenticatorAppModal =
           onSubmit={methods.handleSubmit(onSubmit)}
         >
           <p className="text-sm text-muted-foreground">
-            Using an authenticator app like{' '}
+            Usando una app autenticadora como{' '}
             <Link
               href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"
               target="_blank"
@@ -138,7 +138,7 @@ export const EnableAuthenticatorAppModal =
             >
               Authy
             </Link>{' '}
-            or{' '}
+            o{' '}
             <Link
               href="https://1password.com/"
               target="_blank"
@@ -147,14 +147,13 @@ export const EnableAuthenticatorAppModal =
             >
               1Password
             </Link>{' '}
-            scan this QR code. It will generate a 6 digit code for you to enter
-            below.
+            escanea este código QR. Generará un código de 6 dígitos para que lo ingreses a continuación.
           </p>
           <div>
             <div className="mx-auto size-48">
               <img
                 src={dataUri}
-                alt="QR code"
+                alt="Código QR"
               />
             </div>
             <div className="mx-auto flex flex-row items-center justify-center gap-2 text-xs font-semibold">
@@ -175,7 +174,7 @@ export const EnableAuthenticatorAppModal =
             name="totpCode"
             render={({ field }) => (
               <FormItem className="flex w-full flex-col items-center">
-                <FormLabel>Enter 6-digit code from the app</FormLabel>
+                <FormLabel>Ingresa el código de 6 dígitos de la app</FormLabel>
                 <FormControl>
                   <InputOTP
                     {...field}
@@ -203,9 +202,8 @@ export const EnableAuthenticatorAppModal =
           <Alert variant="info">
             <InfoIcon className="size-[18px] shrink-0" />
             <AlertDescription className="inline">
-              If your app asks for an issuer use "
-              <strong className="text-foreground">{issuer}</strong>" and for an
-              account name use "
+              Si tu app solicita un emisor, usa "
+              <strong className="text-foreground">{issuer}</strong>" y para el nombre de cuenta usa "
               <strong className="text-foreground">{accountName}</strong>".
             </AlertDescription>
           </Alert>
@@ -218,7 +216,7 @@ export const EnableAuthenticatorAppModal =
             variant="outline"
             onClick={modal.handleClose}
           >
-            Cancel
+            Cancelar
           </Button>
           <Button
             type="button"
@@ -227,7 +225,7 @@ export const EnableAuthenticatorAppModal =
             loading={methods.formState.isSubmitting}
             onClick={methods.handleSubmit(onSubmit)}
           >
-            Turn on
+            Activar
           </Button>
         </>
       );

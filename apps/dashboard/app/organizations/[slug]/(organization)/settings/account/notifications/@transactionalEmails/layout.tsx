@@ -7,8 +7,8 @@ export default function TransactionalEmailsLayout({
 }: React.PropsWithChildren): React.JSX.Element {
   return (
     <AnnotatedSection
-      title="Transactional emails"
-      description="Receive emails about team and account activities."
+      title="Correos transaccionales"
+      description="Recibe correos sobre actividades del equipo y la cuenta."
     >
       {children}
     </AnnotatedSection>

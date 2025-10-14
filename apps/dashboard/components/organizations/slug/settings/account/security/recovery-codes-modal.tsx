@@ -41,16 +41,16 @@ export const RecoveryCodesModal = NiceModal.create<RecoveryCodesModalProps>(
     const modal = useEnhancedModal();
     const mdUp = useMediaQuery(MediaQueries.MdUp, { ssr: false });
     const copyToClipboard = useCopyToClipboard();
-    const title = 'Recovery codes';
+    const title = 'Códigos de recuperación';
     const description =
-      'Each recovery code can be used exactly once to grant access without your authenticator.';
+      'Cada código de recuperación puede usarse exactamente una vez para otorgar acceso sin tu autenticador.';
     const handleCopyRecoveryCodes = async (): Promise<void> => {
       await copyToClipboard(
         recoveryCodes
           .map((recoveryCode) => splitIntoChunks(recoveryCode, '-', 5))
           .join('\n')
       );
-      toast.success('Copied!');
+      toast.success('¡Copiado!');
     };
     const handleDownloadRecoveryCodes = () => {
       const filename = `${APP_NAME}-recovery-codes.txt`;
@@ -74,21 +74,21 @@ export const RecoveryCodesModal = NiceModal.create<RecoveryCodesModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Close
+          Cerrar
         </Button>
         <Button
           type="button"
           variant="outline"
           onClick={handleCopyRecoveryCodes}
         >
-          Copy
+          Copiar
         </Button>
         <Button
           type="button"
           variant="default"
           onClick={handleDownloadRecoveryCodes}
         >
-          Download
+          Descargar
         </Button>
       </>
     );

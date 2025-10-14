@@ -28,7 +28,7 @@ export function PlanDetails({ subscription, order }: PlanDetailsProps) {
   return (
     <div>
       <p className="text-sm text-muted-foreground">
-        This organization is currently on the plan:
+        Esta organización está actualmente en el plan:
       </p>
       <div className="space-y-4 pt-4 text-sm">
         {subscription ? (
@@ -86,7 +86,7 @@ function SubscriptionInfo({
         window.location.href = result.data.url;
       } else {
         toast.error(
-          'Failed to create billing portal session. Please try again.'
+          'Error al crear la sesión del portal de facturación. Por favor intenta de nuevo.'
         );
       }
     } catch {
@@ -99,13 +99,13 @@ function SubscriptionInfo({
         <span>{product.name}</span>
         <span className="text-xs capitalize">
           {subscription.status === 'active' && subscription.cancelAtPeriodEnd
-            ? '(Canceled)'
-            : `(${subscription.status})`}
+            ? '(Cancelado)'
+            : `(${translateSubscriptionStatus(subscription.status)})`}
         </span>
       </div>
       {subscription.status === 'trialing' && (
         <div className="flex flex-col gap-y-1">
-          <span className="font-semibold">Your trial ends on</span>
+          <span className="font-semibold">Tu prueba termina el</span>
           <div className="text-muted-foreground">
             {subscription.trialEndsAt
               ? formatDate(subscription.trialEndsAt, 'P')
@@ -115,18 +115,18 @@ function SubscriptionInfo({
       )}
       {subscription.cancelAtPeriodEnd && (
         <Alert variant="warning">
-          <AlertTitle>Subscription canceled</AlertTitle>
+          <AlertTitle>Suscripción cancelada</AlertTitle>
           <AlertDescription className="inline">
-            Your subscription will be canceled at the end of the billing cycle.
+            Tu suscripción será cancelada al final del ciclo de facturación.
           </AlertDescription>
         </Alert>
       )}
       <div>
         <div className="flex justify-between space-x-8 pb-1 align-baseline">
           <p className="capitalize-sentence max-w-[75%] truncate text-xs text-foreground">
-            {`Current billing cycle (${format(subscription.periodStartsAt, 'MMM dd')} - ${format(subscription.periodEndsAt, 'MMM dd')})`}
+            {`Ciclo de facturación actual (${format(subscription.periodStartsAt, 'MMM dd')} - ${format(subscription.periodEndsAt, 'MMM dd')})`}
           </p>
-          <p className="text-xs text-muted-foreground">{`${daysToCycleEnd} days remaining`}</p>
+          <p className="text-xs text-muted-foreground">{`${daysToCycleEnd} días restantes`}</p>
         </div>
         <div className="relative h-1 w-full overflow-hidden rounded-sm bg-muted p-0">
           <div
@@ -153,7 +153,7 @@ function SubscriptionInfo({
           loading={pending}
           onClick={handleBillingPortalRedirect}
         >
-          Change plan
+          Cambiar plan
         </Button>
       </div>
     </>
@@ -195,7 +195,7 @@ function OrderInfo({ order }: OrderInfoProps): React.JSX.Element {
         window.location.href = result.data.url;
       } else {
         toast.error(
-          'Failed to create billing portal session. Please try again.'
+          'Error al crear la sesión del portal de facturación. Por favor intenta de nuevo.'
         );
       }
     } catch {
@@ -206,7 +206,7 @@ function OrderInfo({ order }: OrderInfoProps): React.JSX.Element {
     <>
       <div className="space-x-2 text-2xl">
         <span>{product.name}</span>
-        <span className="text-xs capitalize">{`(${order.status})`}</span>
+        <span className="text-xs capitalize">{`(${translateOrderStatus(order.status)})`}</span>
       </div>
       <div>
         <Button
@@ -216,7 +216,7 @@ function OrderInfo({ order }: OrderInfoProps): React.JSX.Element {
           loading={pending}
           onClick={handleBillingPortalRedirect}
         >
-          Change plan
+          Cambiar plan
         </Button>
       </div>
     </>
@@ -229,16 +229,42 @@ function NoPlan(): React.JSX.Element {
   };
   return (
     <>
-      <div className="space-x-2 text-2xl">Free</div>
+      <div className="space-x-2 text-2xl">Gratuito</div>
       <div>
         <Button
           type="button"
           variant="outline"
           onClick={handleOpenUpgradePlanDialog}
         >
-          Upgrade plan
+          Actualizar plan
         </Button>
       </div>
     </>
   );
+}
+
+function translateSubscriptionStatus(status: string): string {
+  const translations: Record<string, string> = {
+    active: 'Activo',
+    trialing: 'En prueba',
+    past_due: 'Vencido',
+    canceled: 'Cancelado',
+    unpaid: 'No pagado',
+    incomplete: 'Incompleto',
+    incomplete_expired: 'Incompleto expirado',
+    paused: 'Pausado'
+  };
+  return translations[status] || status;
+}
+
+function translateOrderStatus(status: string): string {
+  const translations: Record<string, string> = {
+    pending: 'Pendiente',
+    processing: 'Procesando',
+    completed: 'Completado',
+    failed: 'Fallido',
+    canceled: 'Cancelado',
+    refunded: 'Reembolsado'
+  };
+  return translations[status] || status;
 }

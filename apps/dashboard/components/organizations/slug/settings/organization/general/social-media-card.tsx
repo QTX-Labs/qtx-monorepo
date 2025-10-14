@@ -69,9 +69,9 @@ export function SocialMediaCard({
     }
     const result = await updateSocialMedia(values);
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Social media updated');
+      toast.success('Redes sociales actualizadas');
     } else {
-      toast.error("Couldn't update social media");
+      toast.error('No se pudieron actualizar las redes sociales');
     }
   };
   return (
@@ -242,7 +242,7 @@ export function SocialMediaCard({
               className="text-success hover:text-success -ml-3"
               onClick={handleToggleShowMore}
             >
-              {showMore ? 'Show less...' : 'Show more...'}
+              {showMore ? 'Mostrar menos...' : 'Mostrar más...'}
             </Button>
           </form>
         </CardContent>
@@ -256,7 +256,7 @@ export function SocialMediaCard({
             loading={methods.formState.isSubmitting}
             onClick={methods.handleSubmit(onSubmit)}
           >
-            Save
+            Guardar
           </Button>
         </CardFooter>
       </Card>

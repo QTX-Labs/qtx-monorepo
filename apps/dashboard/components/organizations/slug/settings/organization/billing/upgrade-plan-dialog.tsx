@@ -24,12 +24,12 @@ export const UpgradePlanDialog = NiceModal.create(() => {
         onAnimationEndCapture={modal.handleAnimationEndCapture}
       >
         <DialogHeader className="sr-only">
-          <DialogTitle className="sr-only">Upgrade your plan</DialogTitle>
+          <DialogTitle className="sr-only">Actualizar tu plan</DialogTitle>
           <DialogDescription className="sr-only">
-            Select a plan below to upgrade.
+            Selecciona un plan a continuación para actualizar.
           </DialogDescription>
         </DialogHeader>
-        <PlanSelection title="Upgrade your plan" />
+        <PlanSelection title="Actualizar tu plan" />
       </DialogContent>
     </Dialog>
   );

@@ -15,7 +15,6 @@ import {
 } from '@workspace/ui/components/dropdown-menu';
 import { cn } from '@workspace/ui/lib/utils';
 
-import { capitalize } from '~/lib/formatters';
 import type { InvoiceDto } from '~/types/dtos/invoice-dto';
 
 export type InvoiceListProps = React.HtmlHTMLAttributes<HTMLUListElement> & {
@@ -63,7 +62,7 @@ function InvoiceListItem({
           #{invoice.number}
           {invoice.status && (
             <Badge variant={mapInvoiceStatusToBadgeVariant(invoice.status)}>
-              {capitalize(invoice.status)}
+              {translateInvoiceStatus(invoice.status)}
             </Badge>
           )}
         </div>
@@ -88,10 +87,10 @@ function InvoiceListItem({
             type="button"
             variant="ghost"
             className="size-8 p-0"
-            title="Open menu"
+            title="Abrir menú"
           >
             <MoreHorizontalIcon className="size-4 shrink-0" />
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">Abrir menú</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -100,7 +99,7 @@ function InvoiceListItem({
             className="cursor-pointer"
             disabled={!invoice.url}
           >
-            <Link href={invoice.url ?? '~/'}>Download</Link>
+            <Link href={invoice.url ?? '~/'}>Descargar</Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -131,9 +130,20 @@ function mapInvoiceStatusToBadgeVariant(status: string): BadgeProps['variant'] {
 }
 
 function formatDate(date: string): string {
-  return new Date(date).toLocaleDateString('en-US', {
+  return new Date(date).toLocaleDateString('es-ES', {
     month: 'long',
     day: 'numeric',
     year: 'numeric'
   });
+}
+
+function translateInvoiceStatus(status: string): string {
+  const translations: Record<string, string> = {
+    draft: 'Borrador',
+    open: 'Abierta',
+    paid: 'Pagada',
+    void: 'Anulada',
+    uncollectible: 'Incobrable'
+  };
+  return translations[status] || status;
 }

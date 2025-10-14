@@ -7,8 +7,8 @@ export default function DangerZoneLayout({
 }: React.PropsWithChildren): React.JSX.Element {
   return (
     <AnnotatedSection
-      title="Danger zone"
-      description="Be careful, an account deletion cannot be undone."
+      title="Zona de peligro"
+      description="Ten cuidado, la eliminación de una cuenta no se puede deshacer."
     >
       {children}
     </AnnotatedSection>

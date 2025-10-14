@@ -74,8 +74,8 @@ export const CreateWebhookModal = NiceModal.create<CreateWebhookModalProps>(
         secret: generateId(32)
       }
     });
-    const title = 'Create webhook';
-    const description = 'Create a new webhook by filling out the form below.';
+    const title = 'Crear webhook';
+    const description = 'Crea un nuevo webhook completando el formulario abajo.';
     const canSubmit =
       !methods.formState.isSubmitting &&
       (!methods.formState.isSubmitted || methods.formState.isDirty);
@@ -85,10 +85,10 @@ export const CreateWebhookModal = NiceModal.create<CreateWebhookModalProps>(
       }
       const result = await createWebhook(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Webhook created');
+        toast.success('Webhook creado');
         modal.handleClose();
       } else {
-        toast.error("Couldn't create webhook");
+        toast.error('No se pudo crear el webhook');
       }
     };
     const renderForm = (
@@ -120,7 +120,7 @@ export const CreateWebhookModal = NiceModal.create<CreateWebhookModalProps>(
           name="triggers"
           render={({ field }) => (
             <div className="space-y-1.5">
-              <FormLabel>Triggers</FormLabel>
+              <FormLabel>Eventos</FormLabel>
               {Object.values(WebhookTrigger).map((value) => (
                 <FormItem
                   key={value}
@@ -152,7 +152,7 @@ export const CreateWebhookModal = NiceModal.create<CreateWebhookModalProps>(
           name="secret"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Secret</FormLabel>
+              <FormLabel>Secreto</FormLabel>
               <FormControl>
                 <Input
                   type="text"
@@ -174,7 +174,7 @@ export const CreateWebhookModal = NiceModal.create<CreateWebhookModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -183,7 +183,7 @@ export const CreateWebhookModal = NiceModal.create<CreateWebhookModalProps>(
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Create
+          Crear
         </Button>
       </>
     );

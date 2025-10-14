@@ -7,8 +7,8 @@ export default function MarketingEmailsLayout({
 }: React.PropsWithChildren): React.JSX.Element {
   return (
     <AnnotatedSection
-      title="Marketing emails"
-      description="Receive emails about new products, features, and more."
+      title="Correos de marketing"
+      description="Recibe correos sobre nuevos productos, funciones y más."
     >
       {children}
     </AnnotatedSection>

@@ -8,8 +8,8 @@ export default function ApiKeysLayout({
 }: React.PropsWithChildren): React.JSX.Element {
   return (
     <AnnotatedSection
-      title="API keys"
-      description="These keys allow other apps to control resources of your organization. Be careful!"
+      title="Claves API"
+      description="Estas claves permiten que otras aplicaciones controlen los recursos de tu organización. ¡Ten cuidado!"
       docLink={baseUrl.PublicApi}
     >
       {children}

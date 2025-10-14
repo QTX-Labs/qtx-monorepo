@@ -52,7 +52,7 @@ export function OrganizationLogoCard({
       const file = files[0];
       if (file.size > MAX_IMAGE_SIZE) {
         toast.error(
-          `Uploaded image shouldn't exceed ${MAX_IMAGE_SIZE / 1000000} MB size limit`
+          `La imagen cargada no debe exceder el límite de ${MAX_IMAGE_SIZE / 1000000} MB`
         );
       } else {
         const base64Image: string = await NiceModal.show(CropPhotoModal, {
@@ -91,9 +91,9 @@ export function OrganizationLogoCard({
     }
     const result = await updateOrganizationLogo(values);
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Logo updated');
+      toast.success('Logo actualizado');
     } else {
-      toast.error("Couldn't update lgoo");
+      toast.error('No se pudo actualizar el logo');
     }
   };
   return (
@@ -131,14 +131,14 @@ export function OrganizationLogoCard({
                       <TrashIcon className="size-4 shrink-0" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent side="right">Remove logo</TooltipContent>
+                  <TooltipContent side="right">Eliminar logo</TooltipContent>
                 </Tooltip>
               )}
             </div>
             <div className="flex flex-col space-y-1">
-              <span className="text-sm">Upload your logo</span>
+              <span className="text-sm">Sube tu logo</span>
               <span className="text-xs text-muted-foreground">
-                *.png, *.jpeg files up to 5 MB
+                Archivos *.png, *.jpeg hasta 5 MB
               </span>
             </div>
           </form>

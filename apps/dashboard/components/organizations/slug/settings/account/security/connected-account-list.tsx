@@ -56,7 +56,7 @@ function ConnectedAccountListItem({
       provider: connectedAccount.id as OAuthProvider
     });
     if (result?.serverError || result?.validationErrors) {
-      toast.error("Couldn't connect account");
+      toast.error('No se pudo conectar la cuenta');
     }
   };
   const handleDisconnect = async () => {
@@ -64,9 +64,9 @@ function ConnectedAccountListItem({
       provider: connectedAccount.id as OAuthProvider
     });
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Account disconnected');
+      toast.success('Cuenta desconectada');
     } else {
-      toast.error("Couldn't disconnect account");
+      toast.error('No se pudo desconectar la cuenta');
     }
   };
   return (
@@ -84,7 +84,7 @@ function ConnectedAccountListItem({
             {identityProviderLabels[connectedAccount.id as OAuthProvider]}
           </h5>
           <p className="text-sm text-muted-foreground">
-            {connectedAccount.linked ? 'Connected' : 'Not connected'}
+            {connectedAccount.linked ? 'Conectada' : 'No conectada'}
           </p>
         </div>
       </div>
@@ -94,7 +94,7 @@ function ConnectedAccountListItem({
           variant="outline"
           onClick={handleDisconnect}
         >
-          Disconnect
+          Desconectar
         </Button>
       ) : (
         <Button
@@ -102,7 +102,7 @@ function ConnectedAccountListItem({
           variant="outline"
           onClick={handleConnect}
         >
-          Connect
+          Conectar
         </Button>
       )}
     </li>

@@ -7,8 +7,8 @@ export default function InvoicesLayout({
 }: React.PropsWithChildren): React.JSX.Element {
   return (
     <AnnotatedSection
-      title="Invoices"
-      description="Invoices are sent automatically to your billing email."
+      title="Facturas"
+      description="Las facturas se envían automáticamente a tu email de facturación."
     >
       {children}
     </AnnotatedSection>

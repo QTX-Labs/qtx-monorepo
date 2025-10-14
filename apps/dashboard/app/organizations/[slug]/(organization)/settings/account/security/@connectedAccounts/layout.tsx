@@ -10,8 +10,8 @@ export default function ConnectedAccountsLayout({
   return (
     <>
       <AnnotatedSection
-        title="Connected accounts"
-        description="Sign up faster to your account by linking it to Google or Microsoft."
+        title="Cuentas conectadas"
+        description="Inicia sesión más rápido en tu cuenta vinculándola a Google o Microsoft."
       >
         {children}
       </AnnotatedSection>

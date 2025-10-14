@@ -62,9 +62,9 @@ export const DeleteOrganizationModal =
         statement: false
       }
     });
-    const title = 'Delete organization?';
+    const title = '¿Eliminar organización?';
     const description =
-      'By deleting your organization you and your team will lose access and all data will be lost. This is a permanent action and cannot be undone.';
+      'Al eliminar tu organización, tú y tu equipo perderán el acceso y todos los datos se perderán. Esta es una acción permanente y no se puede deshacer.';
     const canSubmit =
       !methods.formState.isSubmitting &&
       methods.formState.isValid &&
@@ -77,10 +77,10 @@ export const DeleteOrganizationModal =
       const result = await deleteOrganization();
       if (!result?.serverError && !result?.validationErrors) {
         modal.handleClose();
-        toast.success('Organization deleted');
+        toast.success('Organización eliminada');
         router.push(routes.dashboard.organizations.Index);
       } else {
-        toast.error("Couldn't delete organization");
+        toast.error('No se pudo eliminar la organización');
       }
     };
     const renderForm = (
@@ -94,8 +94,8 @@ export const DeleteOrganizationModal =
           render={({ field }) => (
             <FormItem>
               <p className="text-xs">
-                Type the organization name "
-                <strong>{activeOrganization.name}</strong>" to confirm.
+                Escribe el nombre de la organización "
+                <strong>{activeOrganization.name}</strong>" para confirmar.
               </p>
               <FormControl>
                 <Input
@@ -120,8 +120,7 @@ export const DeleteOrganizationModal =
                 />
               </FormControl>
               <FormLabel className="leading-2 cursor-pointer">
-                I'll not be able to access the organization and it's data
-                anymore
+                No podré acceder más a la organización ni a sus datos
               </FormLabel>
             </FormItem>
           )}
@@ -135,7 +134,7 @@ export const DeleteOrganizationModal =
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -144,7 +143,7 @@ export const DeleteOrganizationModal =
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Delete
+          Eliminar
         </Button>
       </>
     );

@@ -35,9 +35,9 @@ export default function DevelopersLayout({
             index={{
               route:
                 routes.dashboard.organizations.slug.settings.organization.Index,
-              title: 'Organization'
+              title: 'Organización'
             }}
-            title="Developers"
+            title="Desarrolladores"
           />
         </PagePrimaryBar>
       </PageHeader>

@@ -85,7 +85,7 @@ function WebhookListItem({
             ))}
           </div>
         ) : (
-          <p className="text-xs text-muted-foreground">No trigger configured</p>
+          <p className="text-xs text-muted-foreground">Sin eventos configurados</p>
         )}
       </div>
       <DropdownMenu modal={false}>
@@ -94,10 +94,10 @@ function WebhookListItem({
             type="button"
             variant="ghost"
             className="size-8 p-0"
-            title="Open menu"
+            title="Abrir menú"
           >
             <MoreHorizontalIcon className="size-4 shrink-0" />
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">Abrir menú</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -105,14 +105,14 @@ function WebhookListItem({
             className="cursor-pointer"
             onClick={handleShowUpdateWebhookModal}
           >
-            Edit
+            Editar
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="text-destructive! cursor-pointer"
             onClick={handleShowDeleteWebhookModal}
           >
-            Delete
+            Eliminar
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

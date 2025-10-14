@@ -7,8 +7,8 @@ export default function BillingAddressLayout({
 }: React.PropsWithChildren): React.JSX.Element {
   return (
     <AnnotatedSection
-      title="Billing address"
-      description="This will be reflected in every upcoming invoice, past invoices are not affected."
+      title="Dirección de facturación"
+      description="Esto se reflejará en cada factura futura, las facturas pasadas no se verán afectadas."
     >
       {children}
     </AnnotatedSection>

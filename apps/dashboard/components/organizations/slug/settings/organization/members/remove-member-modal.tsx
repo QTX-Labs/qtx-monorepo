@@ -54,7 +54,7 @@ export const RemoveMemberModal = NiceModal.create<RemoveMemberModalProps>(
       }
     });
     const isLeaving = profile.id === member.id;
-    const title = isLeaving ? 'Leave organization?' : 'Remove this member?';
+    const title = isLeaving ? '¿Salir de la organización?' : '¿Eliminar este miembro?';
     const canSubmit =
       !methods.formState.isSubmitting &&
       methods.formState.isValid &&
@@ -66,23 +66,23 @@ export const RemoveMemberModal = NiceModal.create<RemoveMemberModalProps>(
       modal.handleClose();
       const result = await removeMember(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success(isLeaving ? 'Left organization' : 'Member removed');
+        toast.success(isLeaving ? 'Has salido de la organización' : 'Miembro eliminado');
       } else {
         toast.error(
-          isLeaving ? "Couldn't leave organization" : "Couldn't remove member"
+          isLeaving ? 'No se pudo salir de la organización' : 'No se pudo eliminar el miembro'
         );
       }
     };
     const renderDescription = isLeaving ? (
       <>
-        Are you sure you want to leave the organization? You will lose all
-        access to the organization.
+        ¿Estás seguro de que deseas salir de la organización? Perderás todo
+        el acceso a la organización.
       </>
     ) : (
       <>
-        Are you sure you want to remove{' '}
+        ¿Estás seguro de que deseas eliminar a{' '}
         <strong className="text-foreground font-medium">{member.name}</strong>?
-        They will lose all access to the organization.
+        Perderá todo el acceso a la organización.
       </>
     );
     const renderForm = (
@@ -98,8 +98,8 @@ export const RemoveMemberModal = NiceModal.create<RemoveMemberModalProps>(
             <AlertCircleIcon className="size-[18px] shrink-0" />
             <AlertDescription className="inline">
               {isLeaving
-                ? 'Please assign another owner before leaving the organization.'
-                : 'Please inform the member to assign another owner.'}
+                ? 'Por favor asigna otro propietario antes de salir de la organización.'
+                : 'Por favor informa al miembro que asigne otro propietario.'}
             </AlertDescription>
           </Alert>
         )}
@@ -112,7 +112,7 @@ export const RemoveMemberModal = NiceModal.create<RemoveMemberModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -121,7 +121,7 @@ export const RemoveMemberModal = NiceModal.create<RemoveMemberModalProps>(
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          {isLeaving ? 'Yes, leave' : 'Yes, remove'}
+          {isLeaving ? 'Sí, salir' : 'Sí, eliminar'}
         </Button>
       </>
     );

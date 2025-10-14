@@ -70,9 +70,9 @@ function InvitationListItem({
   const handleResendInvitation = async (): Promise<void> => {
     const result = await resendInvitation({ id: invitation.id });
     if (!result?.serverError && !result?.validationErrors) {
-      toast.error('Invitation re-sent');
+      toast.success('Invitación reenviada');
     } else {
-      toast.error("Couldn't resend invitation");
+      toast.error('No se pudo reenviar la invitación');
     }
   };
   const handleShowRevokeInvitationModal = (): void => {
@@ -81,9 +81,9 @@ function InvitationListItem({
   const handleDeleteInvitation = async (): Promise<void> => {
     const result = await deleteInvitation({ id: invitation.id });
     if (!result?.serverError && !result?.validationErrors) {
-      toast.error('Invitation deleted');
+      toast.success('Invitación eliminada');
     } else {
-      toast.error("Couldn't delete invitation");
+      toast.error('No se pudo eliminar la invitación');
     }
   };
   return (
@@ -115,10 +115,10 @@ function InvitationListItem({
               type="button"
               variant="ghost"
               className="size-8 p-0"
-              title="Open menu"
+              title="Abrir menú"
             >
               <MoreHorizontalIcon className="size-4 shrink-0" />
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Abrir menú</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -128,20 +128,20 @@ function InvitationListItem({
                   className="cursor-pointer"
                   onClick={handleShowEditInvitationModal}
                 >
-                  Edit
+                  Editar
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="cursor-pointer"
                   onClick={handleResendInvitation}
                 >
-                  Resend
+                  Reenviar
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="text-destructive! cursor-pointer"
                   onClick={handleShowRevokeInvitationModal}
                 >
-                  Revoke
+                  Revocar
                 </DropdownMenuItem>
               </>
             )}
@@ -150,7 +150,7 @@ function InvitationListItem({
                 className="text-destructive! cursor-pointer"
                 onClick={handleDeleteInvitation}
               >
-                Delete
+                Eliminar
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>

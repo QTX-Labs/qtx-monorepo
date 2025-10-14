@@ -8,7 +8,7 @@ export default function PlanLayout({
   return (
     <AnnotatedSection
       title="Plan"
-      description="View, upgrade or cancel your plan. Billing is managed by our payment partner."
+      description="Consulta, actualiza o cancela tu plan. La facturación es administrada por nuestro socio de pagos."
     >
       {children}
     </AnnotatedSection>

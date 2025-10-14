@@ -8,7 +8,7 @@ export default function OrganizationSlugLayout({
   return (
     <AnnotatedSection
       title="URL"
-      description="Update your organization's slug for a new URL. You will be redirected to the new URL."
+      description="Actualiza el slug de tu organización para obtener una nueva URL. Serás redirigido a la nueva URL."
     >
       {children}
     </AnnotatedSection>

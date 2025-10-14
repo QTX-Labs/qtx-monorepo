@@ -33,7 +33,7 @@ export function PlanSelection({
     if (result?.data?.url) {
       window.location.href = result.data.url;
     } else {
-      toast.error('Failed to create checkout session. Please try again.');
+      toast.error('Error al crear la sesión de pago. Por favor intenta de nuevo.');
       setPending(false);
     }
   };
@@ -48,7 +48,7 @@ export function PlanSelection({
           className={cn(buttonVariants({ variant: 'link' }), 'gap-1')}
         >
           <ArrowLeftIcon className="size-4 shrink-0" />
-          Back
+          Atrás
         </Link>
       )}
       <h1 className="text-center text-2xl">{title}</h1>

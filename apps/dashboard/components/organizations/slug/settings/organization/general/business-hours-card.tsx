@@ -85,9 +85,9 @@ export function BusinessHoursCard({
     }
     const result = await updateBusinessHours(values);
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Business hours updated');
+      toast.success('Horarios de atención actualizados');
     } else {
-      toast.error("Couldn't update business hours");
+      toast.error('No se pudieron actualizar los horarios de atención');
     }
   };
   return (
@@ -109,7 +109,7 @@ export function BusinessHoursCard({
             loading={methods.formState.isSubmitting}
             onClick={methods.handleSubmit(onSubmit)}
           >
-            Save
+            Guardar
           </Button>
         </CardFooter>
       </Card>
@@ -248,7 +248,7 @@ function WorkDay({ name, index, dayOfWeek }: WorkDayProps): React.JSX.Element {
                     <PlusIcon className="size-4 shrink-0" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>New time slot</TooltipContent>
+                <TooltipContent>Nuevo horario</TooltipContent>
               </Tooltip>
               <CopyTimesMenu
                 name={name}
@@ -258,7 +258,7 @@ function WorkDay({ name, index, dayOfWeek }: WorkDayProps): React.JSX.Element {
           </div>
         ) : (
           <p className="flex h-9 items-center pl-2 text-sm text-muted-foreground">
-            Unavailable
+            No disponible
           </p>
         )}
       </div>
@@ -300,17 +300,17 @@ const WorkTimeSlot = React.memo(
                 <TrashIcon className="size-4 shrink-0" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Remove time slot</TooltipContent>
+            <TooltipContent>Eliminar horario</TooltipContent>
           </Tooltip>
         </div>
         {!isIntervalValid && (
           <FormDescription className="text-destructive">
-            End time should be after start time.
+            La hora de fin debe ser posterior a la hora de inicio.
           </FormDescription>
         )}
         {isIntervalValid && isOverlapping && (
           <FormDescription className="text-destructive">
-            Times overlap with another set of times.
+            Los horarios se superponen con otro conjunto de horarios.
           </FormDescription>
         )}
       </div>
@@ -456,11 +456,11 @@ const CopyTimesMenu = React.memo(
               </Button>
             </PopoverTrigger>
           </TooltipTrigger>
-          <TooltipContent>Copy times</TooltipContent>
+          <TooltipContent>Copiar horarios</TooltipContent>
         </Tooltip>
         <PopoverContent className="max-w-[192px] p-2">
           <p className="px-4 py-2 text-sm text-muted-foreground">
-            Copy times to...
+            Copiar horarios a...
           </p>
           <ul className="list-none pb-2">
             {Object.keys(DayOfWeek)
@@ -506,7 +506,7 @@ const CopyTimesMenu = React.memo(
                 variant="outline"
                 className="w-full"
               >
-                Cancel
+                Cancelar
               </Button>
             </PopoverClose>
             <PopoverClose>
@@ -516,7 +516,7 @@ const CopyTimesMenu = React.memo(
                 className="w-full"
                 onClick={handleCopyDayOfWeek}
               >
-                Apply
+                Aplicar
               </Button>
             </PopoverClose>
           </div>

@@ -32,16 +32,16 @@ export const DisableAuthenticatorAppModal =
   NiceModal.create<DisableAuthenticatorAppModalProps>(() => {
     const modal = useEnhancedModal();
     const mdUp = useMediaQuery(MediaQueries.MdUp, { ssr: false });
-    const title = 'Disable authenticator app?';
+    const title = '¿Deshabilitar app autenticadora?';
     const description =
-      'The authenticator app will be disabled, are you sure you want to continue?';
+      'La app autenticadora será deshabilitada, ¿estás seguro de que deseas continuar?';
     const handleSubmit = async () => {
       const result = await disableAuthenticatorApp();
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Authenticator app disabled');
+        toast.success('App autenticadora deshabilitada');
         modal.handleClose();
       } else {
-        toast.error("Couldn't disable authenticator app");
+        toast.error('No se pudo deshabilitar la app autenticadora');
       }
     };
     const renderButtons = (
@@ -51,14 +51,14 @@ export const DisableAuthenticatorAppModal =
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
           variant="destructive"
           onClick={handleSubmit}
         >
-          Yes, disable
+          Sí, deshabilitar
         </Button>
       </>
     );

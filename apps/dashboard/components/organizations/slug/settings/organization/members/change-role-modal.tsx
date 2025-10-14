@@ -69,8 +69,8 @@ export const ChangeRoleModal = NiceModal.create<ChangeRoleModalProps>(
         role: member.role
       }
     });
-    const title = 'Change role';
-    const description = 'There needs to be at least one admin on the team.';
+    const title = 'Cambiar rol';
+    const description = 'Debe haber al menos un administrador en el equipo.';
     const canSubmit =
       !methods.formState.isSubmitting &&
       (!methods.formState.isSubmitted || methods.formState.isDirty);
@@ -80,10 +80,10 @@ export const ChangeRoleModal = NiceModal.create<ChangeRoleModalProps>(
       }
       const result = await changeRole(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Role changed');
+        toast.success('Rol cambiado');
         modal.handleClose();
       } else {
-        toast.error("Couldn't change role");
+        toast.error('No se pudo cambiar el rol');
       }
     };
     const renderForm = (
@@ -102,7 +102,7 @@ export const ChangeRoleModal = NiceModal.create<ChangeRoleModalProps>(
           name="role"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
-              <FormLabel required>Role</FormLabel>
+              <FormLabel required>Rol</FormLabel>
               <FormControl>
                 <Select
                   required
@@ -141,7 +141,7 @@ export const ChangeRoleModal = NiceModal.create<ChangeRoleModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -150,7 +150,7 @@ export const ChangeRoleModal = NiceModal.create<ChangeRoleModalProps>(
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Change
+          Cambiar
         </Button>
       </>
     );

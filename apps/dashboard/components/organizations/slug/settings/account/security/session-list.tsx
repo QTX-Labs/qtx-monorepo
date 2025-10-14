@@ -48,9 +48,9 @@ function SessionListItem({
   const handleSignOutSession = async () => {
     const result = await signOutSession({ id: session.id });
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Session signed out');
+      toast.success('Sesión cerrada');
     } else {
-      toast.error("Couldn't sign out session");
+      toast.error('No se pudo cerrar la sesión');
     }
   };
   return (
@@ -65,12 +65,12 @@ function SessionListItem({
         <MonitorIcon className="size-5 shrink-0 text-muted-foreground" />
         <div>
           <h5 className="text-sm font-medium">
-            {session.isCurrent ? 'Current session' : 'Other session'}
+            {session.isCurrent ? 'Sesión actual' : 'Otra sesión'}
           </h5>
           <p className="text-sm text-muted-foreground">
             {isBefore(session.expires, new Date())
-              ? 'Expired'
-              : `Expires on ${format(session.expires, 'dd MMM yyyy')}`}
+              ? 'Expirada'
+              : `Expira el ${format(session.expires, 'dd MMM yyyy')}`}
           </p>
         </div>
       </div>
@@ -79,7 +79,7 @@ function SessionListItem({
         variant="outline"
         onClick={handleSignOutSession}
       >
-        Sign out
+        Cerrar sesión
       </Button>
     </li>
   );

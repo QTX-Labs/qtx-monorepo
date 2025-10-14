@@ -7,8 +7,8 @@ export default function TeamLayout({
 }: React.PropsWithChildren): React.JSX.Element {
   return (
     <AnnotatedSection
-      title="Team"
-      description="Manage and invite your colleagues."
+      title="Equipo"
+      description="Administra e invita a tus colegas."
     >
       {children}
     </AnnotatedSection>

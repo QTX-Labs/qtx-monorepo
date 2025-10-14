@@ -43,7 +43,7 @@ export default function OrganizationGeneralLayout({
             index={{
               route:
                 routes.dashboard.organizations.slug.settings.organization.Index,
-              title: 'Organization'
+              title: 'Organización'
             }}
             title="General"
           />
