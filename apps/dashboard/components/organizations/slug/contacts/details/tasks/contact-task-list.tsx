@@ -42,9 +42,9 @@ export function ContactTaskList({
     if (task) {
       const result = await updateContactTask({ ...task, status });
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Status updated');
+        toast.success('Estado actualizado');
       } else {
-        toast.error("Couldn't update status");
+        toast.error('No se pudo actualizar el estado');
       }
     }
   };
@@ -53,9 +53,9 @@ export function ContactTaskList({
     if (task) {
       const result = await updateContactTask({ ...task, dueDate });
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Due date updated');
+        toast.success('Fecha límite actualizada');
       } else {
-        toast.error("Couldn't update due date");
+        toast.error('No se pudo actualizar la fecha límite');
       }
     }
   };
@@ -139,7 +139,7 @@ function ContactTaskListItem({
           <DatePicker
             date={dueDate}
             onDateChange={onDueDateChange}
-            placeholder="Due date"
+            placeholder="Fecha límite"
             variant="ghost"
             className="hidden sm:inline-flex"
           />
@@ -149,10 +149,10 @@ function ContactTaskListItem({
                 type="button"
                 variant="ghost"
                 className="size-9"
-                title="Open menu"
+                title="Abrir menú"
               >
                 <MoreHorizontalIcon className="size-4 shrink-0" />
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">Abrir menú</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -160,14 +160,14 @@ function ContactTaskListItem({
                 className="cursor-pointer"
                 onClick={onEdit}
               >
-                Edit
+                Editar
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-destructive! cursor-pointer"
                 onClick={onDelete}
               >
-                Delete
+                Eliminar
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

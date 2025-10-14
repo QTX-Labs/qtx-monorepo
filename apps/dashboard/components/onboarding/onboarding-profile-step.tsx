@@ -51,7 +51,7 @@ export function OnboardingProfileStep({
       const file = files[0];
       if (file.size > MAX_IMAGE_SIZE) {
         toast.error(
-          `Uploaded image shouldn't exceed ${MAX_IMAGE_SIZE / 1000000} MB size limit`
+          `La imagen no debe exceder el límite de ${MAX_IMAGE_SIZE / 1000000} MB`
         );
       } else {
         const base64Image: string = await NiceModal.show(CropPhotoModal, {
@@ -82,11 +82,11 @@ export function OnboardingProfileStep({
       {...other}
     >
       <h1 className="text-xl font-semibold leading-none tracking-tight lg:text-2xl">
-        Set up your profile
+        Configura tu perfil
       </h1>
       <p className="text-sm text-muted-foreground lg:text-base">
-        Check if the profile information is correct. You'll be able to change
-        this later in the account settings page.
+        Verifica que la información del perfil sea correcta. Podrás cambiar
+        esto más tarde en la página de configuración de la cuenta.
       </p>
       <div className="mt-4 flex items-center justify-center pb-6">
         <div className="relative">
@@ -118,7 +118,7 @@ export function OnboardingProfileStep({
                   <TrashIcon className="size-4 shrink-0" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="right">Remove image</TooltipContent>
+              <TooltipContent side="right">Eliminar imagen</TooltipContent>
             </Tooltip>
           )}
         </div>
@@ -129,7 +129,7 @@ export function OnboardingProfileStep({
           name="profileStep.name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel required>Name</FormLabel>
+              <FormLabel required>Nombre</FormLabel>
               <FormControl>
                 <Input
                   type="text"
@@ -149,7 +149,7 @@ export function OnboardingProfileStep({
           name="profileStep.phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone</FormLabel>
+              <FormLabel>Teléfono</FormLabel>
               <FormControl>
                 <Input
                   type="tel"
@@ -163,7 +163,7 @@ export function OnboardingProfileStep({
           )}
         />
         <div className="mb-2 flex flex-col space-y-2">
-          <FormLabel required>Email</FormLabel>
+          <FormLabel required>Correo electrónico</FormLabel>
           <Input
             type="email"
             maxLength={255}

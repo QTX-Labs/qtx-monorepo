@@ -42,7 +42,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: createTitle('Contact')
+    title: createTitle('Contacto')
   };
 }
 

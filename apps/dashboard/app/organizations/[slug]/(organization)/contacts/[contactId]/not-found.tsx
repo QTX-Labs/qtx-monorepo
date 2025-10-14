@@ -32,18 +32,18 @@ function getLastPartOfUrl(url: string): string {
 }
 
 export const metadata: Metadata = {
-  title: createTitle('Contact not found')
+  title: createTitle('Contacto no encontrado')
 };
 
 export default function ContactNotFoundPage(): React.JSX.Element {
   const copyToClipboard = useCopyToClipboard();
   const handleCopyContactId = async (): Promise<void> => {
     await copyToClipboard(getLastPartOfUrl(window.location.href));
-    toast.success('Copied!');
+    toast.success('¡Copiado!');
   };
   const handleCopyPageUrl = async (): Promise<void> => {
     await copyToClipboard(window.location.href);
-    toast.success('Copied!');
+    toast.success('¡Copiado!');
   };
   return (
     <Page>

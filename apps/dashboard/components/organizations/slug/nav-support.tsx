@@ -36,23 +36,23 @@ export function NavSupport({
         <SidebarMenuItem>
           <SidebarMenuButton
             type="button"
-            tooltip="Invite member"
+            tooltip="Invitar miembro"
             className="text-muted-foreground"
             onClick={handleShowInviteMemberModal}
           >
             <PlusIcon className="size-4 shrink-0" />
-            <span>Invite member</span>
+            <span>Invitar miembro</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
         <SidebarMenuItem>
           <SidebarMenuButton
             type="button"
-            tooltip="Feedback"
+            tooltip="Comentarios"
             className="text-muted-foreground"
             onClick={handleShowFeedbackModal}
           >
             <MessageCircleIcon className="size-4 shrink-0" />
-            <span>Feedback</span>
+            <span>Comentarios</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>

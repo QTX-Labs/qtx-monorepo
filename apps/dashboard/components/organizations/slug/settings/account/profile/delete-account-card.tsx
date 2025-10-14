@@ -34,8 +34,8 @@ export function DeleteAccountCard({
     >
       <CardContent>
         <p className="text-sm font-normal text-muted-foreground">
-          Deleting your account is irreversible. All your data will be
-          permanently removed from our servers.
+          Eliminar tu cuenta es irreversible. Todos tus datos serán
+          eliminados permanentemente de nuestros servidores.
         </p>
       </CardContent>
       <Separator />
@@ -46,7 +46,7 @@ export function DeleteAccountCard({
           size="default"
           onClick={handleShowDeleteAccountModal}
         >
-          Delete account
+          Eliminar cuenta
         </Button>
       </CardFooter>
     </Card>

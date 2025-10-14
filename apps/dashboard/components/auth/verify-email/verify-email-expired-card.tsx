@@ -31,9 +31,9 @@ export function VerifyEmailExpiredCard({
     setIsResendingEmailVerification(true);
     const result = await resendEmailConfirmation({ email });
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Email verification resent');
+      toast.success('Verificación de email reenviada');
     } else {
-      toast.error("Couldn't resend verification");
+      toast.error("No se pudo reenviar la verificación");
     }
     setIsResendingEmailVerification(false);
   };

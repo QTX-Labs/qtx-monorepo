@@ -5,7 +5,7 @@ import { InvitationRevokedCard } from '~/components/invitations/invitation-revok
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Invitation revoked')
+  title: createTitle('Invitación revocada')
 };
 
 export default function InvitationRevokedPage(): React.JSX.Element {

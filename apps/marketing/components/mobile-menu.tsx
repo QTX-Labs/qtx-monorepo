@@ -73,7 +73,7 @@ export function MobileMenu({
           variant="ghost"
           size="icon"
           aria-expanded={open}
-          aria-label="Toggle Mobile Menu"
+          aria-label="Alternar Menú Móvil"
           onClick={handleToggleMobileMenu}
           className="flex aspect-square h-fit select-none flex-col items-center justify-center rounded-full"
         >
@@ -136,7 +136,7 @@ function MainMobileMenu({
             )}
             onClick={onLinkClicked}
           >
-            Start for free
+            Empezar gratis
           </Link>
           <Link
             href={routes.dashboard.auth.SignIn}
@@ -149,7 +149,7 @@ function MainMobileMenu({
               'w-full rounded-xl'
             )}
           >
-            Sign in
+            Iniciar sesión
           </Link>
         </div>
         <ul className="w-full">

@@ -53,7 +53,7 @@ export function MembersCard({
     >
       <CardHeader className="pb-0 flex flex-row items-center gap-2">
         <InputSearch
-          placeholder="Filter by name or email"
+          placeholder="Filtrar por nombre o email"
           value={searchQuery}
           onChange={handleSearchQueryChange}
         />
@@ -64,7 +64,7 @@ export function MembersCard({
           className="whitespace-nowrap"
           onClick={handleShowInviteMemberModal}
         >
-          Invite member
+          Invitar miembro
         </Button>
       </CardHeader>
       <CardContent className="max-h-72 flex-1 overflow-hidden p-0">
@@ -77,7 +77,7 @@ export function MembersCard({
           </ScrollArea>
         ) : (
           <EmptyText className="p-6">
-            No member found {!!searchQuery && ' (filtered)'}.
+            No se encontraron miembros{!!searchQuery && ' (filtrado)'}.
           </EmptyText>
         )}
       </CardContent>

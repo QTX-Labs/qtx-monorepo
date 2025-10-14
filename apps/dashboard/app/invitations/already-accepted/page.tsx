@@ -5,7 +5,7 @@ import { InvitationAlreadyAcceptedCard } from '~/components/invitations/invitati
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Already accepted')
+  title: createTitle('Ya aceptada')
 };
 
 export default function InvitationAlreadyAcceptedPage(): React.JSX.Element {

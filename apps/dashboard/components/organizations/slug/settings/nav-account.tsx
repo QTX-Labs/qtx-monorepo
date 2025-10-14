@@ -24,7 +24,7 @@ export function NavAccount(props: SidebarGroupProps): React.JSX.Element {
   return (
     <SidebarGroup {...props}>
       <SidebarGroupLabel className="text-sm text-muted-foreground">
-        Account
+        Cuenta
       </SidebarGroupLabel>
       <SidebarMenu>
         {createAccountNavItems(activeOrganization.slug).map((item, index) => {

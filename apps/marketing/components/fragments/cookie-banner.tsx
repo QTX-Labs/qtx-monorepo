@@ -51,13 +51,13 @@ export function CookieBanner(): React.JSX.Element {
         >
           <div className="rounded-xl border bg-background p-4 shadow-lg">
             <p className="mb-3 text-sm">
-              We use cookies primarily for analytics and to enhance your
-              experience. By accepting you agree to our use of cookies.{' '}
+              Usamos cookies principalmente para analíticas y mejorar tu
+              experiencia. Al aceptar, accedes al uso de cookies.{' '}
               <Link
                 href="/cookie-policy"
                 className="underline hover:text-primary"
               >
-                Learn more
+                Más información
               </Link>
             </p>
             <div className="flex flex-row gap-2">
@@ -67,7 +67,7 @@ export function CookieBanner(): React.JSX.Element {
                 className="w-1/2"
                 onClick={handleDenyCookies}
               >
-                Deny
+                Rechazar
               </Button>
               <Button
                 type="button"
@@ -75,7 +75,7 @@ export function CookieBanner(): React.JSX.Element {
                 className="w-1/2"
                 onClick={handleAcceptCookies}
               >
-                Accept
+                Aceptar
               </Button>
             </div>
           </div>

@@ -69,9 +69,9 @@ export const InviteMemberModal = NiceModal.create<InviteMemberModalProps>(
         role: Role.MEMBER
       }
     });
-    const title = 'Invite member';
+    const title = 'Invitar miembro';
     const description =
-      'Enter the email address and role of the person you want to invite.';
+      'Ingresa la dirección de correo y el rol de la persona que quieres invitar.';
     const canSubmit =
       !methods.formState.isSubmitting &&
       (!methods.formState.isSubmitted || methods.formState.isDirty);
@@ -90,18 +90,18 @@ export const InviteMemberModal = NiceModal.create<InviteMemberModalProps>(
         if (checkResult.data.canInvite) {
           const result = await sendInvitation(values);
           if (!result?.serverError && !result?.validationErrors) {
-            toast.success('Invitation sent');
+            toast.success('Invitación enviada');
             modal.hide();
           } else {
-            toast.error("Couldn't send invitation");
+            toast.error('No se pudo enviar la invitación');
           }
         } else {
           methods.setError('email', {
-            message: 'Already member or invited.'
+            message: 'Ya es miembro o ya fue invitado.'
           });
         }
       } else {
-        toast.error("Couldn't check availability");
+        toast.error('No se pudo verificar la disponibilidad');
       }
     };
     const renderForm = (
@@ -114,7 +114,7 @@ export const InviteMemberModal = NiceModal.create<InviteMemberModalProps>(
           name="email"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
-              <FormLabel required>Email</FormLabel>
+              <FormLabel required>Correo electrónico</FormLabel>
               <FormControl>
                 <Input
                   type="email"
@@ -133,7 +133,7 @@ export const InviteMemberModal = NiceModal.create<InviteMemberModalProps>(
           name="role"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
-              <FormLabel required>Role</FormLabel>
+              <FormLabel required>Rol</FormLabel>
               <FormControl>
                 <Select
                   required
@@ -172,7 +172,7 @@ export const InviteMemberModal = NiceModal.create<InviteMemberModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -181,7 +181,7 @@ export const InviteMemberModal = NiceModal.create<InviteMemberModalProps>(
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Send invitation
+          Enviar invitación
         </Button>
       </>
     );

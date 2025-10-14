@@ -76,8 +76,8 @@ export const AddContactModal = NiceModal.create<AddContactModalProps>(() => {
       taxRegime: ''
     }
   });
-  const title = 'Add contact';
-  const description = 'Create a new contact by filling out the form below.';
+  const title = 'Agregar contacto';
+  const description = 'Crear un nuevo contacto completando el formulario a continuación.';
   const canSubmit =
     !methods.formState.isSubmitting &&
     (!methods.formState.isSubmitted || methods.formState.isDirty);
@@ -87,10 +87,10 @@ export const AddContactModal = NiceModal.create<AddContactModalProps>(() => {
     }
     const result = await addContact(values);
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Contact added');
+      toast.success('Contacto agregado');
       modal.handleClose();
     } else {
-      toast.error("Couldn't add contact");
+      toast.error("No se pudo agregar el contacto");
     }
   };
   const renderForm = (
@@ -103,7 +103,7 @@ export const AddContactModal = NiceModal.create<AddContactModalProps>(() => {
         name="record"
         render={({ field }) => (
           <FormItem className="flex w-full flex-col">
-            <FormLabel>Record</FormLabel>
+            <FormLabel>Registro</FormLabel>
             <FormControl>
               <RadioCards
                 value={field.value}
@@ -324,7 +324,7 @@ export const AddContactModal = NiceModal.create<AddContactModalProps>(() => {
         variant="outline"
         onClick={modal.handleClose}
       >
-        Cancel
+        Cancelar
       </Button>
       <Button
         type="button"
@@ -333,7 +333,7 @@ export const AddContactModal = NiceModal.create<AddContactModalProps>(() => {
         loading={methods.formState.isSubmitting}
         onClick={methods.handleSubmit(onSubmit)}
       >
-        Save
+        Guardar
       </Button>
     </>
   );

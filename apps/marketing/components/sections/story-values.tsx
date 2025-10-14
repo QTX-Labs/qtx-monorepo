@@ -8,7 +8,7 @@ export function StoryValues(): React.JSX.Element {
     <GridSection>
       <div className="container relative max-w-4xl overflow-hidden py-24 md:py-32">
         <p className="mx-auto text-center text-2xl font-semibold sm:text-3xl md:text-4xl">
-          "We believe AI should enhance human relationships, not replace them."
+          "Creemos que la tecnología debe potenciar las relaciones humanas, no reemplazarlas."
         </p>
         <FlickeringGrid
           className="pointer-events-none absolute inset-0 z-0 mask-[radial-gradient(450px_circle_at_center,var(--background),transparent)]"

@@ -42,7 +42,7 @@ export function ContactTasks({
       <div className="divide-y border-b">
         <div className="flex h-14 flex-row items-center justify-between gap-2 px-6">
           <h1 className="text-sm font-semibold">
-            All tasks{' '}
+            Todas las tareas{' '}
             <span className="text-muted-foreground">({tasks.length})</span>
           </h1>
           <Button
@@ -52,23 +52,23 @@ export function ContactTasks({
             onClick={handleShowAddTaskModal}
           >
             <CheckSquare2Icon className="size-4 shrink-0" />
-            Add task
+            Agregar tarea
           </Button>
         </div>
-        <Heading>Open</Heading>
+        <Heading>Abiertas</Heading>
         {openTasks.length > 0 ? (
           <ContactTaskList tasks={openTasks} />
         ) : (
           <EmptyText className="p-6">
-            There is no open task for this contact.
+            No hay tareas abiertas para este contacto.
           </EmptyText>
         )}
-        <Heading>Completed</Heading>
+        <Heading>Completadas</Heading>
         {completedTasks.length > 0 ? (
           <ContactTaskList tasks={completedTasks} />
         ) : (
           <EmptyText className="p-6">
-            There is no completed task for this contact.
+            No hay tareas completadas para este contacto.
           </EmptyText>
         )}
       </div>

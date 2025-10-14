@@ -115,7 +115,7 @@ export function NavUser({
   const handleSignOut = async (): Promise<void> => {
     const result = await signOut({ redirect: true });
     if (result?.serverError || result?.validationErrors) {
-      toast.error("Couldn't sign out");
+      toast.error("No se pudo cerrar sesión");
     }
   };
 
@@ -191,14 +191,14 @@ export function NavUser({
                   className="cursor-pointer"
                   onClick={handleNavigateToProfilePage}
                 >
-                  Profile
+                  Perfil
                   <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="cursor-pointer"
                   onClick={handleNavigateToBillingPage}
                 >
-                  Billing
+                  Facturación
                   <DropdownMenuShortcut>⇧⌘B</DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -206,14 +206,14 @@ export function NavUser({
                   className="cursor-pointer"
                   onClick={handleShowCommandMenu}
                 >
-                  Command Menu
+                  Menú de Comandos
                   <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="flex cursor-default flex-row justify-between bg-transparent!"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <p>Theme</p>
+                  <p>Tema</p>
                   <ThemeSwitcher />
                 </DropdownMenuItem>
               </DropdownMenuGroup>
@@ -222,7 +222,7 @@ export function NavUser({
                 className="cursor-pointer"
                 onClick={handleSignOut}
               >
-                Sign out
+                Cerrar sesión
                 <DropdownMenuShortcut>⇧⌘S</DropdownMenuShortcut>
               </DropdownMenuItem>
             </DropdownMenuContent>

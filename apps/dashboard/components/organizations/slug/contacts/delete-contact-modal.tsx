@@ -49,7 +49,7 @@ export const DeleteContactModal = NiceModal.create<DeleteContactModalProps>(
         id: contact.id
       }
     });
-    const title = 'Delete this contact?';
+    const title = '¿Eliminar este contacto?';
     const canSubmit =
       !methods.formState.isSubmitting && methods.formState.isValid;
     const onSubmit: SubmitHandler<DeleteContactSchema> = async (values) => {
@@ -58,18 +58,18 @@ export const DeleteContactModal = NiceModal.create<DeleteContactModalProps>(
       }
       const result = await deleteContact(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Contact deleted');
+        toast.success('Contacto eliminado');
         modal.resolve(true);
         modal.handleClose();
       } else {
-        toast.error("Contact couldn't be deleted");
+        toast.error("No se pudo eliminar el contacto");
       }
     };
     const renderDescription = (
       <>
-        The contact{' '}
+        El contacto{' '}
         <strong className="text-foreground font-medium">{contact.name}</strong>{' '}
-        will be permanently deleted, are you sure you want to continue?
+        será eliminado permanentemente, ¿estás seguro de que deseas continuar?
       </>
     );
     const renderForm = (
@@ -91,7 +91,7 @@ export const DeleteContactModal = NiceModal.create<DeleteContactModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -100,7 +100,7 @@ export const DeleteContactModal = NiceModal.create<DeleteContactModalProps>(
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Yes, delete
+          Sí, eliminar
         </Button>
       </>
     );

@@ -19,7 +19,7 @@ export function AddContactButton(): React.JSX.Element {
       className="whitespace-nowrap"
       onClick={handleShowAddContactModal}
     >
-      Add contact
+      Agregar contacto
     </Button>
   );
 }

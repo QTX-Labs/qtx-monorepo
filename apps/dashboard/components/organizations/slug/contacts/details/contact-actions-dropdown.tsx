@@ -50,22 +50,22 @@ export function ContactActionsDropdown({
   };
   const handleCopyContactId = async (): Promise<void> => {
     await copyToClipboard(contact.id);
-    toast.success('Copied!');
+    toast.success('¡Copiado!');
   };
   const handleCopyPageUrl = async (): Promise<void> => {
     await copyToClipboard(window.location.href);
-    toast.success('Copied!');
+    toast.success('¡Copiado!');
   };
   const handleAddFavorite = async (): Promise<void> => {
     const result = await addFavorite({ contactId: contact.id });
     if (result?.serverError || result?.validationErrors) {
-      toast.error("Couldn't add favorite");
+      toast.error('No se pudo agregar a favoritos');
     }
   };
   const handleRemoveFavorite = async (): Promise<void> => {
     const result = await removeFavorite({ contactId: contact.id });
     if (result?.serverError || result?.validationErrors) {
-      toast.error("Couldn't remove favorite");
+      toast.error('No se pudo quitar de favoritos');
     }
   };
   return (
@@ -75,10 +75,10 @@ export function ContactActionsDropdown({
           type="button"
           variant="ghost"
           className="size-9"
-          title="Open menu"
+          title="Abrir menú"
         >
           <MoreHorizontalIcon className="size-4 shrink-0" />
-          <span className="sr-only">Open menu</span>
+          <span className="sr-only">Abrir menú</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -86,13 +86,13 @@ export function ContactActionsDropdown({
           className="cursor-pointer"
           onClick={handleCopyContactId}
         >
-          Copy contact ID
+          Copiar ID del contacto
         </DropdownMenuItem>
         <DropdownMenuItem
           className="cursor-pointer"
           onClick={handleCopyPageUrl}
         >
-          Copy page URL
+          Copiar URL de la página
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         {addedToFavorites ? (
@@ -100,14 +100,14 @@ export function ContactActionsDropdown({
             className="cursor-pointer"
             onClick={handleRemoveFavorite}
           >
-            Remove favorite
+            Quitar de favoritos
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem
             className="cursor-pointer"
             onClick={handleAddFavorite}
           >
-            Add favorite
+            Agregar a favoritos
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
@@ -115,7 +115,7 @@ export function ContactActionsDropdown({
           className="text-destructive! cursor-pointer"
           onClick={handleShowDeleteContactModal}
         >
-          Delete
+          Eliminar
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

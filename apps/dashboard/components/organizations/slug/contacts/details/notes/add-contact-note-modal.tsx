@@ -58,8 +58,8 @@ export const AddContactNoteModal = NiceModal.create<AddContactNoteModalProps>(
         text: ''
       }
     });
-    const title = 'Add note';
-    const description = 'Create a new note by filling out the form below.';
+    const title = 'Agregar nota';
+    const description = 'Crear una nueva nota completando el formulario a continuación.';
     const canSubmit =
       !methods.formState.isSubmitting &&
       (!methods.formState.isSubmitted || methods.formState.isDirty);
@@ -69,10 +69,10 @@ export const AddContactNoteModal = NiceModal.create<AddContactNoteModalProps>(
       }
       const result = await addContactNote(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Note added');
+        toast.success('Nota agregada');
         modal.handleClose();
       } else {
-        toast.error("Couldn't add note");
+        toast.error('No se pudo agregar la nota');
       }
     };
     const renderForm = (
@@ -113,7 +113,7 @@ export const AddContactNoteModal = NiceModal.create<AddContactNoteModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -122,7 +122,7 @@ export const AddContactNoteModal = NiceModal.create<AddContactNoteModalProps>(
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Save
+          Guardar
         </Button>
       </>
     );

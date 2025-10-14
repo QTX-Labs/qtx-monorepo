@@ -24,7 +24,7 @@ export function NavOrganization(props: SidebarGroupProps): React.JSX.Element {
   return (
     <SidebarGroup {...props}>
       <SidebarGroupLabel className="mb-1 text-sm text-muted-foreground">
-        Organization
+        Organización
       </SidebarGroupLabel>
       <SidebarMenu>
         {createOrganizationNavItems(activeOrganization.slug).map(

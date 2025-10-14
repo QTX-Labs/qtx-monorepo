@@ -70,7 +70,7 @@ export function PersonalDetailsCard({
       const file = files[0];
       if (file.size > MAX_IMAGE_SIZE) {
         toast.error(
-          `Uploaded image shouldn't exceed ${MAX_IMAGE_SIZE / 1000000} MB size limit`
+          `La imagen no debe exceder el límite de ${MAX_IMAGE_SIZE / 1000000} MB`
         );
       } else {
         const base64Image: string = await NiceModal.show(CropPhotoModal, {
@@ -108,9 +108,9 @@ export function PersonalDetailsCard({
     }
     const result = await updatePersonalDetails(values);
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Personal details updated');
+      toast.success('Detalles personales actualizados');
     } else {
-      toast.error('Couldnt update personal details');
+      toast.error('No se pudieron actualizar los detalles personales');
     }
   };
   return (
@@ -156,7 +156,7 @@ export function PersonalDetailsCard({
                         <TrashIcon className="size-4 shrink-0" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent side="right">Remove image</TooltipContent>
+                    <TooltipContent side="right">Eliminar imagen</TooltipContent>
                   </Tooltip>
                 )}
               </div>
@@ -167,7 +167,7 @@ export function PersonalDetailsCard({
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Name</FormLabel>
+                    <FormLabel required>Nombre</FormLabel>
                     <FormControl>
                       <Input
                         type="text"
@@ -187,7 +187,7 @@ export function PersonalDetailsCard({
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone</FormLabel>
+                    <FormLabel>Teléfono</FormLabel>
                     <FormControl>
                       <Input
                         type="tel"
@@ -201,7 +201,7 @@ export function PersonalDetailsCard({
                 )}
               />
               <div className="space-y-2">
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Correo electrónico</FormLabel>
                 <InputWithAdornments
                   type="email"
                   maxLength={255}
@@ -215,7 +215,7 @@ export function PersonalDetailsCard({
                       className="-mr-2.5 min-w-fit bg-background"
                       onClick={handleShowChangeEmailModal}
                     >
-                      Change
+                      Cambiar
                     </Button>
                   }
                   disabled
@@ -234,7 +234,7 @@ export function PersonalDetailsCard({
             loading={methods.formState.isSubmitting}
             onClick={methods.handleSubmit(onSubmit)}
           >
-            Save
+            Guardar
           </Button>
         </CardFooter>
       </Card>

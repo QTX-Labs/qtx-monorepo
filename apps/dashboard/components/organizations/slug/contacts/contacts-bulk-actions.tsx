@@ -62,7 +62,7 @@ export function ContactsBulkActions({
       }
     );
     if (!response.ok) {
-      toast.error("Couldn't export selected contacts to CSV");
+      toast.error("No se pudieron exportar los contactos seleccionados a CSV");
     } else {
       const data = await response.blob();
       const disposition = response.headers.get('Content-Disposition') ?? '';
@@ -92,7 +92,7 @@ export function ContactsBulkActions({
       }
     );
     if (!response.ok) {
-      toast.error("Couldn't export selected contacts to Excel");
+      toast.error("No se pudieron exportar los contactos seleccionados a Excel");
     } else {
       const data = await response.blob();
       const disposition = response.headers.get('Content-Disposition') ?? '';
@@ -123,7 +123,7 @@ export function ContactsBulkActions({
             size="default"
             className="text-sm"
           >
-            Bulk actions
+            Acciones masivas
             <ChevronsUpDownIcon className="ml-1 size-4 opacity-50" />
           </Button>
         </DropdownMenuTrigger>
@@ -132,20 +132,20 @@ export function ContactsBulkActions({
             className="cursor-pointer"
             onClick={handleExportSelectedContactsToCsv}
           >
-            Export to CSV
+            Exportar a CSV
           </DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer"
             onClick={handleExportSelectedContactsToExcel}
           >
-            Export to Excel
+            Exportar a Excel
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="text-destructive! cursor-pointer"
             onClick={handleShowDeleteContactsModal}
           >
-            Delete
+            Eliminar
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

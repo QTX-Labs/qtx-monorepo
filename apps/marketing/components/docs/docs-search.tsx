@@ -56,7 +56,7 @@ export function DocsSearch(props: DialogProps): React.JSX.Element {
         {...props}
       >
         <SearchIcon className="size-3 shrink-0" />
-        <span>Search docs</span>
+        <span>Buscar docs</span>
         <kbd className="pointer-events-none absolute right-[0.3rem] top-[0.3rem] flex h-5 select-none items-center gap-1 rounded-sm border bg-background px-1.5 font-mono text-xs font-medium opacity-100">
           <span className="text-xs">⌘</span>K
         </kbd>
@@ -66,11 +66,11 @@ export function DocsSearch(props: DialogProps): React.JSX.Element {
         onOpenChange={setOpen}
       >
         <CommandInput
-          placeholder="Search docs (i.e. integrations, importing or billing)..."
+          placeholder="Buscar documentación (ej. integraciones, importación o facturación)..."
           className="p-0!"
         />
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandEmpty>No se encontraron resultados.</CommandEmpty>
           {DOCS_LINKS.map((group) => (
             <CommandGroup
               key={group.title}

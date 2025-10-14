@@ -46,7 +46,7 @@ export function ApiKeysCard({
             <ApiKeyList apiKeys={apiKeys} />
           </ScrollArea>
         ) : (
-          <EmptyText className="p-6">No API key found.</EmptyText>
+          <EmptyText className="p-6">No se encontraron claves API.</EmptyText>
         )}
       </CardContent>
       <Separator />
@@ -57,7 +57,7 @@ export function ApiKeysCard({
           size="default"
           onClick={handleShowCreateApiKeyModal}
         >
-          Create API key
+          Crear clave API
         </Button>
       </CardFooter>
     </Card>

@@ -62,9 +62,9 @@ export const DeleteAccountModal = NiceModal.create<DeleteAccountModalProps>(
         statement: false
       }
     });
-    const title = 'Delete account?';
+    const title = '¿Eliminar cuenta?';
     const description =
-      'Please confirm you understand what you are doing by ticking the checkbox below.';
+      'Por favor confirma que entiendes lo que estás haciendo marcando la casilla de abajo.';
     const canSubmit =
       !methods.formState.isSubmitting &&
       methods.formState.isValid &&
@@ -77,16 +77,16 @@ export const DeleteAccountModal = NiceModal.create<DeleteAccountModalProps>(
       const result = await deleteAccount();
       if (result) {
         if (!result.serverError && !result.validationErrors) {
-          toast.error('Account deleted');
+          toast.error('Cuenta eliminada');
           modal.handleClose();
           const result = await signOut({ redirect: false });
           if (!result?.serverError && !result?.validationErrors) {
             router.push(routes.dashboard.auth.SignIn);
           } else {
-            toast.error("Couldn't sign out");
+            toast.error('No se pudo cerrar sesión');
           }
         } else {
-          toast.error("Couldn't delete account");
+          toast.error('No se pudo eliminar la cuenta');
         }
       }
     };
@@ -108,7 +108,7 @@ export const DeleteAccountModal = NiceModal.create<DeleteAccountModalProps>(
                 />
               </FormControl>
               <FormLabel className="leading-2 cursor-pointer">
-                My account and all its data will be deleted.
+                Mi cuenta y todos sus datos serán eliminados.
               </FormLabel>
             </FormItem>
           )}
@@ -117,8 +117,8 @@ export const DeleteAccountModal = NiceModal.create<DeleteAccountModalProps>(
           <Alert variant="warning">
             <AlertCircleIcon className="size-[18px] shrink-0" />
             <AlertDescription className="inline">
-              Please assign another owner before deleting your account for the
-              following organizations:
+              Por favor asigna otro propietario antes de eliminar tu cuenta para las
+              siguientes organizaciones:
               <div className="max-h-40 overflow-y-auto overflow-x-hidden">
                 <ul className="list-disc">
                   {ownedOrganizations.map((organization) => (
@@ -153,7 +153,7 @@ export const DeleteAccountModal = NiceModal.create<DeleteAccountModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -162,7 +162,7 @@ export const DeleteAccountModal = NiceModal.create<DeleteAccountModalProps>(
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Delete
+          Eliminar
         </Button>
       </>
     );

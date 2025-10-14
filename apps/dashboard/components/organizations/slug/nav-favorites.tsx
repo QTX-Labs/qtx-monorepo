@@ -100,7 +100,7 @@ export function NavFavorites({
         }))
       });
       if (result?.serverError || result?.validationErrors) {
-        toast.error("Couldn't reorder favorites");
+        toast.error("No se pudieron reordenar los favoritos");
         setItems(oldItems);
       }
     }
@@ -124,7 +124,7 @@ export function NavFavorites({
           className="group/label hover:bg-sidebar-accent group-data-[collapsible=icon]:mt-0"
         >
           <CollapsibleTrigger className="cursor-pointer group-data-[collapsible=icon]:invisible">
-            <span className="text-sm text-muted-foreground">Favorites</span>
+            <span className="text-sm text-muted-foreground">Favoritos</span>
             <ChevronRightIcon className="ml-auto hidden transition-transform duration-200 group-hover/label:inline group-data-[state=open]/collapsible:rotate-90 opacity-60" />
           </CollapsibleTrigger>
         </SidebarGroupLabel>
@@ -159,7 +159,7 @@ export function NavFavorites({
               </DndContext>
             ) : (
               <EmptyText className="ml-3 text-xs group-data-[collapsible=icon]:hidden">
-                No items added.
+                No hay elementos.
               </EmptyText>
             )}
           </SidebarGroupContent>
@@ -188,7 +188,7 @@ function FavoriteSidebarMenuItem({
     e.preventDefault();
     const result = await removeFavorite({ contactId: favorite.contactId });
     if (result?.serverError || result?.validationErrors) {
-      toast.error("Couldn't remove favorite");
+      toast.error("No se pudo eliminar el favorito");
     }
   };
   return (

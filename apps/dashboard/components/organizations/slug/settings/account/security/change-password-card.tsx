@@ -62,7 +62,7 @@ export function ChangePasswordCard({
     }
     const result = await changePassword(values);
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success(hasPasswordSet ? 'Password changed!' : 'Password set!');
+      toast.success(hasPasswordSet ? '¡Contraseña cambiada!' : '¡Contraseña establecida!');
       setErrorMessage('');
       methods.reset({
         hasPasswordSet: true,
@@ -93,8 +93,8 @@ export function ChangePasswordCard({
       } else {
         toast.error(
           hasPasswordSet
-            ? "Couldn't change password. Please try again."
-            : "Couldn't set password. Please try again."
+            ? 'No se pudo cambiar la contraseña. Inténtalo de nuevo.'
+            : 'No se pudo establecer la contraseña. Inténtalo de nuevo.'
         );
       }
     }
@@ -113,7 +113,7 @@ export function ChangePasswordCard({
               name="currentPassword"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Current password</FormLabel>
+                  <FormLabel>Contraseña actual</FormLabel>
                   <FormControl>
                     {hasPasswordSet ? (
                       <InputPassword
@@ -130,7 +130,7 @@ export function ChangePasswordCard({
                         disabled
                         type="password"
                         autoCapitalize="off"
-                        placeholder="No password set yet."
+                        placeholder="Aún no se ha establecido contraseña."
                         startAdornment={
                           <LockIcon className="size-4 shrink-0" />
                         }
@@ -140,7 +140,7 @@ export function ChangePasswordCard({
                             type="button"
                             variant="ghost"
                             size="icon"
-                            aria-label="Toggle password visibility"
+                            aria-label="Alternar visibilidad de contraseña"
                             className="-mr-2.5 size-8"
                           >
                             <EyeIcon className="size-4 shrink-0" />
@@ -158,7 +158,7 @@ export function ChangePasswordCard({
               name="newPassword"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>New password</FormLabel>
+                  <FormLabel>Nueva contraseña</FormLabel>
                   <FormControl>
                     <InputPassword
                       maxLength={72}
@@ -180,7 +180,7 @@ export function ChangePasswordCard({
               name="verifyPassword"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Verify password</FormLabel>
+                  <FormLabel>Verificar contraseña</FormLabel>
                   <FormControl>
                     <InputPassword
                       maxLength={72}
@@ -214,7 +214,7 @@ export function ChangePasswordCard({
             loading={methods.formState.isSubmitting}
             onClick={methods.handleSubmit(onSubmit)}
           >
-            Change
+            Cambiar
           </Button>
         </CardFooter>
       </Card>

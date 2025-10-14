@@ -9,41 +9,41 @@ import {
 } from '@workspace/database';
 
 export const contactStageLabel: Record<ContactStage, string> = {
-  [ContactStage.LEAD]: 'Lead',
-  [ContactStage.QUALIFIED]: 'Qualified',
-  [ContactStage.OPPORTUNITY]: 'Opportunity',
-  [ContactStage.PROPOSAL]: 'Proposal',
-  [ContactStage.IN_NEGOTIATION]: 'In negotiation',
-  [ContactStage.LOST]: 'Lost',
-  [ContactStage.WON]: 'Won'
+  [ContactStage.LEAD]: 'Prospecto',
+  [ContactStage.QUALIFIED]: 'Calificado',
+  [ContactStage.OPPORTUNITY]: 'Oportunidad',
+  [ContactStage.PROPOSAL]: 'Propuesta',
+  [ContactStage.IN_NEGOTIATION]: 'En negociación',
+  [ContactStage.LOST]: 'Perdido',
+  [ContactStage.WON]: 'Ganado'
 };
 
 export const contactRecordLabel: Record<ContactRecord, string> = {
-  [ContactRecord.PERSON]: 'Person',
-  [ContactRecord.COMPANY]: 'Company'
+  [ContactRecord.PERSON]: 'Persona',
+  [ContactRecord.COMPANY]: 'Empresa'
 };
 
 export const roleLabels: Record<Role, string> = {
-  [Role.MEMBER]: 'Member',
-  [Role.ADMIN]: 'Admin'
+  [Role.MEMBER]: 'Miembro',
+  [Role.ADMIN]: 'Administrador'
 };
 
 export const feedbackCategoryLabels: Record<FeedbackCategory, string> = {
-  [FeedbackCategory.SUGGESTION]: 'Suggestion',
-  [FeedbackCategory.PROBLEM]: 'Problem',
-  [FeedbackCategory.QUESTION]: 'Question'
+  [FeedbackCategory.SUGGESTION]: 'Sugerencia',
+  [FeedbackCategory.PROBLEM]: 'Problema',
+  [FeedbackCategory.QUESTION]: 'Pregunta'
 };
 
 export const webhookTriggerLabels: Record<WebhookTrigger, string> = {
-  [WebhookTrigger.CONTACT_CREATED]: 'Contact created',
-  [WebhookTrigger.CONTACT_UPDATED]: 'Contact updated',
-  [WebhookTrigger.CONTACT_DELETED]: 'Contact deleted'
+  [WebhookTrigger.CONTACT_CREATED]: 'Contacto creado',
+  [WebhookTrigger.CONTACT_UPDATED]: 'Contacto actualizado',
+  [WebhookTrigger.CONTACT_DELETED]: 'Contacto eliminado'
 };
 
 export const identityProviderLabels: Record<Provider, string> = {
-  [Provider.Credentials]: 'Credentials',
-  [Provider.TotpCode]: 'TOTP code',
-  [Provider.RecoveryCode]: 'Recovery code',
+  [Provider.Credentials]: 'Credenciales',
+  [Provider.TotpCode]: 'Código TOTP',
+  [Provider.RecoveryCode]: 'Código de recuperación',
   [Provider.Google]: 'Google',
   [Provider.MicrosoftEntraId]: 'Microsoft'
 };

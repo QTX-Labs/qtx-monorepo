@@ -35,8 +35,8 @@ export function DeleteOrganizationCard({
     >
       <CardContent>
         <p className="text-sm font-normal text-muted-foreground">
-          Deleting your organization is irreversible. All the data will be
-          permanently removed from our servers.
+          Eliminar tu organización es irreversible. Todos los datos serán
+          eliminados permanentemente de nuestros servidores.
         </p>
       </CardContent>
       <Separator />
@@ -48,7 +48,7 @@ export function DeleteOrganizationCard({
           disabled={!profile.isOwner}
           onClick={handleShowDeleteOrganizationModal}
         >
-          Delete organization
+          Eliminar organización
         </Button>
       </CardFooter>
     </Card>

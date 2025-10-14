@@ -23,17 +23,17 @@ enum Tab {
 const tabList = [
   {
     icon: ActivityIcon,
-    label: 'Activity',
+    label: 'Actividad',
     value: Tab.Activity
   },
   {
     icon: FileIcon,
-    label: 'Notes',
+    label: 'Notas',
     value: Tab.Notes
   },
   {
     icon: CheckSquare2Icon,
-    label: 'Tasks',
+    label: 'Tareas',
     value: Tab.Tasks
   }
 ];

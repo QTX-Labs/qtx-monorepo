@@ -15,7 +15,7 @@ const paramsCache = createSearchParamsCache({
 });
 
 export const metadata: Metadata = {
-  title: createTitle('Email Verification')
+  title: createTitle('Verificación de Email')
 };
 
 export default async function EmailVerificationPage({

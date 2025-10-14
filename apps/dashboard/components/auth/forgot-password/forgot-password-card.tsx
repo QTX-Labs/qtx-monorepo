@@ -63,7 +63,7 @@ export function ForgotPasswordCard({
         `${routes.dashboard.auth.forgetPassword.Success}?email=${values.email}`
       );
     } else {
-      setErrorMessage("Couldn't request password change");
+      setErrorMessage("No se pudo solicitar el cambio de contraseña");
     }
   };
   return (
@@ -76,11 +76,11 @@ export function ForgotPasswordCard({
     >
       <CardHeader>
         <CardTitle className="text-base lg:text-lg">
-          Forgot your password?
+          ¿Olvidaste tu contraseña?
         </CardTitle>
         <CardDescription>
-          No worries! We'll send you a link with instructions on how to reset
-          your password.
+          ¡No te preocupes! Te enviaremos un enlace con instrucciones para restablecer
+          tu contraseña.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -94,7 +94,7 @@ export function ForgotPasswordCard({
               name="email"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Correo electrónico</FormLabel>
                   <FormControl>
                     <InputWithAdornments
                       {...field}
@@ -125,18 +125,18 @@ export function ForgotPasswordCard({
               disabled={!canSubmit}
               loading={methods.formState.isSubmitting}
             >
-              Send instructions
+              Enviar instrucciones
             </Button>
           </form>
         </FormProvider>
       </CardContent>
       <CardFooter className="flex justify-center gap-1 text-sm text-muted-foreground">
-        <span>Remembered your password?</span>
+        <span>¿Recordaste tu contraseña?</span>
         <Link
           href={routes.dashboard.auth.SignIn}
           className="text-foreground underline"
         >
-          Sign in
+          Iniciar sesión
         </Link>
       </CardFooter>
     </Card>

@@ -40,7 +40,7 @@ export function InvitationEmail({
         {/* Hero */}
         <Section style={{ position: 'relative', zIndex: 10 }}>
           <HeroHeading
-            script="you're invited to join"
+            script="te invitan a unirte a"
             main={organizationName}
             scriptColor={colors.accents.sunnyYellow}
           />

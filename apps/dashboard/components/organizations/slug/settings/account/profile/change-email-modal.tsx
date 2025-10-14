@@ -58,8 +58,8 @@ export const ChangeEmailModal = NiceModal.create<ChangeEmailModalProps>(
         email: ''
       }
     });
-    const title = 'Change email address';
-    const description = 'Enter your new email address and verify it';
+    const title = 'Cambiar dirección de correo';
+    const description = 'Ingresa tu nueva dirección de correo y verifícala';
     const canSubmit =
       !methods.formState.isSubmitting &&
       (!methods.formState.isSubmitted || methods.formState.isDirty);
@@ -81,18 +81,18 @@ export const ChangeEmailModal = NiceModal.create<ChangeEmailModalProps>(
         if (checkResult.data.isAvailable) {
           const result = await requestEmailChange(values);
           if (!result?.serverError && !result?.validationErrors) {
-            toast.success('Change request sent');
+            toast.success('Solicitud de cambio enviada');
             modal.hide();
           } else {
-            toast.error("Couldn't send request");
+            toast.error('No se pudo enviar la solicitud');
           }
         } else {
           methods.setError('email', {
-            message: 'Email address is already taken.'
+            message: 'La dirección de correo ya está en uso.'
           });
         }
       } else {
-        toast.error("Couldn't check availability");
+        toast.error('No se pudo verificar la disponibilidad');
       }
     };
     const renderForm = (
@@ -101,7 +101,7 @@ export const ChangeEmailModal = NiceModal.create<ChangeEmailModalProps>(
         onSubmit={methods.handleSubmit(onSubmit)}
       >
         <div className="flex flex-col gap-2 pt-2">
-          <FormLabel required>Current email address</FormLabel>
+          <FormLabel required>Dirección de correo actual</FormLabel>
           <Input
             type="email"
             required
@@ -114,7 +114,7 @@ export const ChangeEmailModal = NiceModal.create<ChangeEmailModalProps>(
           name="email"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
-              <FormLabel required>New email address</FormLabel>
+              <FormLabel required>Nueva dirección de correo</FormLabel>
               <FormControl>
                 <Input
                   type="email"
@@ -129,9 +129,9 @@ export const ChangeEmailModal = NiceModal.create<ChangeEmailModalProps>(
           )}
         />
         <p className="text-sm text-muted-foreground">
-          We will send a change request to your new email address. After
-          clicking on the link in the email, you will be automatically logged
-          out and and will need to sign in again with your new email address.
+          Enviaremos una solicitud de cambio a tu nueva dirección de correo. Después
+          de hacer clic en el enlace del correo, serás desconectado automáticamente
+          y necesitarás iniciar sesión nuevamente con tu nueva dirección de correo.
         </p>
       </form>
     );
@@ -142,7 +142,7 @@ export const ChangeEmailModal = NiceModal.create<ChangeEmailModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -151,7 +151,7 @@ export const ChangeEmailModal = NiceModal.create<ChangeEmailModalProps>(
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Request change
+          Solicitar cambio
         </Button>
       </>
     );

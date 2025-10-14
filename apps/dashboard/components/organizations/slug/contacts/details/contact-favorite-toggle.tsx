@@ -22,17 +22,17 @@ export function ContactFavoriteToggle({
   className,
   ...other
 }: ContactFavoriteToggleProps): React.JSX.Element {
-  const description = addedToFavorites ? 'Remove favorite' : 'Add favorite';
+  const description = addedToFavorites ? 'Quitar de favoritos' : 'Agregar a favoritos';
   const handleToggleFavorite = async (): Promise<void> => {
     if (addedToFavorites) {
       const result = await removeFavorite({ contactId: contact.id });
       if (result?.serverError || result?.validationErrors) {
-        toast.error("Couldn't remove favorite");
+        toast.error('No se pudo quitar de favoritos');
       }
     } else {
       const result = await addFavorite({ contactId: contact.id });
       if (result?.serverError || result?.validationErrors) {
-        toast.error("Couldn't add favorite");
+        toast.error('No se pudo agregar a favoritos');
       }
     }
   };

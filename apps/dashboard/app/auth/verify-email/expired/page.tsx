@@ -10,7 +10,7 @@ const searchParamsCache = createSearchParamsCache({
 });
 
 export const metadata: Metadata = {
-  title: createTitle('Email Verification Expired')
+  title: createTitle('Verificación de Email Expirada')
 };
 
 export default async function VerifyEmailExpiredPage({

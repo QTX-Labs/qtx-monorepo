@@ -87,7 +87,7 @@ export function ContactTimelineComment({
     if (!result?.serverError && !result?.validationErrors) {
       setIsEditing(false);
     } else {
-      toast.error("Couldn't update comment");
+      toast.error('No se pudo actualizar el comentario');
     }
   };
   return (
@@ -106,7 +106,7 @@ export function ContactTimelineComment({
           <h3 className="text-xs font-medium">
             {event.sender.name}{' '}
             <span className="font-normal text-muted-foreground">
-              commented.
+              comentó.
             </span>
           </h3>
           <DropdownMenu>
@@ -115,10 +115,10 @@ export function ContactTimelineComment({
                 type="button"
                 variant="ghost"
                 className="size-6 p-0"
-                title="Open menu"
+                title="Abrir menú"
               >
                 <MoreHorizontalIcon className="size-4 shrink-0" />
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">Abrir menú</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -127,14 +127,14 @@ export function ContactTimelineComment({
                 disabled={!canEdit || isEditing}
                 onClick={handleEdit}
               >
-                Edit
+                Editar
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-destructive! cursor-pointer"
                 onClick={handleDelete}
               >
-                Delete
+                Eliminar
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -153,7 +153,7 @@ export function ContactTimelineComment({
                           <FormControl>
                             <Input
                               {...field}
-                              placeholder="Edit comment..."
+                              placeholder="Editar comentario..."
                             />
                           </FormControl>
                           <FormMessage />
@@ -168,7 +168,7 @@ export function ContactTimelineComment({
                           size="sm"
                           onClick={handleCancel}
                         >
-                          Cancel
+                          Cancelar
                         </Button>
                         <Button
                           type="button"
@@ -176,7 +176,7 @@ export function ContactTimelineComment({
                           size="sm"
                           onClick={form.handleSubmit(onSubmit)}
                         >
-                          Save
+                          Guardar
                         </Button>
                       </div>
                     </div>

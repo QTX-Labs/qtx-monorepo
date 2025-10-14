@@ -11,7 +11,7 @@ const searchParamsCache = createSearchParamsCache({
 });
 
 export const metadata: Metadata = {
-  title: createTitle('Recovery code')
+  title: createTitle('Código de recuperación')
 };
 
 export default async function RecoveryCodePage({

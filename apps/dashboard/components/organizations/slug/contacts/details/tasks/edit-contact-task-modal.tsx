@@ -72,8 +72,8 @@ export const EditContactTaskModal = NiceModal.create<EditContactTaskModalProps>(
         description: task.description ?? ''
       }
     });
-    const title = 'Edit task';
-    const description = 'Edit the task by changing the form fields below.';
+    const title = 'Editar tarea';
+    const description = 'Editar la tarea cambiando los campos del formulario a continuación.';
     const canSubmit =
       !methods.formState.isSubmitting &&
       (!methods.formState.isSubmitted || methods.formState.isDirty);
@@ -83,10 +83,10 @@ export const EditContactTaskModal = NiceModal.create<EditContactTaskModalProps>(
       }
       const result = await updateContactTask(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Task udpated');
+        toast.success('Tarea actualizada');
         modal.handleClose();
       } else {
-        toast.error("Couldn't update task");
+        toast.error('No se pudo actualizar la tarea');
       }
     };
     const renderForm = (
@@ -99,7 +99,7 @@ export const EditContactTaskModal = NiceModal.create<EditContactTaskModalProps>(
           name="title"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
-              <FormLabel required>Title</FormLabel>
+              <FormLabel required>Título</FormLabel>
               <FormControl>
                 <Input
                   {...field}
@@ -119,7 +119,7 @@ export const EditContactTaskModal = NiceModal.create<EditContactTaskModalProps>(
             name="status"
             render={({ field }) => (
               <FormItem className="flex w-full flex-col">
-                <FormLabel>Status</FormLabel>
+                <FormLabel>Estado</FormLabel>
                 <FormControl>
                   <Select
                     value={field.value}
@@ -133,13 +133,13 @@ export const EditContactTaskModal = NiceModal.create<EditContactTaskModalProps>(
                       <SelectItem value={ContactTaskStatus.OPEN}>
                         <div className="flex flex-row items-center gap-1.5">
                           <div className="size-2 shrink-0 rounded-full bg-red-600" />
-                          <span>Open</span>
+                          <span>Abierta</span>
                         </div>
                       </SelectItem>
                       <SelectItem value={ContactTaskStatus.COMPLETED}>
                         <div className="flex flex-row items-center gap-1.5">
                           <div className="size-2 shrink-0 rounded-full bg-green-600" />
-                          <span>Completed</span>
+                          <span>Completada</span>
                         </div>
                       </SelectItem>
                     </SelectContent>
@@ -154,7 +154,7 @@ export const EditContactTaskModal = NiceModal.create<EditContactTaskModalProps>(
             name="dueDate"
             render={({ field }) => (
               <FormItem className="flex w-full flex-col">
-                <FormLabel>Due date</FormLabel>
+                <FormLabel>Fecha límite</FormLabel>
                 <FormControl>
                   <DatePicker
                     date={field.value}
@@ -172,7 +172,7 @@ export const EditContactTaskModal = NiceModal.create<EditContactTaskModalProps>(
           name="description"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
-              <FormLabel>Description</FormLabel>
+              <FormLabel>Descripción</FormLabel>
               <FormControl>
                 <Textarea
                   {...field}
@@ -195,7 +195,7 @@ export const EditContactTaskModal = NiceModal.create<EditContactTaskModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -204,7 +204,7 @@ export const EditContactTaskModal = NiceModal.create<EditContactTaskModalProps>(
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Save
+          Guardar
         </Button>
       </>
     );

@@ -77,7 +77,7 @@ export function ContactTimelineAddComment({
     if (!result?.serverError && !result?.validationErrors) {
       methods.reset(methods.formState.defaultValues);
     } else {
-      toast.error("Couldn't add comment");
+      toast.error('No se pudo agregar el comentario');
     }
   };
   return (
@@ -115,7 +115,7 @@ export function ContactTimelineAddComment({
                       <Input
                         type="text"
                         className="w-full flex-1 border-0 shadow-none outline-0"
-                        placeholder="Leave a comment..."
+                        placeholder="Deja un comentario..."
                         maxLength={2000}
                         {...field}
                       />
@@ -134,7 +134,7 @@ export function ContactTimelineAddComment({
                   size="sm"
                   disabled={!canSubmit}
                 >
-                  Post
+                  Publicar
                 </Button>
               </div>
             </Card>
@@ -151,7 +151,7 @@ export function ContactTimelineAddComment({
               htmlFor="show-comment"
               className="cursor-pointer text-xs"
             >
-              Show comments
+              Mostrar comentarios
             </Label>
           </div>
         </div>

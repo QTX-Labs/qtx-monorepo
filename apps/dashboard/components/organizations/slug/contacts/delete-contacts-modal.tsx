@@ -50,8 +50,8 @@ export const DeleteContactsModal = NiceModal.create<DeleteContactsModalProps>(
       }
     });
     const amount = contacts.length;
-    const subject = amount === 1 ? 'Contact' : 'Contacts';
-    const title = `Delete ${subject.toLowerCase()}?`;
+    const subject = amount === 1 ? 'Contacto' : 'Contactos';
+    const title = `¿Eliminar ${subject.toLowerCase()}?`;
     const canSubmit =
       !methods.formState.isSubmitting && methods.formState.isValid;
     const onSubmit: SubmitHandler<DeleteContactsSchema> = async (values) => {
@@ -60,17 +60,17 @@ export const DeleteContactsModal = NiceModal.create<DeleteContactsModalProps>(
       }
       const result = await deleteContacts(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success(`${subject} deleted`);
+        toast.success(subject === 'Contact' ? 'Contacto eliminado' : 'Contactos eliminados');
         modal.handleClose();
       } else {
-        toast.error(`${subject} couldn't be deleted`);
+        toast.error(subject === 'Contact' ? 'No se pudo eliminar el contacto' : 'No se pudieron eliminar los contactos');
       }
     };
     const renderDescription = (
       <>
-        You're about to delete{' '}
+        Estás a punto de eliminar{' '}
         <strong className="text-foreground font-medium">{`${amount} ${subject.toLowerCase()}`}</strong>
-        . This action cannot be undone.
+        . Esta acción no se puede deshacer.
       </>
     );
     const renderForm = (
@@ -92,7 +92,7 @@ export const DeleteContactsModal = NiceModal.create<DeleteContactsModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -101,7 +101,7 @@ export const DeleteContactsModal = NiceModal.create<DeleteContactsModalProps>(
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Yes, delete
+          Sí, eliminar
         </Button>
       </>
     );

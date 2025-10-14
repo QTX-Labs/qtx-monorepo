@@ -9,7 +9,7 @@ import { ThemeToggle } from '@workspace/ui/components/theme-toggle';
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Invitations')
+  title: createTitle('Invitaciones')
 };
 
 export default async function InvitationsLayout({

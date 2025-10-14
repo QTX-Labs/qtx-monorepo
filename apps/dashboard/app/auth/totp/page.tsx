@@ -11,7 +11,7 @@ const searchParamsCache = createSearchParamsCache({
 });
 
 export const metadata: Metadata = {
-  title: createTitle('Confirm via authenticator app')
+  title: createTitle('Confirmar vía app autenticadora')
 };
 
 export default async function TotpPage({

@@ -47,7 +47,7 @@ export const DeleteContactNoteModal =
         id: note.id
       }
     });
-    const title = 'Delete this note?';
+    const title = '¿Eliminar esta nota?';
     const canSubmit =
       !methods.formState.isSubmitting && methods.formState.isValid;
     const onSubmit: SubmitHandler<DeleteContactSchema> = async (values) => {
@@ -56,19 +56,19 @@ export const DeleteContactNoteModal =
       }
       const result = await deleteContactNote(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Note deleted');
+        toast.success('Nota eliminada');
         modal.handleClose();
       } else {
-        toast.error("Note couldn't be deleted");
+        toast.error('No se pudo eliminar la nota');
       }
     };
     const renderDescription = (
       <>
-        The note written by{' '}
+        La nota escrita por{' '}
         <strong className="text-foreground font-medium">
           {note.sender.name}
         </strong>{' '}
-        will be permanently deleted, are you sure you want to continue?
+        será eliminada permanentemente, ¿estás seguro de que deseas continuar?
       </>
     );
     const renderForm = (
@@ -91,7 +91,7 @@ export const DeleteContactNoteModal =
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -100,7 +100,7 @@ export const DeleteContactNoteModal =
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Yes, delete
+          Sí, eliminar
         </Button>
       </>
     );

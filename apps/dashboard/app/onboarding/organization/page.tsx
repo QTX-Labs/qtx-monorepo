@@ -15,7 +15,7 @@ import { createTitle } from '~/lib/formatters';
 import { OnboardingStep } from '~/schemas/onboarding/complete-onboarding-schema';
 
 export const metadata: Metadata = {
-  title: createTitle('New Organization')
+  title: createTitle('Nueva Organización')
 };
 
 export default async function OnboardingOnlyOrganizationPage(): Promise<React.JSX.Element> {

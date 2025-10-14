@@ -20,7 +20,7 @@ import { TransitionProvider } from '~/hooks/use-transition-context';
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Home')
+  title: createTitle('Inicio')
 };
 
 export type HomeLayoutProps = {
@@ -40,8 +40,8 @@ export default function HomeLayout({
         <PageHeader>
           <PagePrimaryBar>
             <OrganizationPageTitle
-              title="Overview"
-              info=" Lead and contact engagement metrics"
+              title="Resumen"
+              info=" Métricas de engagement de prospectos y contactos"
             />
             <PageActions>
               <Link

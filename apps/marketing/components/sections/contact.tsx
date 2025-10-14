@@ -15,17 +15,16 @@ import { SiteHeading } from '~/components/fragments/site-heading';
 
 export function Contact(): React.JSX.Element {
   const handleSendMessage = (): void => {
-    toast.error("I'm not implemented yet.");
+    toast.error("Aún no está implementado.");
   };
   return (
     <GridSection>
       <div className="container space-y-20 py-20">
         <SiteHeading
-          badge="Contact"
+          badge="Contacto"
           title={
             <>
-              We&apos;d love to hear
-              <br /> from you!
+              ¡Nos encantaría escucharte!
             </>
           }
         />
@@ -33,28 +32,28 @@ export function Contact(): React.JSX.Element {
           <div className="flex flex-col justify-between gap-10 lg:flex-row lg:gap-20">
             <div className="order-2 space-y-8 text-center lg:order-1 lg:w-1/2 lg:text-left">
               <h3 className="hidden max-w-fit text-4xl font-semibold lg:block">
-                Get in touch
+                Contáctanos
               </h3>
               <p className="text-muted-foreground lg:max-w-[80%]">
-                If you have any questions, don't hesitate to contact our team.
-                We'll get back to you within 48 hours.
+                Si tienes alguna pregunta, no dudes en contactar a nuestro equipo.
+                Te responderemos en menos de 48 horas.
               </p>
               <div className="space-y-4">
                 <h4 className="hidden text-lg font-medium lg:block">
-                  Contact details
+                  Detalles de contacto
                 </h4>
                 <div className="flex flex-col items-center gap-3 lg:items-start">
                   <ContactInfo
                     icon={PhoneIcon}
-                    text="(123) 34567890"
+                    text="+52 55 1234 5678"
                   />
                   <ContactInfo
                     icon={MailIcon}
-                    text="your-email@example.com"
+                    text="hola@qtx.mx"
                   />
                   <ContactInfo
                     icon={MapPinIcon}
-                    text="123 Main St, City, Country"
+                    text="Ciudad de México, México"
                   />
                 </div>
               </div>
@@ -63,35 +62,35 @@ export function Contact(): React.JSX.Element {
               <CardContent className="flex flex-col gap-6 px-6 lg:px-10">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2 grid w-full items-center gap-1.5 sm:col-span-1">
-                    <Label htmlFor="firstname">First Name</Label>
+                    <Label htmlFor="firstname">Nombre</Label>
                     <Input
                       id="firstname"
                       type="text"
-                      placeholder="John"
+                      placeholder="Juan"
                     />
                   </div>
                   <div className="col-span-2 grid w-full items-center gap-1.5 sm:col-span-1">
-                    <Label htmlFor="lastname">Last Name</Label>
+                    <Label htmlFor="lastname">Apellido</Label>
                     <Input
                       id="lastname"
                       type="text"
-                      placeholder="Doe"
+                      placeholder="Pérez"
                     />
                   </div>
                 </div>
                 <div className="grid w-full items-center gap-1.5">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Correo electrónico</Label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="johndoe@example.com"
+                    placeholder="juan.perez@ejemplo.com"
                   />
                 </div>
                 <div className="grid w-full gap-1.5">
-                  <Label htmlFor="message">Message</Label>
+                  <Label htmlFor="message">Mensaje</Label>
                   <Textarea
                     id="message"
-                    placeholder="Type your message here."
+                    placeholder="Escribe tu mensaje aquí."
                     rows={6}
                   />
                 </div>
@@ -100,7 +99,7 @@ export function Contact(): React.JSX.Element {
                   className="w-full"
                   onClick={handleSendMessage}
                 >
-                  Send message
+                  Enviar mensaje
                 </Button>
               </CardContent>
             </Card>

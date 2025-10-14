@@ -59,8 +59,8 @@ export const EditContactNoteModal = NiceModal.create<EditContactNoteModalProps>(
         text: note.text
       }
     });
-    const title = 'Edit note';
-    const description = 'Edit the note by changing the form fields below.';
+    const title = 'Editar nota';
+    const description = 'Editar la nota cambiando los campos del formulario a continuación.';
     const canSubmit =
       !methods.formState.isSubmitting &&
       (!methods.formState.isSubmitted || methods.formState.isDirty);
@@ -70,10 +70,10 @@ export const EditContactNoteModal = NiceModal.create<EditContactNoteModalProps>(
       }
       const result = await updateContactNote(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Note updated');
+        toast.success('Nota actualizada');
         modal.handleClose();
       } else {
-        toast.error("Couldn't update note");
+        toast.error('No se pudo actualizar la nota');
       }
     };
     const renderForm = (
@@ -114,7 +114,7 @@ export const EditContactNoteModal = NiceModal.create<EditContactNoteModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -122,7 +122,7 @@ export const EditContactNoteModal = NiceModal.create<EditContactNoteModalProps>(
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Save
+          Guardar
         </Button>
       </>
     );

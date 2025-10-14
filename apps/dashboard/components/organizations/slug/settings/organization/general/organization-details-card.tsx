@@ -58,9 +58,9 @@ export function OrganizationDetailsCard({
     }
     const result = await updateOrganizationDetails(values);
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Details updated');
+      toast.success('Detalles actualizados');
     } else {
-      toast.error("Couldn't update details");
+      toast.error('No se pudieron actualizar los detalles');
     }
   };
   return (
@@ -76,7 +76,7 @@ export function OrganizationDetailsCard({
               name="name"
               render={({ field }) => (
                 <FormItem className="flex w-full flex-col">
-                  <FormLabel required>Name</FormLabel>
+                  <FormLabel required>Nombre</FormLabel>
                   <FormControl>
                     <Input
                       type="text"
@@ -96,7 +96,7 @@ export function OrganizationDetailsCard({
               name="address"
               render={({ field }) => (
                 <FormItem className="flex w-full flex-col">
-                  <FormLabel>Address</FormLabel>
+                  <FormLabel>Dirección</FormLabel>
                   <FormControl>
                     <Input
                       type="text"
@@ -115,7 +115,7 @@ export function OrganizationDetailsCard({
               name="phone"
               render={({ field }) => (
                 <FormItem className="flex w-full flex-col">
-                  <FormLabel>Phone</FormLabel>
+                  <FormLabel>Teléfono</FormLabel>
                   <FormControl>
                     <Input
                       type="tel"
@@ -134,7 +134,7 @@ export function OrganizationDetailsCard({
               name="email"
               render={({ field }) => (
                 <FormItem className="flex w-full flex-col">
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Correo electrónico</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
@@ -153,7 +153,7 @@ export function OrganizationDetailsCard({
               name="website"
               render={({ field }) => (
                 <FormItem className="flex w-full flex-col">
-                  <FormLabel>Website</FormLabel>
+                  <FormLabel>Sitio web</FormLabel>
                   <FormControl>
                     <Input
                       type="url"
@@ -179,7 +179,7 @@ export function OrganizationDetailsCard({
             loading={methods.formState.isSubmitting}
             onClick={methods.handleSubmit(onSubmit)}
           >
-            Save
+            Guardar
           </Button>
         </CardFooter>
       </Card>

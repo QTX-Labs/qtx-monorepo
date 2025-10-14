@@ -29,7 +29,7 @@ export function SettingsSidebar(): React.JSX.Element {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              tooltip="Back"
+              tooltip="Volver"
             >
               <Link
                 href={replaceOrgSlug(
@@ -39,7 +39,7 @@ export function SettingsSidebar(): React.JSX.Element {
                 className="h-10"
               >
                 <ChevronLeftIcon className="size-4 shrink-0 text-muted-foreground" />
-                <span className="text-sm font-semibold">Settings</span>
+                <span className="text-sm font-semibold">Configuración</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

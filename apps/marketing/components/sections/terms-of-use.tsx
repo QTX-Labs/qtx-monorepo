@@ -20,55 +20,55 @@ import { SiteHeading } from '~/components/fragments/site-heading';
 
 const DATA_CARDS = [
   {
-    title: 'Introduction',
+    title: 'Introducción',
     icon: <BookIcon className="size-4 shrink-0" />,
     content:
-      'These terms outline the rules for using our platform. By continuing to use the platform, you agree to comply with them.'
+      'Estos términos describen las reglas para usar nuestra plataforma. Al continuar usando la plataforma, aceptas cumplir con ellos.'
   },
   {
-    title: 'Eligibility',
+    title: 'Elegibilidad',
     icon: <ScaleIcon className="size-4 shrink-0" />,
     content:
-      'Users must be at least 18 years old and provide accurate details to maintain their accounts.'
+      'Los usuarios deben tener al menos 18 años y proporcionar detalles precisos para mantener sus cuentas.'
   },
   {
-    title: 'Prohibited Uses',
+    title: 'Usos Prohibidos',
     icon: <AlertCircleIcon className="size-4 shrink-0" />,
     content:
-      'Users must avoid posting harmful content, distributing malware, or attempting unauthorized platform access.'
+      'Los usuarios deben evitar publicar contenido dañino, distribuir malware, o intentar acceso no autorizado a la plataforma.'
   }
 ];
 
 const DATA_ACCORDION = [
   {
-    title: 'Intellectual Property Rights',
+    title: 'Derechos de Propiedad Intelectual',
     content:
-      'All platform content, including trademarks and materials, is owned by us. Unauthorized use is prohibited.'
+      'Todo el contenido de la plataforma, incluyendo marcas registradas y materiales, es de nuestra propiedad. El uso no autorizado está prohibido.'
   },
   {
-    title: 'User-Generated Content',
+    title: 'Contenido Generado por Usuarios',
     content:
-      'You retain ownership of content you post but grant us a license to use it. Inappropriate content may be removed at our discretion.'
+      'Mantienes la propiedad del contenido que publicas pero nos otorgas una licencia para usarlo. El contenido inapropiado puede ser eliminado a nuestra discreción.'
   },
   {
-    title: 'Limitation of Liability',
+    title: 'Limitación de Responsabilidad',
     content:
-      "Our platform is provided 'as is' without warranties. We are not liable for indirect damages, and users assume associated risks."
+      "Nuestra plataforma se proporciona 'tal como está' sin garantías. No somos responsables por daños indirectos, y los usuarios asumen los riesgos asociados."
   },
   {
-    title: 'Termination of Access',
+    title: 'Terminación de Acceso',
     content:
-      'We may suspend or terminate access for violations of these terms, fraudulent activity, or other valid reasons.'
+      'Podemos suspender o terminar el acceso por violaciones de estos términos, actividad fraudulenta, u otras razones válidas.'
   },
   {
-    title: 'Governing Law and Disputes',
+    title: 'Ley Aplicable y Disputas',
     content:
-      'These terms are governed by the laws of [jurisdiction]. Disputes will be resolved through arbitration or designated courts.'
+      'Estos términos se rigen por las leyes de México. Las disputas se resolverán a través de arbitraje o tribunales designados.'
   },
   {
-    title: 'Modifications to Terms',
+    title: 'Modificaciones a los Términos',
     content:
-      'We reserve the right to update these terms. Changes will be posted here, and continued use constitutes acceptance.'
+      'Nos reservamos el derecho de actualizar estos términos. Los cambios se publicarán aquí, y el uso continuado constituye aceptación.'
   }
 ];
 
@@ -78,14 +78,13 @@ export function TermsOfUse(): React.JSX.Element {
       <div className="container space-y-16 py-20">
         <SiteHeading
           badge="Legal"
-          title="Terms of Use"
-          description="By accessing our platform, you agree to the terms outlined below. Please read them carefully to ensure you understand your rights and responsibilities."
+          title="Términos de Uso"
+          description="Al acceder a nuestra plataforma, aceptas los términos descritos a continuación. Por favor léelos cuidadosamente para asegurar que entiendes tus derechos y responsabilidades."
         />
         <Alert variant="warning">
           <AlertDescription className="ml-3 text-base inline">
-            These terms provide a general framework. They should be reviewed and
-            customized by a legal professional to suit your jurisdiction and use
-            case.
+            Estos términos proporcionan un marco general. Deben ser revisados y
+            personalizados por un profesional legal para ajustarse a tu jurisdicción y caso de uso.
           </AlertDescription>
         </Alert>
 
@@ -131,16 +130,16 @@ export function TermsOfUse(): React.JSX.Element {
 
         <div>
           <CardTitle className="text-lg text-primary">
-            Contact Information
+            Información de Contacto
           </CardTitle>
           <p className="text-sm leading-relaxed">
-            For questions or concerns, contact us at:
+            Para preguntas o inquietudes, contáctanos en:
             <br />
             <a
-              href="mailto:support@yourdomain.com"
+              href="mailto:hola@qtx.mx"
               className="text-blue-500 hover:underline"
             >
-              support@yourdomain.com
+              hola@qtx.mx
             </a>
           </p>
         </div>

@@ -33,8 +33,8 @@ export function ContactTimelineActivity({
     if (!event.metadata) return null;
     return Object.entries(event.metadata).map(([key, value]) => ({
       key,
-      oldValue: value.old || 'Empty',
-      newValue: value.new || 'Empty'
+      oldValue: value.old || 'Vacío',
+      newValue: value.new || 'Vacío'
     }));
   }, [event.metadata]);
 
@@ -112,9 +112,9 @@ export function ContactTimelineActivity({
 }
 
 const actionTypeToText: Record<ActionType, string> = {
-  [ActionType.CREATE]: 'created the contact.',
-  [ActionType.UPDATE]: 'updated the contact.',
-  [ActionType.DELETE]: 'deleted the contact.'
+  [ActionType.CREATE]: 'creó el contacto.',
+  [ActionType.UPDATE]: 'actualizó el contacto.',
+  [ActionType.DELETE]: 'eliminó el contacto.'
 };
 
 type ValueBadgeProps = {
@@ -134,7 +134,7 @@ function ValueBadge({
   variant
 }: ValueBadgeProps): React.JSX.Element {
   const text = React.useMemo(() => {
-    if (!value) return 'Empty';
+    if (!value) return 'Vacío';
     return propertyLabelMap[property]?.[value] || value;
   }, [property, value]);
 

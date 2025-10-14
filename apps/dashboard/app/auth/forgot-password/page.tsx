@@ -5,7 +5,7 @@ import { ForgotPasswordCard } from '~/components/auth/forgot-password/forgot-pas
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Forgot password')
+  title: createTitle('Recuperar contraseña')
 };
 
 export default function ForgotPasswordPage(): React.JSX.Element {

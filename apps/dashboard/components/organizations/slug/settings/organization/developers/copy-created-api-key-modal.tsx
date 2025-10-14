@@ -33,7 +33,7 @@ export const CopyCreatedApiKeyModal =
         return;
       }
       await copyToClipboard(apiKey);
-      toast.success('Copied!');
+      toast.success('¡Copiado!');
     };
     return (
       <AlertDialog open={modal.visible}>

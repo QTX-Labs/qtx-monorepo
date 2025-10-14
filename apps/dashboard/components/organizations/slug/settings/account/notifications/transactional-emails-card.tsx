@@ -52,9 +52,9 @@ export function TransactionalEmailsCard({
     }
     const result = await updateTransactionalEmails(values);
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Transactional emails updated');
+      toast.success('Emails transaccionales actualizados');
     } else {
-      toast.error("Couldn't update transactional emails");
+      toast.error('No se pudieron actualizar los emails transaccionales');
     }
   };
   return (
@@ -71,9 +71,9 @@ export function TransactionalEmailsCard({
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between">
                   <div className="space-y-0.5">
-                    <FormLabel>Contacts</FormLabel>
+                    <FormLabel>Contactos</FormLabel>
                     <FormDescription>
-                      Someone on your team added or changed a lead.
+                      Alguien de tu equipo agregó o cambió un prospecto.
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -92,9 +92,9 @@ export function TransactionalEmailsCard({
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between">
                   <div className="space-y-0.5">
-                    <FormLabel>Inbox</FormLabel>
+                    <FormLabel>Bandeja de entrada</FormLabel>
                     <FormDescription>
-                      Message is assigned to me or I got mentioned.
+                      Se me asignó un mensaje o me mencionaron.
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -113,9 +113,9 @@ export function TransactionalEmailsCard({
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between">
                   <div className="space-y-0.5">
-                    <FormLabel>Weekly summary</FormLabel>
+                    <FormLabel>Resumen semanal</FormLabel>
                     <FormDescription>
-                      Summary of all relevant acitivities in the past week.
+                      Resumen de todas las actividades relevantes de la semana pasada.
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -130,9 +130,9 @@ export function TransactionalEmailsCard({
             />
             <div className="flex flex-row items-center justify-between">
               <div className="space-y-0.5">
-                <Label>Security emails</Label>
+                <Label>Emails de seguridad</Label>
                 <FormDescription>
-                  Changes that do not require an email confirmation.
+                  Cambios que no requieren confirmación por email.
                 </FormDescription>
               </div>
               <Switch
@@ -152,7 +152,7 @@ export function TransactionalEmailsCard({
             loading={methods.formState.isSubmitting}
             onClick={methods.handleSubmit(onSubmit)}
           >
-            Save
+            Guardar
           </Button>
         </CardFooter>
       </Card>

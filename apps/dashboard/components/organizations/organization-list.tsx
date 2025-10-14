@@ -52,16 +52,16 @@ export function OrganizationList({
     <Card className="border-none shadow-none">
       <CardHeader className="text-center">
         <CardTitle className="text-xl font-semibold leading-none tracking-tight">
-          Organizations
+          Organizaciones
         </CardTitle>
         <CardDescription className="hidden sm:block">
-          Jump into an existing organization or add a new one.
+          Accede a una organización existente o agrega una nueva.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center space-x-4">
           <InputSearch
-            placeholder="Search..."
+            placeholder="Buscar..."
             value={searchQuery}
             onChange={handleSearchQueryChange}
           />
@@ -73,8 +73,8 @@ export function OrganizationList({
             })}
           >
             <PlusIcon className="size-4 shrink-0" />
-            <span className="hidden sm:inline">Add organization</span>
-            <span className="inline sm:hidden">Add</span>
+            <span className="hidden sm:inline">Agregar organización</span>
+            <span className="inline sm:hidden">Agregar</span>
           </Link>
         </div>
         {filteredOrganizations.length === 0 ? (
@@ -84,11 +84,11 @@ export function OrganizationList({
                 <StoreIcon className="size-6 shrink-0 text-muted-foreground" />
               </div>
             }
-            title="No organization found"
+            title="No se encontraron organizaciones"
             description={
               searchQuery
-                ? 'Adjust your search query to show more.'
-                : 'Add your first organization to get started.'
+                ? 'Ajusta tu búsqueda para mostrar más resultados.'
+                : 'Agrega tu primera organización para comenzar.'
             }
           />
         ) : (

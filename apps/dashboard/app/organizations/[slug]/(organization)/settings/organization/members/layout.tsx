@@ -15,7 +15,7 @@ import { OrganizationPageTitle } from '~/components/organizations/slug/organizat
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Members')
+  title: createTitle('Miembros')
 };
 
 export type MembersLayoutProps = {

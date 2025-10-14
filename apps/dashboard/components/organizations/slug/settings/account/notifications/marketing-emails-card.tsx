@@ -51,9 +51,9 @@ export function MarketingEmailsCard({
     }
     const result = await updateMarketingEmails(values);
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Marketing emails updated');
+      toast.success('Emails de marketing actualizados');
     } else {
-      toast.error("Couldn't update marketing emails");
+      toast.error('No se pudieron actualizar los emails de marketing');
     }
   };
   return (
@@ -70,9 +70,9 @@ export function MarketingEmailsCard({
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between">
                   <div className="space-y-0.5">
-                    <FormLabel>Newsletter</FormLabel>
+                    <FormLabel>Boletín</FormLabel>
                     <FormDescription>
-                      Receive emails filled with industry expertise.
+                      Recibe emails llenos de experiencia de la industria.
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -91,9 +91,9 @@ export function MarketingEmailsCard({
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between">
                   <div className="space-y-0.5">
-                    <FormLabel>Product updates</FormLabel>
+                    <FormLabel>Actualizaciones de producto</FormLabel>
                     <FormDescription>
-                      Receive emails with all new features and updates.
+                      Recibe emails con todas las nuevas funciones y actualizaciones.
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -118,7 +118,7 @@ export function MarketingEmailsCard({
             loading={methods.formState.isSubmitting}
             onClick={methods.handleSubmit(onSubmit)}
           >
-            Save
+            Guardar
           </Button>
         </CardFooter>
       </Card>

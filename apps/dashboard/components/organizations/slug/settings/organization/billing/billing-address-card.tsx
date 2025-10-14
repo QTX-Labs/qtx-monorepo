@@ -69,9 +69,9 @@ export function BillingAddressCard({
     }
     const result = await updateBillingAddress(values);
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Billing address updated');
+      toast.success('Dirección de facturación actualizada');
     } else {
-      toast.error("Couldn't update billing address");
+      toast.error('No se pudo actualizar la dirección de facturación');
     }
   };
   return (
@@ -88,7 +88,7 @@ export function BillingAddressCard({
                 name="line1"
                 render={({ field }) => (
                   <FormItem className="flex w-full flex-col">
-                    <FormLabel>Address line 1</FormLabel>
+                    <FormLabel>Línea de dirección 1</FormLabel>
                     <FormControl>
                       <Input
                         type="text"
@@ -109,7 +109,7 @@ export function BillingAddressCard({
                 name="line2"
                 render={({ field }) => (
                   <FormItem className="flex w-full flex-col">
-                    <FormLabel>Address line 2</FormLabel>
+                    <FormLabel>Línea de dirección 2</FormLabel>
                     <FormControl>
                       <Input
                         type="text"
@@ -130,7 +130,7 @@ export function BillingAddressCard({
                 name="country"
                 render={({ field }) => (
                   <FormItem className="flex w-full flex-col">
-                    <FormLabel>Country</FormLabel>
+                    <FormLabel>País</FormLabel>
                     <FormControl>
                       <Select
                         {...field}
@@ -173,7 +173,7 @@ export function BillingAddressCard({
                 name="postalCode"
                 render={({ field }) => (
                   <FormItem className="flex w-full flex-col">
-                    <FormLabel>Postal code</FormLabel>
+                    <FormLabel>Código postal</FormLabel>
                     <FormControl>
                       <Input
                         type="text"
@@ -194,7 +194,7 @@ export function BillingAddressCard({
                 name="city"
                 render={({ field }) => (
                   <FormItem className="flex w-full flex-col">
-                    <FormLabel>City</FormLabel>
+                    <FormLabel>Ciudad</FormLabel>
                     <FormControl>
                       <Input
                         type="text"
@@ -215,7 +215,7 @@ export function BillingAddressCard({
                 name="state"
                 render={({ field }) => (
                   <FormItem className="flex w-full flex-col">
-                    <FormLabel>State</FormLabel>
+                    <FormLabel>Estado/Provincia</FormLabel>
                     <FormControl>
                       <Input
                         type="text"
@@ -242,7 +242,7 @@ export function BillingAddressCard({
             loading={methods.formState.isSubmitting}
             onClick={methods.handleSubmit(onSubmit)}
           >
-            Save
+            Guardar
           </Button>
         </CardFooter>
       </Card>

@@ -14,8 +14,8 @@ export function ContactsEmptyState(): React.JSX.Element {
             <UsersIcon className="size-6 shrink-0 text-muted-foreground" />
           </div>
         }
-        title="No contact yet"
-        description="Add contacts and they will show up here."
+        title="Aún no hay contactos"
+        description="Agrega contactos y aparecerán aquí."
       >
         <AddContactButton />
       </EmptyState>

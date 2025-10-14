@@ -49,7 +49,7 @@ export const DeleteContactTaskModal =
         id: task.id
       }
     });
-    const title = 'Delete this task?';
+    const title = '¿Eliminar esta tarea?';
     const canSubmit =
       !methods.formState.isSubmitting && methods.formState.isValid;
     const onSubmit: SubmitHandler<DeleteContactSchema> = async (values) => {
@@ -58,17 +58,17 @@ export const DeleteContactTaskModal =
       }
       const result = await deleteContactTask(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Task deleted');
+        toast.success('Tarea eliminada');
         modal.handleClose();
       } else {
-        toast.error("Task couldn't be deleted");
+        toast.error('No se pudo eliminar la tarea');
       }
     };
     const renderDescription = (
       <>
-        The task{' '}
+        La tarea{' '}
         <strong className="text-foreground font-medium">{task.title}</strong>{' '}
-        will be permanently deleted, are you sure you want to continue?
+        será eliminada permanentemente, ¿estás seguro de que deseas continuar?
       </>
     );
     const renderForm = (
@@ -91,7 +91,7 @@ export const DeleteContactTaskModal =
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -100,7 +100,7 @@ export const DeleteContactTaskModal =
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Yes, delete
+          Sí, eliminar
         </Button>
       </>
     );

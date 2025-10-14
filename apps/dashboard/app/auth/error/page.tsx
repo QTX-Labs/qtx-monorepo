@@ -13,7 +13,7 @@ const searchParamsCache = createSearchParamsCache({
 });
 
 export const metadata: Metadata = {
-  title: createTitle('Auth Error')
+  title: createTitle('Error de Autenticación')
 };
 
 export default async function AuthErrorPage({

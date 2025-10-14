@@ -151,7 +151,7 @@ export function ContactsFilters({
           </SelectContent>
         </Select>
         <DataTableFilter
-          title="Tags"
+          title="Etiquetas"
           options={tags.map((tag) => ({ value: tag.text, label: tag.text }))}
           selected={selectedTags || []}
           onChange={handleTagsChange}
@@ -160,7 +160,7 @@ export function ContactsFilters({
       <div>
         {smUp ? (
           <InputSearch
-            placeholder="Search by name or email..."
+            placeholder="Buscar por nombre o email..."
             className="w-[240px]"
             value={searchQuery}
             onChange={handleSearchQueryChange}
@@ -180,7 +180,7 @@ export function ContactsFilters({
                 <InputSearch
                   autoFocus
                   alwaysShowClearButton
-                  placeholder="Search by name or email..."
+                  placeholder="Buscar por nombre o email..."
                   className="h-12 w-full border-none ring-0!"
                   containerClassName="h-12"
                   value={searchQuery}
@@ -198,17 +198,17 @@ export function ContactsFilters({
 
 const recordsOptions = [
   {
-    label: 'All',
+    label: 'Todos',
     value: RecordsOption.All,
     icon: <GridIcon className="size-4 shrink-0" />
   },
   {
-    label: 'People',
+    label: 'Personas',
     value: RecordsOption.People,
     icon: <UserIcon className="size-4 shrink-0" />
   },
   {
-    label: 'Companies',
+    label: 'Empresas',
     value: RecordsOption.Companies,
     icon: <BuildingIcon className="size-4 shrink-0" />
   }

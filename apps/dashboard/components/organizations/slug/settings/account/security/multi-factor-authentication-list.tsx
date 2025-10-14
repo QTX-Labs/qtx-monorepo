@@ -63,7 +63,7 @@ function AuthenticatorAppListItem({
         NiceModal.show(RecoveryCodesModal, { recoveryCodes });
       }
     } else {
-      toast.error("Couldn't generate TOTP setup data");
+      toast.error('No se pudieron generar los datos de configuración TOTP');
     }
   };
   const handleShowDisableAuthenticatorAppModal = (): void => {
@@ -106,10 +106,10 @@ function AuthenticatorAppListItem({
         </svg>
         <div className="flex min-w-0 flex-1 flex-col">
           <h5 className="overflow-hidden truncate text-sm font-medium">
-            Authenticator app
+            App autenticadora
           </h5>
           <div className="overflow-hidden truncate text-sm text-muted-foreground">
-            {isEnabled ? 'Enabled' : 'Not enabled'}
+            {isEnabled ? 'Habilitada' : 'No habilitada'}
           </div>
         </div>
       </div>
@@ -120,7 +120,7 @@ function AuthenticatorAppListItem({
           className="shrink-0"
           onClick={handleShowDisableAuthenticatorAppModal}
         >
-          Disable
+          Deshabilitar
         </Button>
       ) : (
         <Button
@@ -129,7 +129,7 @@ function AuthenticatorAppListItem({
           className="shrink-0"
           onClick={handleShowEnableAuthenticatorAppModal}
         >
-          Enable
+          Habilitar
         </Button>
       )}
     </li>

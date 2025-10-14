@@ -15,7 +15,7 @@ import { OrganizationPageTitle } from '~/components/organizations/slug/organizat
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Profile')
+  title: createTitle('Perfil')
 };
 
 export type ProfileLayoutProps = {
@@ -36,9 +36,9 @@ export default function ProfileLayout({
           <OrganizationPageTitle
             index={{
               route: routes.dashboard.organizations.slug.settings.account.Index,
-              title: 'Account'
+              title: 'Cuenta'
             }}
-            title="Profile"
+            title="Perfil"
           />
         </PagePrimaryBar>
       </PageHeader>

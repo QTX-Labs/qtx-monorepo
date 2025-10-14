@@ -22,9 +22,9 @@ export function BlogPosts(): React.JSX.Element {
     <GridSection>
       <div className="container py-20 space-y-16">
         <SiteHeading
-          badge="Blog Posts"
-          title="Insights & News"
-          description="Learn more from members of our team and industry-leading experts."
+          badge="Artículos"
+          title="Insights y Noticias"
+          description="Aprende más de los miembros de nuestro equipo y expertos líderes de la industria."
         />
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -66,7 +66,7 @@ export function BlogPosts(): React.JSX.Element {
                     <span className="text-sm">{post.author?.name ?? ''}</span>
                   </div>
                   <div className="group flex items-center gap-2 text-sm hover:underline">
-                    Read more
+                    Leer más
                     <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-1" />
                   </div>
                 </div>

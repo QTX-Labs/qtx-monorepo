@@ -217,13 +217,13 @@ const columns: ColumnDef<ContactDto>[] = [
   },
   {
     meta: {
-      title: 'Name'
+      title: 'Nombre'
     },
     accessorKey: 'name',
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title="Name"
+        title="Nombre"
       />
     ),
     cell: ({ row }) => (
@@ -259,13 +259,13 @@ const columns: ColumnDef<ContactDto>[] = [
   },
   {
     meta: {
-      title: 'Phone'
+      title: 'Teléfono'
     },
     accessorKey: 'phone',
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title="Phone"
+        title="Teléfono"
       />
     ),
     cell: ({ row }) => (
@@ -276,13 +276,13 @@ const columns: ColumnDef<ContactDto>[] = [
   },
   {
     meta: {
-      title: 'Stage'
+      title: 'Etapa'
     },
     accessorKey: 'stage',
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title="Stage"
+        title="Etapa"
       />
     ),
     enableSorting: true,
@@ -301,13 +301,13 @@ const columns: ColumnDef<ContactDto>[] = [
   },
   {
     meta: {
-      title: 'Tags'
+      title: 'Etiquetas'
     },
     accessorKey: 'tags',
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title="Tags"
+        title="Etiquetas"
       />
     ),
     cell: ({ row }) => (
@@ -349,10 +349,10 @@ function ActionsCell({ row }: { row: Row<ContactDto> }): React.JSX.Element {
           variant="ghost"
           className="ml-auto mr-4 flex size-8 data-[state=open]:bg-muted"
           onClick={(e) => e.stopPropagation()}
-          title="Open menu"
+          title="Abrir menú"
         >
           <MoreHorizontalIcon className="size-4 shrink-0" />
-          <span className="sr-only">Open menu</span>
+          <span className="sr-only">Abrir menú</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -363,7 +363,7 @@ function ActionsCell({ row }: { row: Row<ContactDto> }): React.JSX.Element {
           <Link
             href={`${replaceOrgSlug(routes.dashboard.organizations.slug.Contacts, activeOrganization.slug)}/${row.original.id}`}
           >
-            View
+            Ver
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -374,7 +374,7 @@ function ActionsCell({ row }: { row: Row<ContactDto> }): React.JSX.Element {
             handleShowDeleteContactModal();
           }}
         >
-          Delete
+          Eliminar
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

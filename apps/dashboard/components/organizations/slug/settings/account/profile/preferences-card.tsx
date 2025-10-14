@@ -66,10 +66,10 @@ export function PreferencesCard({
     }
     const result = await updatePreferences(values);
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Preferences updated');
+      toast.success('Preferencias actualizadas');
       setTheme(values.theme);
     } else {
-      toast.error("Couldn't update preferences");
+      toast.error('No se pudieron actualizar las preferencias');
     }
   };
   return (
@@ -85,9 +85,9 @@ export function PreferencesCard({
               name="locale"
               render={({ field }) => (
                 <FormItem className="flex w-full flex-col">
-                  <FormLabel>Language</FormLabel>
+                  <FormLabel>Idioma</FormLabel>
                   <FormDescription>
-                    This is the language that will be used in the application.
+                    Este es el idioma que se usará en la aplicación.
                   </FormDescription>
                   <FormControl>
                     <Select
@@ -102,19 +102,19 @@ export function PreferencesCard({
                         <SelectItem value="en-US">
                           <div className="flex flex-row items-center gap-2">
                             <UsFlag className="h-3 w-4" />
-                            <span>English (United States)</span>
+                            <span>Inglés (Estados Unidos)</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="en-GB">
                           <div className="flex flex-row items-center gap-2">
                             <GbFlag className="h-3 w-4" />
-                            <span>English (United Kingdom)</span>
+                            <span>Inglés (Reino Unido)</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="de-DE">
                           <div className="flex flex-row items-center gap-2">
                             <DeFlg className="h-3 w-4" />
-                            <span>German (Germany)</span>
+                            <span>Alemán (Alemania)</span>
                           </div>
                         </SelectItem>
                       </SelectContent>
@@ -129,9 +129,9 @@ export function PreferencesCard({
               name="theme"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Theme</FormLabel>
+                  <FormLabel>Tema</FormLabel>
                   <FormDescription>
-                    Select the theme for the application.
+                    Selecciona el tema para la aplicación.
                   </FormDescription>
                   <FormControl>
                     <RadioCards
@@ -168,7 +168,7 @@ export function PreferencesCard({
             loading={methods.formState.isSubmitting}
             onClick={methods.handleSubmit(onSubmit)}
           >
-            Save
+            Guardar
           </Button>
         </CardFooter>
       </Card>

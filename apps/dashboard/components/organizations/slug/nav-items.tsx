@@ -27,7 +27,7 @@ type NavItem = {
 export function createMainNavItems(slug: string): NavItem[] {
   return [
     {
-      title: 'Home',
+      title: 'Inicio',
       href: replaceOrgSlug(routes.dashboard.organizations.slug.Home, slug),
       icon: HomeIcon
     },
@@ -47,12 +47,12 @@ export function createMainNavItems(slug: string): NavItem[] {
       icon: FileTextIcon
     },
     {
-      title: 'Contacts',
+      title: 'Contactos',
       href: replaceOrgSlug(routes.dashboard.organizations.slug.Contacts, slug),
       icon: UsersIcon
     },
     {
-      title: 'Settings',
+      title: 'Configuración',
       href: replaceOrgSlug(
         routes.dashboard.organizations.slug.settings.Index,
         slug
@@ -65,7 +65,7 @@ export function createMainNavItems(slug: string): NavItem[] {
 export function createAccountNavItems(slug: string): NavItem[] {
   return [
     {
-      title: 'Profile',
+      title: 'Perfil',
       href: replaceOrgSlug(
         routes.dashboard.organizations.slug.settings.account.Profile,
         slug
@@ -73,7 +73,7 @@ export function createAccountNavItems(slug: string): NavItem[] {
       icon: UserIcon
     },
     {
-      title: 'Security',
+      title: 'Seguridad',
       href: replaceOrgSlug(
         routes.dashboard.organizations.slug.settings.account.Security,
         slug
@@ -81,7 +81,7 @@ export function createAccountNavItems(slug: string): NavItem[] {
       icon: LockKeyholeIcon
     },
     {
-      title: 'Notifications',
+      title: 'Notificaciones',
       href: replaceOrgSlug(
         routes.dashboard.organizations.slug.settings.account.Notifications,
         slug
@@ -102,7 +102,7 @@ export function createOrganizationNavItems(slug: string): NavItem[] {
       icon: StoreIcon
     },
     {
-      title: 'Members',
+      title: 'Miembros',
       href: replaceOrgSlug(
         routes.dashboard.organizations.slug.settings.organization.Members,
         slug
@@ -110,7 +110,7 @@ export function createOrganizationNavItems(slug: string): NavItem[] {
       icon: UserPlus2Icon
     },
     {
-      title: 'Billing',
+      title: 'Facturación',
       href: replaceOrgSlug(
         routes.dashboard.organizations.slug.settings.organization.Billing,
         slug
@@ -118,7 +118,7 @@ export function createOrganizationNavItems(slug: string): NavItem[] {
       icon: CreditCardIcon
     },
     {
-      title: 'Developers',
+      title: 'Desarrolladores',
       href: replaceOrgSlug(
         routes.dashboard.organizations.slug.settings.organization.Developers,
         slug

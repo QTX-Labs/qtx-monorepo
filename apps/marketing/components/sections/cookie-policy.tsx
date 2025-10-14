@@ -20,45 +20,45 @@ import { SiteHeading } from '~/components/fragments/site-heading';
 
 const DATA_CARDS = [
   {
-    title: 'What are Cookies?',
+    title: '¿Qué son las Cookies?',
     icon: <CookieIcon className="size-4 shrink-0" />,
     content:
-      'Cookies are small text files stored on your device that help us improve your experience by remembering preferences.'
+      'Las cookies son pequeños archivos de texto almacenados en tu dispositivo que nos ayudan a mejorar tu experiencia recordando preferencias.'
   },
   {
-    title: 'Types of Cookies',
+    title: 'Tipos de Cookies',
     icon: <BookIcon className="size-4 shrink-0" />,
     content:
-      'We use both session and persistent cookies to track user activity and enhance site functionality.'
+      'Utilizamos cookies de sesión y persistentes para rastrear la actividad del usuario y mejorar la funcionalidad del sitio.'
   },
   {
-    title: 'Managing Cookies',
+    title: 'Gestión de Cookies',
     icon: <ScaleIcon className="size-4 shrink-0" />,
     content:
-      'You can control cookie settings in your browser. However, disabling cookies may impact your experience on our site.'
+      'Puedes controlar la configuración de cookies en tu navegador. Sin embargo, deshabilitar las cookies puede afectar tu experiencia en nuestro sitio.'
   }
 ];
 
 const DATA_ACCORDION = [
   {
-    title: 'Cookies We Use',
+    title: 'Cookies que Utilizamos',
     content:
-      'We use cookies for functionality (e.g., sessions), performance (e.g., analytics), and advertising (e.g., targeted ads).'
+      'Utilizamos cookies para funcionalidad (ej. sesiones), rendimiento (ej. analíticas), y publicidad (ej. anuncios dirigidos).'
   },
   {
-    title: 'Third-Party Cookies',
+    title: 'Cookies de Terceros',
     content:
-      'We may allow third-party services (such as Google Analytics) to place cookies on your device for specific purposes.'
+      'Podemos permitir que servicios de terceros (como Google Analytics) coloquen cookies en tu dispositivo para propósitos específicos.'
   },
   {
-    title: 'How to Manage Cookies',
+    title: 'Cómo Gestionar Cookies',
     content:
-      'You can adjust cookie settings in your browser. For more detailed instructions, refer to your browser’s help guide.'
+      'Puedes ajustar la configuración de cookies en tu navegador. Para instrucciones más detalladas, consulta la guía de ayuda de tu navegador.'
   },
   {
-    title: 'Changes to Our Cookie Policy',
+    title: 'Cambios a Nuestra Política de Cookies',
     content:
-      'We may update this Cookie Policy from time to time. Any changes will be posted on this page.'
+      'Podemos actualizar esta Política de Cookies de vez en cuando. Cualquier cambio será publicado en esta página.'
   }
 ];
 
@@ -68,14 +68,13 @@ export function CookiePolicy(): React.JSX.Element {
       <div className="container space-y-16 py-20">
         <SiteHeading
           badge="Legal"
-          title="Cookie Policy"
-          description="Learn how we use cookies and similar technologies to improve your experience on our platform."
+          title="Política de Cookies"
+          description="Aprende cómo utilizamos cookies y tecnologías similares para mejorar tu experiencia en nuestra plataforma."
         />
         <Alert variant="warning">
           <AlertDescription className="ml-3 text-base inline">
-            This policy provides a general framework. It should be reviewed and
-            customized by a legal professional to suit your jurisdiction and use
-            case.
+            Esta política proporciona un marco general. Debe ser revisada y
+            personalizada por un profesional legal para ajustarse a tu jurisdicción y caso de uso.
           </AlertDescription>
         </Alert>
 
@@ -121,16 +120,16 @@ export function CookiePolicy(): React.JSX.Element {
 
         <div>
           <CardTitle className="text-lg text-primary">
-            Contact Information
+            Información de Contacto
           </CardTitle>
           <p className="text-sm leading-relaxed">
-            For questions or concerns, contact us at:
+            Para preguntas o inquietudes, contáctanos en:
             <br />
             <a
-              href="mailto:support@yourdomain.com"
+              href="mailto:hola@qtx.mx"
               className="text-blue-500 hover:underline"
             >
-              support@yourdomain.com
+              hola@qtx.mx
             </a>
           </p>
         </div>

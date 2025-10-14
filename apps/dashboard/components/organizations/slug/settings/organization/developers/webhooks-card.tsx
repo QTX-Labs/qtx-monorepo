@@ -42,7 +42,7 @@ export function WebhooksCard({
             <WebhookList webhooks={webhooks} />
           </ScrollArea>
         ) : (
-          <EmptyText className="p-6">No webhook found.</EmptyText>
+          <EmptyText className="p-6">No se encontraron webhooks.</EmptyText>
         )}
       </CardContent>
       <Separator />
@@ -53,7 +53,7 @@ export function WebhooksCard({
           size="default"
           onClick={handleShowCreateWebhookModal}
         >
-          Create webhook
+          Crear webhook
         </Button>
       </CardFooter>
     </Card>

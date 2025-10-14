@@ -99,7 +99,7 @@ export function OrganizationSwitcher({
             <div className="relative">
               <SearchIcon className="absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Search..."
+                placeholder="Buscar..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full border-none! pl-8 shadow-none outline-none!"
@@ -107,7 +107,7 @@ export function OrganizationSwitcher({
             </div>
             <DropdownMenuSeparator />
             {filteredOrganizations.length === 0 ? (
-              <EmptyText className="p-2">No organization found</EmptyText>
+              <EmptyText className="p-2">No se encontraron organizaciones</EmptyText>
             ) : (
               <ScrollArea className="-mr-1 pr-1 *:data-radix-scroll-area-viewport:max-h-[200px]">
                 {filteredOrganizations.map((organization) => (
@@ -154,7 +154,7 @@ export function OrganizationSwitcher({
                 onClick={handleCloseSidebar}
               >
                 <MoreHorizontalIcon className="size-4 shrink-0" />
-                All organizations
+                Todas las organizaciones
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -170,7 +170,7 @@ export function OrganizationSwitcher({
                 onClick={handleCloseSidebar}
               >
                 <UserIcon className="size-4 shrink-0 text-muted-foreground" />
-                Account settings
+                Configuración de cuenta
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -186,7 +186,7 @@ export function OrganizationSwitcher({
                 onClick={handleCloseSidebar}
               >
                 <SettingsIcon className="size-4 shrink-0 text-muted-foreground" />
-                Organization settings
+                Configuración de organización
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -199,7 +199,7 @@ export function OrganizationSwitcher({
                 onClick={handleCloseSidebar}
               >
                 <PlusIcon className="size-4 shrink-0 text-muted-foreground" />
-                Add organization
+                Agregar organización
               </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>

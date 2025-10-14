@@ -20,52 +20,52 @@ import { SiteHeading } from '~/components/fragments/site-heading';
 
 const DATA_CARDS = [
   {
-    title: 'Introduction',
+    title: 'Introducción',
     icon: <BookIcon className="size-4 shrink-0" />,
     content:
-      'This Privacy Policy explains how we collect, use, and protect your personal data when you interact with our platform.'
+      'Esta Política de Privacidad explica cómo recopilamos, usamos y protegemos tus datos personales cuando interactúas con nuestra plataforma.'
   },
   {
-    title: 'Information Collection',
+    title: 'Recopilación de Información',
     icon: <ScaleIcon className="size-4 shrink-0" />,
     content:
-      'We collect information that you provide directly to us, such as when you sign up or interact with our services.'
+      'Recopilamos información que nos proporcionas directamente, como cuando te registras o interactúas con nuestros servicios.'
   },
   {
-    title: 'Data Usage',
+    title: 'Uso de Datos',
     icon: <AlertCircleIcon className="size-4 shrink-0" />,
     content:
-      'We use your data to provide, personalize, and improve your experience on our platform, including marketing and support.'
+      'Usamos tus datos para proporcionar, personalizar y mejorar tu experiencia en nuestra plataforma, incluyendo marketing y soporte.'
   }
 ];
 
 const DATA_ACCORDION = [
   {
-    title: 'How We Protect Your Data',
+    title: 'Cómo Protegemos Tus Datos',
     content:
-      'We implement various security measures, including encryption and secure storage, to protect your personal information.'
+      'Implementamos varias medidas de seguridad, incluyendo encriptación y almacenamiento seguro, para proteger tu información personal.'
   },
   {
-    title: 'Third-Party Sharing',
+    title: 'Compartir con Terceros',
     content:
-      'We may share your data with trusted third-party service providers for essential operations like payment processing or analytics.'
+      'Podemos compartir tus datos con proveedores de servicios terceros confiables para operaciones esenciales como procesamiento de pagos o analíticas.'
   },
   {
-    title: 'User Rights',
+    title: 'Derechos del Usuario',
     content:
-      'You have the right to access, update, or delete your personal data at any time. You can also opt-out of marketing communications.'
+      'Tienes derecho a acceder, actualizar o eliminar tus datos personales en cualquier momento. También puedes optar por no recibir comunicaciones de marketing.'
   },
   {
-    title: 'Cookies and Tracking',
+    title: 'Cookies y Seguimiento',
     content:
-      'We use cookies and similar technologies to personalize your experience and analyze usage patterns on our site.'
+      'Usamos cookies y tecnologías similares para personalizar tu experiencia y analizar patrones de uso en nuestro sitio.'
   },
   {
-    title: 'Changes to This Policy',
+    title: 'Cambios a Esta Política',
     content:
-      'We may update this Privacy Policy from time to time. Changes will be posted here, and continued use of the platform constitutes acceptance.'
+      'Podemos actualizar esta Política de Privacidad de vez en cuando. Los cambios se publicarán aquí, y el uso continuado de la plataforma constituye aceptación.'
   }
-];
+];}]
 
 export function PrivacyPolicy(): React.JSX.Element {
   return (
@@ -73,14 +73,13 @@ export function PrivacyPolicy(): React.JSX.Element {
       <div className="container space-y-16 py-20">
         <SiteHeading
           badge="Legal"
-          title="Privacy Policy"
-          description="Learn how we collect, use, and protect your data. Please read carefully to understand our practices."
+          title="Política de Privacidad"
+          description="Aprende cómo recopilamos, usamos y protegemos tus datos. Por favor lee cuidadosamente para entender nuestras prácticas."
         />
         <Alert variant="warning">
           <AlertDescription className="ml-3 text-base inline">
-            This policy provides a general framework. It should be reviewed and
-            customized by a legal professional to suit your jurisdiction and use
-            case.
+            Esta política proporciona un marco general. Debe ser revisada y
+            personalizada por un profesional legal para ajustarse a tu jurisdicción y caso de uso.
           </AlertDescription>
         </Alert>
 
@@ -126,16 +125,16 @@ export function PrivacyPolicy(): React.JSX.Element {
 
         <div>
           <CardTitle className="text-lg text-primary">
-            Contact Information
+            Información de Contacto
           </CardTitle>
           <p className="text-sm leading-relaxed">
-            For questions or concerns, contact us at:
+            Para preguntas o inquietudes, contáctanos en:
             <br />
             <a
-              href="mailto:support@yourdomain.com"
+              href="mailto:hola@qtx.mx"
               className="text-blue-500 hover:underline"
             >
-              support@yourdomain.com
+              hola@qtx.mx
             </a>
           </p>
         </div>

@@ -51,7 +51,7 @@ export function InvitationsCard({
     >
       <CardHeader className="pb-0 flex flex-row items-center gap-2">
         <InputSearch
-          placeholder="Filter by email"
+          placeholder="Filtrar por email"
           value={searchQuery}
           onChange={handleSearchQueryChange}
         />
@@ -60,8 +60,8 @@ export function InvitationsCard({
           onValueChange={setStatus}
         >
           <TabsList>
-            <TabsTrigger value={InvitationStatus.PENDING}>Pending</TabsTrigger>
-            <TabsTrigger value={InvitationStatus.REVOKED}>Revoked</TabsTrigger>
+            <TabsTrigger value={InvitationStatus.PENDING}>Pendientes</TabsTrigger>
+            <TabsTrigger value={InvitationStatus.REVOKED}>Revocadas</TabsTrigger>
           </TabsList>
         </Tabs>
       </CardHeader>
@@ -75,8 +75,8 @@ export function InvitationsCard({
           </ScrollArea>
         ) : (
           <EmptyText className="p-6">
-            No {status.toLowerCase()} invitation found
-            {!!searchQuery && ' (filtered)'}.
+            No se encontraron invitaciones {status === InvitationStatus.PENDING ? 'pendientes' : 'revocadas'}
+            {!!searchQuery && ' (filtrado)'}.
           </EmptyText>
         )}
       </CardContent>

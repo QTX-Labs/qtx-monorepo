@@ -34,7 +34,7 @@ export function ContactNotes({
     >
       <div className="flex h-14 flex-row items-center justify-between gap-2 px-6">
         <h1 className="text-sm font-semibold">
-          All notes{' '}
+          Todas las notas{' '}
           <span className="text-muted-foreground">({notes.length})</span>
         </h1>
         <Button
@@ -44,7 +44,7 @@ export function ContactNotes({
           onClick={handleShowAddContactNoteModal}
         >
           <FilePlus2Icon className="size-4 shrink-0" />
-          Add note
+          Agregar nota
         </Button>
       </div>
       <div className="h-full p-6 pt-0">
@@ -60,7 +60,7 @@ export function ContactNotes({
           </div>
         ) : (
           <EmptyText>
-            There are no associated notes with this contact.
+            No hay notas asociadas con este contacto.
           </EmptyText>
         )}
       </div>

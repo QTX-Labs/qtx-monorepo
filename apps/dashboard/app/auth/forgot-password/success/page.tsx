@@ -10,7 +10,7 @@ const searchParamsCache = createSearchParamsCache({
 });
 
 export const metadata: Metadata = {
-  title: createTitle('Reset link sent')
+  title: createTitle('Enlace de restablecimiento enviado')
 };
 
 export default async function ForgotPasswordSuccessPage({

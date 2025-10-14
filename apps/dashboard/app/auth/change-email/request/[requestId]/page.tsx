@@ -15,7 +15,7 @@ const paramsCache = createSearchParamsCache({
 });
 
 export const metadata: Metadata = {
-  title: createTitle('Change email')
+  title: createTitle('Cambiar email')
 };
 
 export default async function ChangeEmailPage({

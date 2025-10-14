@@ -5,7 +5,7 @@ import { ChangeEmailExpiredCard } from '~/components/auth/change-email/change-em
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Expired change request')
+  title: createTitle('Solicitud de cambio expirada')
 };
 
 export default function ChangeEmailExpiredPage(): React.JSX.Element {

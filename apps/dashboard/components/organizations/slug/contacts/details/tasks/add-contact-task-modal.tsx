@@ -71,8 +71,8 @@ export const AddContactTaskModal = NiceModal.create<AddContactTaskModalProps>(
         description: ''
       }
     });
-    const title = 'Add task';
-    const description = 'Create a new task by filling out the form below.';
+    const title = 'Agregar tarea';
+    const description = 'Crear una nueva tarea completando el formulario a continuación.';
     const canSubmit =
       !methods.formState.isSubmitting &&
       (!methods.formState.isSubmitted || methods.formState.isDirty);
@@ -82,10 +82,10 @@ export const AddContactTaskModal = NiceModal.create<AddContactTaskModalProps>(
       }
       const result = await addContactTask(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Task added');
+        toast.success('Tarea agregada');
         modal.handleClose();
       } else {
-        toast.error("Couldn't add task");
+        toast.error('No se pudo agregar la tarea');
       }
     };
     const renderForm = (
@@ -98,7 +98,7 @@ export const AddContactTaskModal = NiceModal.create<AddContactTaskModalProps>(
           name="title"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
-              <FormLabel required>Title</FormLabel>
+              <FormLabel required>Título</FormLabel>
               <FormControl>
                 <Input
                   {...field}
@@ -118,7 +118,7 @@ export const AddContactTaskModal = NiceModal.create<AddContactTaskModalProps>(
             name="status"
             render={({ field }) => (
               <FormItem className="flex w-full flex-col">
-                <FormLabel>Status</FormLabel>
+                <FormLabel>Estado</FormLabel>
                 <FormControl>
                   <Select
                     value={field.value}
@@ -132,13 +132,13 @@ export const AddContactTaskModal = NiceModal.create<AddContactTaskModalProps>(
                       <SelectItem value={ContactTaskStatus.OPEN}>
                         <div className="flex flex-row items-center gap-1.5">
                           <div className="size-2 shrink-0 rounded-full bg-red-600" />
-                          <span>Open</span>
+                          <span>Abierta</span>
                         </div>
                       </SelectItem>
                       <SelectItem value={ContactTaskStatus.COMPLETED}>
                         <div className="flex flex-row items-center gap-1.5">
                           <div className="size-2 shrink-0 rounded-full bg-green-600" />
-                          <span>Completed</span>
+                          <span>Completada</span>
                         </div>
                       </SelectItem>
                     </SelectContent>
@@ -153,7 +153,7 @@ export const AddContactTaskModal = NiceModal.create<AddContactTaskModalProps>(
             name="dueDate"
             render={({ field }) => (
               <FormItem className="flex w-full flex-col">
-                <FormLabel>Due date</FormLabel>
+                <FormLabel>Fecha límite</FormLabel>
                 <FormControl>
                   <DatePicker
                     date={field.value}
@@ -171,7 +171,7 @@ export const AddContactTaskModal = NiceModal.create<AddContactTaskModalProps>(
           name="description"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
-              <FormLabel>Description</FormLabel>
+              <FormLabel>Descripción</FormLabel>
               <FormControl>
                 <Textarea
                   {...field}
@@ -194,7 +194,7 @@ export const AddContactTaskModal = NiceModal.create<AddContactTaskModalProps>(
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -203,7 +203,7 @@ export const AddContactTaskModal = NiceModal.create<AddContactTaskModalProps>(
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Save
+          Guardar
         </Button>
       </>
     );

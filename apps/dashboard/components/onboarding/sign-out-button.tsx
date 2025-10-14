@@ -11,7 +11,7 @@ export function SignOutButton(props: ButtonProps): React.JSX.Element {
   const handleSignOut = async (): Promise<void> => {
     const result = await signOut({ redirect: true });
     if (result?.serverError || result?.validationErrors) {
-      toast.error("Couldn't sign out");
+      toast.error("No se pudo cerrar sesión");
     }
   };
   return (

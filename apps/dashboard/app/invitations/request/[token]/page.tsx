@@ -18,7 +18,7 @@ const paramsCache = createSearchParamsCache({
 });
 
 export const metadata: Metadata = {
-  title: createTitle('Join organization')
+  title: createTitle('Unirse a organización')
 };
 
 export default async function InvitationPage({

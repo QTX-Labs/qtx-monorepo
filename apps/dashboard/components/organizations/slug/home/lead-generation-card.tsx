@@ -23,14 +23,14 @@ import type { LeadGenerationDataPointDto } from '~/types/dtos/lead-generation-da
 
 const chartConfig = {
   contacts: {
-    label: 'Contacts'
+    label: 'Contactos'
   },
   people: {
-    label: 'People',
+    label: 'Personas',
     color: 'var(--chart-1)'
   },
   companies: {
-    label: 'Companies',
+    label: 'Empresas',
     color: 'var(--chart-2)'
   }
 } satisfies ChartConfig;
@@ -65,8 +65,8 @@ export function LeadGenerationCard({
 
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0! sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle className="text-sm font-bold lowercase tracking-tight">lead generation</CardTitle>
-          <CardDescription>new contacts added to the pool.</CardDescription>
+          <CardTitle className="text-sm font-bold lowercase tracking-tight">generación de prospectos</CardTitle>
+          <CardDescription>nuevos contactos agregados al grupo.</CardDescription>
         </div>
         <div className="flex">
           {['people', 'companies'].map((value) => {
@@ -113,7 +113,7 @@ export function LeadGenerationCard({
               tickMargin={8}
               minTickGap={32}
               tickFormatter={(value) =>
-                new Date(value).toLocaleDateString('en-US', {
+                new Date(value).toLocaleDateString('es-ES', {
                   month: 'short',
                   day: 'numeric'
                 })
@@ -125,7 +125,7 @@ export function LeadGenerationCard({
                   className="w-[150px]"
                   nameKey="contacts"
                   labelFormatter={(value) =>
-                    new Date(value).toLocaleDateString('en-US', {
+                    new Date(value).toLocaleDateString('es-ES', {
                       month: 'short',
                       day: 'numeric',
                       year: 'numeric'

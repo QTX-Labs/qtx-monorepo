@@ -51,9 +51,9 @@ export function BillingEmailCard({
     }
     const result = await updateBillingEmail(values);
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Email recipient updated');
+      toast.success('Destinatario de email actualizado');
     } else {
-      toast.error("Couldn't update email recipient");
+      toast.error('No se pudo actualizar el destinatario de email');
     }
   };
   return (
@@ -66,7 +66,7 @@ export function BillingEmailCard({
               name="email"
               render={({ field }) => (
                 <FormItem className="flex w-full flex-col">
-                  <FormLabel>Email address</FormLabel>
+                  <FormLabel>Dirección de correo</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
@@ -91,7 +91,7 @@ export function BillingEmailCard({
             loading={methods.formState.isSubmitting}
             onClick={methods.handleSubmit(onSubmit)}
           >
-            Save
+            Guardar
           </Button>
         </CardFooter>
       </Card>

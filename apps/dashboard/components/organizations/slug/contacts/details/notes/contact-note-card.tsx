@@ -73,10 +73,10 @@ export function ContactNoteCard({
               type="button"
               variant="ghost"
               className="size-9"
-              title="Open menu"
+              title="Abrir menú"
             >
               <MoreHorizontalIcon className="size-4 shrink-0" />
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Abrir menú</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -84,14 +84,14 @@ export function ContactNoteCard({
               className="cursor-pointer"
               onClick={handleShowEditContactNoteModal}
             >
-              Edit
+              Editar
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="text-destructive! cursor-pointer"
               onClick={handleShowDeleteContactNoteModal}
             >
-              Delete
+              Eliminar
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -112,7 +112,7 @@ export function ContactNoteCard({
             />
           </div>
         ) : (
-          <EmptyText className="opacity-65">Empty</EmptyText>
+          <EmptyText className="opacity-65">Vacío</EmptyText>
         )}
       </Button>
       <Separator />

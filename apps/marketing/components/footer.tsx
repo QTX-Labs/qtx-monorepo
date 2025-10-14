@@ -16,7 +16,7 @@ import { FOOTER_LINKS, SOCIAL_LINKS } from '~/components/marketing-links';
 
 export function Footer(): React.JSX.Element {
   const handleSubscribe = (): void => {
-    toast.error("I'm not implemented yet.");
+    toast.error("Aún no está implementado.");
   };
   return (
     <footer className="px-2 pb-10 pt-20 sm:container">

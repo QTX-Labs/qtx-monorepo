@@ -22,7 +22,7 @@ import { TransitionProvider } from '~/hooks/use-transition-context';
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Contacts')
+  title: createTitle('Contactos')
 };
 
 export default async function ContactsPage({
@@ -43,8 +43,8 @@ export default async function ContactsPage({
         <PageHeader>
           <PagePrimaryBar>
             <OrganizationPageTitle
-              title="Contacts"
-              info={`Total ${totalCount} ${totalCount === 1 ? 'contact' : 'contacts'} in your organization`}
+              title="Contactos"
+              info={`Total ${totalCount} ${totalCount === 1 ? 'contacto' : 'contactos'} en tu organización`}
             />
             {hasAnyContacts && (
               <PageActions>

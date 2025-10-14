@@ -13,7 +13,7 @@ import { getOrganizations } from '~/data/organization/get-organizations';
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Organizations')
+  title: createTitle('Organizaciones')
 };
 
 export default async function OrganizationsPage(): Promise<React.JSX.Element> {
@@ -39,7 +39,7 @@ export default async function OrganizationsPage(): Promise<React.JSX.Element> {
           rel="noopener noreferrer"
           target="_blank"
         >
-          Terms of Use
+          Términos de Uso
         </Link>
         <Link
           prefetch={false}
@@ -48,14 +48,14 @@ export default async function OrganizationsPage(): Promise<React.JSX.Element> {
           rel="noopener noreferrer"
           target="_blank"
         >
-          Privacy Policy
+          Política de Privacidad
         </Link>
         <SignOutButton
           type="button"
           variant="link"
           className="ml-auto h-fit rounded-none p-0 text-xs font-normal text-muted-foreground underline"
         >
-          Sign out
+          Cerrar sesión
         </SignOutButton>
         <ThemeSwitcher />
       </div>

@@ -32,7 +32,7 @@ export function SessionsCard({
             <SessionList sessions={sessions} />
           </ScrollArea>
         ) : (
-          <EmptyText className="p-6">No session found.</EmptyText>
+          <EmptyText className="p-6">No se encontraron sesiones.</EmptyText>
         )}
       </CardContent>
     </Card>

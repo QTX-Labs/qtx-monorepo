@@ -32,7 +32,7 @@ export function ConnectedAccountsCard({
             <ConnectedAccountList connectedAccounts={connectedAccounts} />
           </ScrollArea>
         ) : (
-          <EmptyText className="p-6">No connected account found.</EmptyText>
+          <EmptyText className="p-6">No se encontraron cuentas conectadas.</EmptyText>
         )}
       </CardContent>
     </Card>

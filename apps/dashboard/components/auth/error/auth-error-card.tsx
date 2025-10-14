@@ -33,10 +33,10 @@ export function AuthErrorCard({
       {...other}
     >
       <CardHeader>
-        <CardTitle className="text-base lg:text-lg">Auth Error</CardTitle>
+        <CardTitle className="text-base lg:text-lg">Error de Autenticación</CardTitle>
         <CardDescription>
-          An error occurred when logging you in. Head back to the sign in screen
-          and try again.
+          Ocurrió un error al iniciar sesión. Regresa a la pantalla de inicio de sesión
+          e inténtalo de nuevo.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -50,7 +50,7 @@ export function AuthErrorCard({
           href={routes.dashboard.auth.SignIn}
           className="text-muted-foreground underline"
         >
-          Back to log in
+          Volver a iniciar sesión
         </Link>
       </CardFooter>
     </Card>

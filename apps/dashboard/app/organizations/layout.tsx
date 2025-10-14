@@ -8,7 +8,7 @@ import { routes } from '@workspace/routes';
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Organizations')
+  title: createTitle('Organizaciones')
 };
 
 export default async function OrganizationsLayout(

@@ -5,7 +5,7 @@ import { VerifyEmailSuccessCard } from '~/components/auth/verify-email/verify-em
 import { createTitle } from '~/lib/formatters';
 
 export const metadata: Metadata = {
-  title: createTitle('Email Verification Success')
+  title: createTitle('Verificación de Email Exitosa')
 };
 
 export default async function EmailVerificationSuccessPage(): Promise<React.JSX.Element> {

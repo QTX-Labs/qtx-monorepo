@@ -57,7 +57,7 @@ export function OnboardingOrganizationStep({
       const file = files[0];
       if (file.size > MAX_IMAGE_SIZE) {
         toast.error(
-          `Uploaded image shouldn't exceed ${MAX_IMAGE_SIZE / 1000000} MB size limit`
+          `La imagen no debe exceder el límite de ${MAX_IMAGE_SIZE / 1000000} MB`
         );
       } else {
         const base64Image: string = await NiceModal.show(CropPhotoModal, {
@@ -83,7 +83,7 @@ export function OnboardingOrganizationStep({
       {...other}
     >
       <h1 className="text-xl font-semibold leading-none tracking-tight lg:text-2xl">
-        Add your organization
+        Agrega tu organización
       </h1>
       <p className="text-sm text-muted-foreground lg:text-base">
         We just need some basic info to get your organization set up. You’ll be

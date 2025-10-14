@@ -48,7 +48,7 @@ export function AcceptInvitationCard({
     }
     const result = await acceptInvitation(values);
     if (result?.serverError || result?.validationErrors) {
-      toast.error("Couldn't accept invitation");
+      toast.error("No se pudo aceptar la invitación");
     }
   };
   return (

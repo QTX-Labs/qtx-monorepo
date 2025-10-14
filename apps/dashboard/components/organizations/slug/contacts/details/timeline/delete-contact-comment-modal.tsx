@@ -47,7 +47,7 @@ export const DeleteContactCommentModal =
         id: comment.id
       }
     });
-    const title = 'Delete this comment?';
+    const title = '¿Eliminar este comentario?';
     const canSubmit =
       !methods.formState.isSubmitting && methods.formState.isValid;
     const onSubmit: SubmitHandler<DeleteContactSchema> = async (values) => {
@@ -56,19 +56,19 @@ export const DeleteContactCommentModal =
       }
       const result = await deleteContactComment(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success('Comment deleted');
+        toast.success('Comentario eliminado');
         modal.handleClose();
       } else {
-        toast.error("Comment couldn't be deleted");
+        toast.error('No se pudo eliminar el comentario');
       }
     };
     const renderDescription = (
       <>
-        The comment by{' '}
+        El comentario de{' '}
         <strong className="text-foreground font-medium">
           {comment.sender.name}
         </strong>{' '}
-        will be permanently deleted, are you sure you want to continue?
+        será eliminado permanentemente, ¿estás seguro de que deseas continuar?
       </>
     );
     const renderForm = (
@@ -91,7 +91,7 @@ export const DeleteContactCommentModal =
           variant="outline"
           onClick={modal.handleClose}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button
           type="button"
@@ -100,7 +100,7 @@ export const DeleteContactCommentModal =
           loading={methods.formState.isSubmitting}
           onClick={methods.handleSubmit(onSubmit)}
         >
-          Yes, delete
+          Sí, eliminar
         </Button>
       </>
     );
