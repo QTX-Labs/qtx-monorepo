@@ -14,13 +14,14 @@ const finiquitoBaseSchema = z.object({
   employeeId: z.string().optional(),
 
   // Datos de la Empresa
-  empresaName: z.string().optional(),
+  empresaName: z.string().min(1, 'El nombre de la empresa es requerido'),
   empresaRFC: z.union([
     z.string().regex(/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/, 'RFC inválido. Formato: ABC123456XXX (12-13 caracteres)'),
     z.literal('')
   ]).optional(),
   empresaMunicipio: z.string().optional(),
   empresaEstado: z.string().optional(),
+  clientName: z.string().min(1, 'El nombre del cliente es requerido'),
 
   // Factores Fiscales
   hireDate: z.coerce.date({ required_error: 'La fecha de ingreso fiscal es requerida' }),
@@ -70,6 +71,10 @@ const finiquitoBaseSchema = z.object({
   infonavitAmount: z.coerce.number().nonnegative().default(0),
   fonacotAmount: z.coerce.number().nonnegative().default(0),
   otherDeductions: z.coerce.number().nonnegative().default(0),
+
+  // Modificación del factor de días
+  daysFactorModified: z.boolean().default(false),
+  daysFactorModificationReason: z.string().optional(),
 
   // Adjuntos (para factor de días modificado)
   attachments: z.array(z.string()).optional(),
@@ -123,6 +128,20 @@ export const finiquitoFormSchema = finiquitoBaseSchema
     {
       message: 'El salario real es requerido cuando el complemento está activado',
       path: ['salary']
+
+    }
+  ).refine(
+    (data) => {
+      // Si se modificó el factor de días, debe proporcionar una razón
+      if (data.daysFactorModified && data.daysFactor !== 30.4) {
+        return data.daysFactorModificationReason && data.daysFactorModificationReason.length > 0;
+      }
+
+      return true
+    },
+    {
+      message: 'Debe proporcionar una razón para modificar el factor de días',
+      path: ['daysFactorModificationReason']
     }
   );
 

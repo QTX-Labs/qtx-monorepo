@@ -8,6 +8,7 @@ import { useAction } from 'next-safe-action/hooks';
 import { toast } from 'sonner';
 import { useRouter, useParams } from 'next/navigation';
 import { useState } from 'react';
+import numeral from 'numeral';
 
 import { Button } from '@workspace/ui/components/button';
 import { toLocalDate } from '~/lib/finiquitos/utils';
@@ -90,14 +91,28 @@ export function FiniquitoDetailContent({ finiquito }: FiniquitoDetailContentProp
   };
 
   const formatCurrency = (amount: number | string | { toString: () => string }) => {
-    return `$${Number(amount.toString()).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `$${numeral(Number(amount.toString())).format('0,0.00')}`;
+  };
+
+  const translateSalaryFrequency = (frequency: string) => {
+    const translations: Record<string, string> = {
+      daily: 'Diario',
+      weekly: 'Semanal',
+      biweekly: 'Quincenal',
+      monthly: 'Mensual'
+    };
+    return translations[frequency.toLowerCase()] || frequency;
+  };
+
+  const translateBorderZone = (zone: string) => {
+    return zone === 'fronteriza' ? 'Sí' : 'No';
   };
 
   const isLoading = isDownloading || deleteStatus === 'executing';
 
   return (
     <>
-      <div className="space-y-6">
+      <div className="space-y-6 px-4 sm:px-6 lg:px-8 py-6">
         {/* Header con acciones */}
         <div className="flex items-center justify-between">
           <Button
@@ -201,11 +216,11 @@ export function FiniquitoDetailContent({ finiquito }: FiniquitoDetailContentProp
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Frecuencia de Pago</p>
-              <p className="text-base capitalize">{finiquito.salaryFrequency}</p>
+              <p className="text-base">{translateSalaryFrequency(finiquito.salaryFrequency)}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Zona Fronteriza</p>
-              <p className="text-base">{finiquito.borderZone ? 'Sí' : 'No'}</p>
+              <p className="text-base">{translateBorderZone(finiquito.borderZone)}</p>
             </div>
           </CardContent>
         </Card>

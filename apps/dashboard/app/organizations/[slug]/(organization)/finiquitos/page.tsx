@@ -7,6 +7,7 @@ import {
   PageHeader,
   PagePrimaryBar
 } from '@workspace/ui/components/page';
+import { isCurrentUserAdminOrOwner } from '@workspace/auth/permissions';
 
 import { FiniquitosContent } from '~/components/organizations/slug/finiquitos/finiquitos-content';
 import { OrganizationPageTitle } from '~/components/organizations/slug/organization-page-title';
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
 
 export default async function FiniquitosPage(): Promise<React.JSX.Element> {
   const finiquitos = await getFiniquitos();
+  const isAdmin = await isCurrentUserAdminOrOwner();
 
   return (
     <TransitionProvider>
@@ -33,7 +35,7 @@ export default async function FiniquitosPage(): Promise<React.JSX.Element> {
           </PagePrimaryBar>
         </PageHeader>
         <PageBody>
-          <FiniquitosContent finiquitos={finiquitos} />
+          <FiniquitosContent finiquitos={finiquitos} isAdmin={isAdmin} />
         </PageBody>
       </Page>
     </TransitionProvider>
