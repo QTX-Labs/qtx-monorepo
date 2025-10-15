@@ -26,9 +26,10 @@ type FiniquitoListItem = Pick<
 
 interface FiniquitosContentProps {
   finiquitos: FiniquitoListItem[];
+  isAdmin: boolean;
 }
 
-export function FiniquitosContent({ finiquitos }: FiniquitosContentProps) {
+export function FiniquitosContent({ finiquitos, isAdmin }: FiniquitosContentProps) {
   const [isCreating, setIsCreating] = useState(false);
 
   return (
@@ -65,7 +66,7 @@ export function FiniquitosContent({ finiquitos }: FiniquitosContentProps) {
       </div>
 
       {isCreating ? (
-        <FiniquitoForm onCancel={() => setIsCreating(false)} onSuccess={() => setIsCreating(false)} />
+        <FiniquitoForm onCancel={() => setIsCreating(false)} onSuccess={() => setIsCreating(false)} isAdmin={isAdmin} />
       ) : (
         <div className="px-4 sm:px-6 lg:px-8">
           <FiniquitosList finiquitos={finiquitos} />

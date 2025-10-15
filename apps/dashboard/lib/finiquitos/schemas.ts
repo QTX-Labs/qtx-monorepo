@@ -10,10 +10,11 @@ const finiquitoBaseSchema = z.object({
   terminationDate: z.coerce.date({ required_error: 'La fecha de baja es requerida' }),
 
   // Datos de la Empresa
-  empresaName: z.string().optional(),
+  empresaName: z.string().min(1, 'El nombre de la empresa es requerido'),
   empresaRFC: z.string().optional(),
   empresaMunicipio: z.string().optional(),
   empresaEstado: z.string().optional(),
+  clientName: z.string().min(1, 'El nombre del cliente es requerido'),
 
   // Datos Salariales
   salary: z.coerce.number().positive('El salario debe ser mayor a 0'),
@@ -53,6 +54,10 @@ const finiquitoBaseSchema = z.object({
   infonavitAmount: z.coerce.number().nonnegative().default(0),
   otherDeductions: z.coerce.number().nonnegative().default(0),
 
+  // Modificación del factor de días
+  daysFactorModified: z.boolean().default(false),
+  daysFactorModificationReason: z.string().optional(),
+
   // Adjuntos (para factor de días modificado)
   attachments: z.array(z.string()).optional(),
 
@@ -79,6 +84,19 @@ export const finiquitoFormSchema = finiquitoBaseSchema
     {
       message: 'Debe especificar días o pesos para la gratificación',
       path: ['gratificationDays']
+    }
+  )
+  .refine(
+    (data) => {
+      // Si se modificó el factor de días, debe proporcionar una razón
+      if (data.daysFactorModified && data.daysFactor !== 30.4) {
+        return data.daysFactorModificationReason && data.daysFactorModificationReason.length > 0;
+      }
+      return true;
+    },
+    {
+      message: 'Debe proporcionar una razón para modificar el factor de días',
+      path: ['daysFactorModificationReason']
     }
   );
 

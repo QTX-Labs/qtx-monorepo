@@ -52,6 +52,7 @@ import type { FiniquitoCalculationResult } from '~/lib/finiquitos/types';
 interface FiniquitoFormProps {
   onCancel: () => void;
   onSuccess?: () => void;
+  isAdmin: boolean;
 }
 
 // Hook personalizado para debounce
@@ -71,8 +72,9 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
-export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
+export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormProps) {
   const [calculationResult, setCalculationResult] = useState<FiniquitoCalculationResult | null>(null);
+  const [daysFactorModified, setDaysFactorModified] = useState(false);
 
   const form = useForm<FiniquitoFormValues>({
     resolver: zodResolver(finiquitoFormSchema) as any,
@@ -83,6 +85,7 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
       empresaRFC: '',
       empresaMunicipio: '',
       empresaEstado: '',
+      clientName: '',
       hireDate: undefined,
       terminationDate: undefined,
       salary: 0,
@@ -90,6 +93,8 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
       borderZone: BorderZone.NO_FRONTERIZA,
       fiscalDailySalary: 278.80,
       daysFactor: 30.4,
+      daysFactorModified: false,
+      daysFactorModificationReason: '',
       aguinaldoDays: 15,
       vacationDays: 12,
       vacationPremium: 0.25,
@@ -221,6 +226,18 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
     debouncedOtherDeductions
   ]);
 
+  // Manejar cambio en el factor de días
+  const handleDaysFactorChange = (value: string) => {
+    const factor = parseFloat(value);
+    if (!isNaN(factor)) {
+      form.setValue('daysFactor', factor);
+      // Marcar como modificado si es diferente de 30.4
+      const isModified = factor !== 30.4;
+      form.setValue('daysFactorModified', isModified);
+      setDaysFactorModified(isModified);
+    }
+  };
+
   // Manejar gratificación bidireccional
   const handleGratificationDaysChange = (value: string) => {
     const days = parseFloat(value);
@@ -344,6 +361,23 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                     <FormControl>
                       <Input placeholder="JALISCO" {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="clientName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Cliente *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Nombre del cliente" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Cliente de ForHuman que solicita este finiquito
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -525,6 +559,101 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
             </div>
           </CardContent>
         </Card>
+
+          {/* Factor de Días */}
+          <Card className="border-2 hover:border-muted-foreground/20 transition-colors border-amber-200 dark:border-amber-900">
+            <CardHeader className="space-y-1 pb-4 bg-amber-50/50 dark:bg-amber-950/20">
+              <CardTitle className="text-xl flex items-center gap-2">
+                Factor de Días
+                {!isAdmin && (
+                  <span className="text-xs font-normal text-muted-foreground px-2 py-1 bg-muted rounded">
+                    Solo admin puede modificar
+                  </span>
+                )}
+              </CardTitle>
+              <CardDescription>
+                Días promedio por mes para el cálculo del finiquito
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Disclaimer Legal - siempre visible */}
+              <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 rounded-lg p-4">
+                <p className="text-sm text-amber-900 dark:text-amber-100 leading-relaxed">
+                  <strong>Nota Legal:</strong> Este finiquito se calcula con factor de 30.4 días promedio por mes con base en el <strong>Artículo 485 de la Ley Federal del Trabajo</strong>, que establece el cálculo de prestaciones proporcionales usando el año calendario (365 días ÷ 12 meses = 30.4 días).
+                </p>
+              </div>
+
+              <FormField
+                control={form.control}
+                name="daysFactor"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Factor de Días</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.1"
+                        {...field}
+                        readOnly={!isAdmin}
+                        disabled={!isAdmin}
+                        className={!isAdmin ? 'bg-muted cursor-not-allowed' : ''}
+                        onChange={(e) => handleDaysFactorChange(e.target.value)}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {isAdmin
+                        ? 'Valor estándar: 30.4 días. Solo modificar con autorización y soporte.'
+                        : 'Contacte a un administrador para modificar este valor.'}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Campos condicionales cuando se modifica el factor */}
+              {isAdmin && daysFactorModified && (
+                <div className="space-y-4 pt-4 border-t">
+                  <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 rounded-lg p-3">
+                    <p className="text-sm text-yellow-900 dark:text-yellow-100 font-medium">
+                      ⚠️ El factor de días ha sido modificado. Debe proporcionar una justificación y adjuntar soporte.
+                    </p>
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="daysFactorModificationReason"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Razón de la Modificación *</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Ejemplo: Acuerdo especial con cliente según email del 15/10/2025"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Explique por qué se modificó el factor de días estándar
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="text-sm text-muted-foreground">
+                    <p className="font-medium mb-2">Documentos de soporte requeridos:</p>
+                    <ul className="list-disc list-inside space-y-1 text-xs">
+                      <li>Email del cliente solicitando el cambio</li>
+                      <li>Screenshot de conversación/acuerdo</li>
+                      <li>PDF con términos especiales</li>
+                    </ul>
+                    <p className="mt-2 text-xs italic">
+                      Nota: La funcionalidad de adjuntar archivos se habilitará próximamente.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Prestaciones */}
           <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
