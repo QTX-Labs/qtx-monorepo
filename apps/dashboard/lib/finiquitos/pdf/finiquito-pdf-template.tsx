@@ -11,19 +11,17 @@ import { numeroALetra } from './numero-a-letra';
 import { formatDateLong } from '../utils';
 
 // Estilos optimizados para simular Arial Narrow con Helvetica
-// Se usa letterSpacing y transform para lograr el efecto condensado
+// Se usa lineHeight reducido y paddingHorizontal para lograr márgenes correctos
 const styles = StyleSheet.create({
     page: {
         fontFamily: 'Helvetica',
         fontSize: 12,
         lineHeight: 1.15,
-        letterSpacing: -0.2, // Simula el ancho condensado
         color: '#000000',
-        marginTop: 90,      // ~2.54 cm
-        marginBottom: 90,   // ~2.54 cm
-        marginLeft: 72,     // ~3.17 cm
-        marginRight: 72,    // ~3.17 cm
-        textAlign: 'justify'
+        paddingTop: 90,      // ~2.54 cm
+        paddingBottom: 90,   // ~2.54 cm
+        paddingLeft: 72,     // ~1.91 cm (2.54 cm en original)
+        paddingRight: 72,    // ~1.91 cm (2.54 cm en original)
     },
     center: {
         textAlign: 'center'
@@ -32,7 +30,8 @@ const styles = StyleSheet.create({
         textAlign: 'right'
     },
     paragraph: {
-        marginBottom: 12
+        marginBottom: 12,
+        textAlign: 'justify'
     },
     bold: {
         fontWeight: 'bold'
@@ -40,8 +39,7 @@ const styles = StyleSheet.create({
     signature: {
         marginTop: 50,
         textAlign: 'center',
-        alignItems: 'center',
-        transform: 'scaleX(0.87)' // Simula el ancho condensado
+        alignItems: 'center'
     },
     underline: {
         borderBottomWidth: 1,
