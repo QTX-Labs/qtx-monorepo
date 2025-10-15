@@ -210,16 +210,20 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
   const isSubmitting = status === 'executing';
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* Datos Básicos */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Datos Básicos</CardTitle>
-            <CardDescription>Información del empleado</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
+    <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 pb-12">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Columna del Formulario - 2/3 del espacio */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Datos Básicos */}
+              <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
+            <CardHeader className="space-y-1 pb-4">
+              <CardTitle className="text-xl">Datos Básicos</CardTitle>
+              <CardDescription>Información del empleado</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="employeeName"
@@ -371,14 +375,14 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
           </CardContent>
         </Card>
 
-        {/* Datos Salariales */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Datos Salariales</CardTitle>
-            <CardDescription>Salario y frecuencia de pago</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
+          {/* Datos Salariales */}
+          <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
+            <CardHeader className="space-y-1 pb-4">
+              <CardTitle className="text-xl">Datos Salariales</CardTitle>
+              <CardDescription>Salario y frecuencia de pago</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="salary"
@@ -467,14 +471,14 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
           </CardContent>
         </Card>
 
-        {/* Prestaciones */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Prestaciones</CardTitle>
-            <CardDescription>Aguinaldo, vacaciones y prima vacacional</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-3">
+          {/* Prestaciones */}
+          <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
+            <CardHeader className="space-y-1 pb-4">
+              <CardTitle className="text-xl">Prestaciones</CardTitle>
+              <CardDescription>Aguinaldo, vacaciones y prima vacacional</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-3">
               <FormField
                 control={form.control}
                 name="aguinaldoDays"
@@ -534,16 +538,16 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
           </CardContent>
         </Card>
 
-        {/* Gratificación Bidireccional */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Gratificación (Bidireccional)</CardTitle>
-            <CardDescription>
-              Ingresa días o pesos - el otro campo se calculará automáticamente
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
+          {/* Gratificación Bidireccional */}
+          <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
+            <CardHeader className="space-y-1 pb-4">
+              <CardTitle className="text-xl">Gratificación (Bidireccional)</CardTitle>
+              <CardDescription>
+                Ingresa días o pesos - el otro campo se calculará automáticamente
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="gratificationDays"
@@ -589,15 +593,15 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
           </CardContent>
         </Card>
 
-        {/* Indemnización */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Indemnización</CardTitle>
-            <CardDescription>
-              Días de indemnización por despido (flexible, sin restricciones legales)
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+          {/* Indemnización */}
+          <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
+            <CardHeader className="space-y-1 pb-4">
+              <CardTitle className="text-xl">Indemnización</CardTitle>
+              <CardDescription>
+                Días de indemnización por despido (flexible, sin restricciones legales)
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
             <FormField
               control={form.control}
               name="severanceDays"
@@ -620,15 +624,15 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
           </CardContent>
         </Card>
 
-        {/* Prima de Antigüedad */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Prima de Antigüedad</CardTitle>
-            <CardDescription>
-              Días de prima de antigüedad según antigüedad del trabajador
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+          {/* Prima de Antigüedad */}
+          <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
+            <CardHeader className="space-y-1 pb-4">
+              <CardTitle className="text-xl">Prima de Antigüedad</CardTitle>
+              <CardDescription>
+                Días de prima de antigüedad según antigüedad del trabajador
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
             <FormField
               control={form.control}
               name="seniorityPremiumDays"
@@ -651,14 +655,14 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
           </CardContent>
         </Card>
 
-        {/* Deducciones */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Deducciones</CardTitle>
-            <CardDescription>Montos a descontar del finiquito</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
+          {/* Deducciones */}
+          <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
+            <CardHeader className="space-y-1 pb-4">
+              <CardTitle className="text-xl">Deducciones</CardTitle>
+              <CardDescription>Montos a descontar del finiquito</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="isrAmount"
@@ -762,137 +766,153 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
           </CardContent>
         </Card>
 
-        {/* Preview del Cálculo */}
-        {calculationResult && (
-          <>
-            <Separator />
-            <Card>
-              <CardHeader>
-                <CardTitle>Preview del Cálculo</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-6 md:grid-cols-2">
-                  {/* Columna Fiscal */}
-                  <div>
-                    <h3 className="font-semibold mb-3">Columna Fiscal</h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span>Aguinaldo:</span>
-                        <span>${calculationResult.fiscalPerceptions.aguinaldoAmount.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Vacaciones:</span>
-                        <span>${calculationResult.fiscalPerceptions.vacationAmount.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Prima Vacacional:</span>
-                        <span>${calculationResult.fiscalPerceptions.vacationPremiumAmount.toFixed(2)}</span>
-                      </div>
-                      {calculationResult.fiscalPerceptions.severanceAmount > 0 && (
-                        <div className="flex justify-between">
-                          <span>Indemnización:</span>
-                          <span>${calculationResult.fiscalPerceptions.severanceAmount.toFixed(2)}</span>
-                        </div>
-                      )}
-                      {calculationResult.fiscalPerceptions.seniorityPremiumAmount > 0 && (
-                        <div className="flex justify-between">
-                          <span>Prima Antigüedad:</span>
-                          <span>${calculationResult.fiscalPerceptions.seniorityPremiumAmount.toFixed(2)}</span>
-                        </div>
-                      )}
-                      <Separator className="my-2" />
-                      <div className="flex justify-between font-semibold">
-                        <span>Total Percepciones:</span>
-                        <span>${calculationResult.fiscalPerceptions.totalPerceptions.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between text-destructive">
-                        <span>Deducciones:</span>
-                        <span>-${calculationResult.deductions.totalDeductions.toFixed(2)}</span>
-                      </div>
-                      <Separator className="my-2" />
-                      <div className="flex justify-between font-bold text-lg">
-                        <span>Neto Fiscal:</span>
-                        <span>${calculationResult.totals.netPayFiscal.toFixed(2)}</span>
-                      </div>
-                    </div>
-                  </div>
+              {/* Botones */}
+              <div className="flex gap-4 pt-4">
+                <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting} size="lg" className="flex-1">
+                  Cancelar
+                </Button>
+                <Button type="submit" disabled={isSubmitting} size="lg" className="flex-1">
+                  {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Guardar Finiquito
+                </Button>
+              </div>
+            </div>
 
-                  {/* Columna Real */}
-                  <div>
-                    <h3 className="font-semibold mb-3">Columna Real</h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span>Aguinaldo:</span>
-                        <span>${calculationResult.realPerceptions.aguinaldoAmount.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Vacaciones:</span>
-                        <span>${calculationResult.realPerceptions.vacationAmount.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Prima Vacacional:</span>
-                        <span>${calculationResult.realPerceptions.vacationPremiumAmount.toFixed(2)}</span>
-                      </div>
-                      {calculationResult.realPerceptions.gratificationAmount > 0 && (
-                        <div className="flex justify-between">
-                          <span>Gratificación:</span>
-                          <span>${calculationResult.realPerceptions.gratificationAmount.toFixed(2)}</span>
+            {/* Columna del Cálculo en Vivo - 1/3 del espacio */}
+            <div className="lg:col-span-1">
+              <div className="lg:sticky lg:top-6">
+                <Card className="border-2 shadow-xl py-0">
+                  <CardHeader className="bg-muted/30 border-b space-y-1 px-6 py-4">
+                    <CardTitle className="text-lg">Cálculo en Vivo</CardTitle>
+                    <CardDescription className="text-xs">Actualización automática</CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-6 pt-4">
+                    {calculationResult ? (
+                      <div className="space-y-4">
+                        {/* Total Principal */}
+                        <div className="text-center p-4 bg-primary/5 rounded-lg border border-primary/20">
+                          <div className="text-xs text-muted-foreground mb-1 uppercase tracking-wide">Total a Pagar</div>
+                          <div className="text-2xl font-bold text-primary">
+                            ${calculationResult.totals.netPayTotal.toFixed(2)}
+                          </div>
+                          <div className="text-[10px] text-muted-foreground mt-2">
+                            {calculationResult.metadata.daysWorked} días • {calculationResult.metadata.yearsWorked.toFixed(2)} años
+                          </div>
                         </div>
-                      )}
-                      {calculationResult.realPerceptions.severanceAmount > 0 && (
-                        <div className="flex justify-between">
-                          <span>Indemnización:</span>
-                          <span>${calculationResult.realPerceptions.severanceAmount.toFixed(2)}</span>
+
+                        <Separator />
+
+                        {/* Desglose Fiscal */}
+                        <div>
+                          <h3 className="font-bold mb-2 text-xs uppercase text-muted-foreground">Columna Fiscal</h3>
+                          <div className="space-y-1.5 text-xs">
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Aguinaldo</span>
+                              <span className="font-medium">${calculationResult.fiscalPerceptions.aguinaldoAmount.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Vacaciones</span>
+                              <span className="font-medium">${calculationResult.fiscalPerceptions.vacationAmount.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Prima Vacacional</span>
+                              <span className="font-medium">${calculationResult.fiscalPerceptions.vacationPremiumAmount.toFixed(2)}</span>
+                            </div>
+                            {calculationResult.fiscalPerceptions.severanceAmount > 0 && (
+                              <div className="flex justify-between">
+                                <span className="text-muted-foreground">Indemnización</span>
+                                <span className="font-medium">${calculationResult.fiscalPerceptions.severanceAmount.toFixed(2)}</span>
+                              </div>
+                            )}
+                            {calculationResult.fiscalPerceptions.seniorityPremiumAmount > 0 && (
+                              <div className="flex justify-between">
+                                <span className="text-muted-foreground">Prima Antigüedad</span>
+                                <span className="font-medium">${calculationResult.fiscalPerceptions.seniorityPremiumAmount.toFixed(2)}</span>
+                              </div>
+                            )}
+                            <Separator className="my-2" />
+                            <div className="flex justify-between font-semibold">
+                              <span>Total Percepciones</span>
+                              <span className="text-green-600">${calculationResult.fiscalPerceptions.totalPerceptions.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between text-destructive font-medium">
+                              <span>Deducciones</span>
+                              <span>-${calculationResult.deductions.totalDeductions.toFixed(2)}</span>
+                            </div>
+                            <Separator className="my-2" />
+                            <div className="flex justify-between font-bold text-sm bg-muted/60 p-2 rounded">
+                              <span>Neto Fiscal</span>
+                              <span className="text-primary">${calculationResult.totals.netPayFiscal.toFixed(2)}</span>
+                            </div>
+                          </div>
                         </div>
-                      )}
-                      {calculationResult.realPerceptions.seniorityPremiumAmount > 0 && (
-                        <div className="flex justify-between">
-                          <span>Prima Antigüedad:</span>
-                          <span>${calculationResult.realPerceptions.seniorityPremiumAmount.toFixed(2)}</span>
+
+                        <Separator />
+
+                        {/* Desglose Real */}
+                        <div>
+                          <h3 className="font-bold mb-2 text-xs uppercase text-muted-foreground">Columna Real</h3>
+                          <div className="space-y-1.5 text-xs">
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Aguinaldo</span>
+                              <span className="font-medium">${calculationResult.realPerceptions.aguinaldoAmount.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Vacaciones</span>
+                              <span className="font-medium">${calculationResult.realPerceptions.vacationAmount.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Prima Vacacional</span>
+                              <span className="font-medium">${calculationResult.realPerceptions.vacationPremiumAmount.toFixed(2)}</span>
+                            </div>
+                            {calculationResult.realPerceptions.gratificationAmount > 0 && (
+                              <div className="flex justify-between">
+                                <span className="text-muted-foreground">Gratificación</span>
+                                <span className="font-medium">${calculationResult.realPerceptions.gratificationAmount.toFixed(2)}</span>
+                              </div>
+                            )}
+                            {calculationResult.realPerceptions.severanceAmount > 0 && (
+                              <div className="flex justify-between">
+                                <span className="text-muted-foreground">Indemnización</span>
+                                <span className="font-medium">${calculationResult.realPerceptions.severanceAmount.toFixed(2)}</span>
+                              </div>
+                            )}
+                            {calculationResult.realPerceptions.seniorityPremiumAmount > 0 && (
+                              <div className="flex justify-between">
+                                <span className="text-muted-foreground">Prima Antigüedad</span>
+                                <span className="font-medium">${calculationResult.realPerceptions.seniorityPremiumAmount.toFixed(2)}</span>
+                              </div>
+                            )}
+                            <Separator className="my-2" />
+                            <div className="flex justify-between font-semibold">
+                              <span>Total Percepciones</span>
+                              <span className="text-green-600">${calculationResult.realPerceptions.totalPerceptions.toFixed(2)}</span>
+                            </div>
+                            <Separator className="my-2" />
+                            <div className="flex justify-between font-bold text-sm bg-muted/60 p-2 rounded">
+                              <span>Neto Real</span>
+                              <span className="text-primary">${calculationResult.totals.netPayReal.toFixed(2)}</span>
+                            </div>
+                          </div>
                         </div>
-                      )}
-                      <Separator className="my-2" />
-                      <div className="flex justify-between font-semibold">
-                        <span>Total Percepciones:</span>
-                        <span>${calculationResult.realPerceptions.totalPerceptions.toFixed(2)}</span>
                       </div>
-                      <Separator className="my-2" />
-                      <div className="flex justify-between font-bold text-lg">
-                        <span>Neto Real:</span>
-                        <span>${calculationResult.totals.netPayReal.toFixed(2)}</span>
+                    ) : (
+                      <div className="text-center py-12">
+                        <div className="text-muted-foreground text-xs">
+                          Completa los datos básicos
+                        </div>
+                        <div className="text-[10px] text-muted-foreground mt-1">
+                          para ver el cálculo en tiempo real
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Total */}
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-primary">
-                    Total a Pagar: ${calculationResult.totals.netPayTotal.toFixed(2)}
-                  </div>
-                  <div className="text-sm text-muted-foreground mt-2">
-                    {calculationResult.metadata.daysWorked} días laborados •{' '}
-                    {calculationResult.metadata.yearsWorked.toFixed(4)} años
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </>
-        )}
-
-        {/* Botones */}
-        <div className="flex gap-3">
-          <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
-            Cancelar
-          </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Guardar Finiquito
-          </Button>
-        </div>
-      </form>
-    </Form>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 }
