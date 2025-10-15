@@ -284,7 +284,7 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                 name="employeePosition"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Puesto</FormLabel>
+                    <FormLabel>Puesto *</FormLabel>
                     <FormControl>
                       <Input placeholder="Gerente de Ventas" {...field} />
                     </FormControl>
@@ -298,7 +298,7 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                 name="empresaName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Razón Social de la Empresa</FormLabel>
+                    <FormLabel>Razón Social de la Empresa *</FormLabel>
                     <FormControl>
                       <Input placeholder="EMPRESA S.A. DE C.V." {...field} />
                     </FormControl>
@@ -312,7 +312,7 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                 name="empresaRFC"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>RFC de la Empresa</FormLabel>
+                    <FormLabel>RFC de la Empresa *</FormLabel>
                     <FormControl>
                       <Input placeholder="ABC123456789" {...field} />
                     </FormControl>
@@ -326,7 +326,7 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                 name="empresaMunicipio"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Municipio</FormLabel>
+                    <FormLabel>Municipio *</FormLabel>
                     <FormControl>
                       <Input placeholder="GUADALAJARA" {...field} />
                     </FormControl>
@@ -340,7 +340,7 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                 name="empresaEstado"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Estado</FormLabel>
+                    <FormLabel>Estado *</FormLabel>
                     <FormControl>
                       <Input placeholder="JALISCO" {...field} />
                     </FormControl>
