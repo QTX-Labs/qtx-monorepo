@@ -721,12 +721,12 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
             {/* Columna del Cálculo en Vivo - 1/3 del espacio */}
             <div className="lg:col-span-1">
               <div className="lg:sticky lg:top-6">
-                <Card className="border-2 shadow-xl">
-                  <CardHeader className="bg-muted/30 border-b">
+                <Card className="border-2 shadow-xl py-0">
+                  <CardHeader className="bg-muted/30 border-b space-y-1 px-6 py-4">
                     <CardTitle className="text-lg">Cálculo en Vivo</CardTitle>
                     <CardDescription className="text-xs">Actualización automática</CardDescription>
                   </CardHeader>
-                  <CardContent className="p-4">
+                  <CardContent className="p-6 pt-4">
                     {calculationResult ? (
                       <div className="space-y-4">
                         {/* Total Principal */}
