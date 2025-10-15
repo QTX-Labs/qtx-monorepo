@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CalendarIcon, Loader2 } from 'lucide-react';
@@ -52,6 +52,23 @@ import type { FiniquitoCalculationResult } from '~/lib/finiquitos/types';
 interface FiniquitoFormProps {
   onCancel: () => void;
   onSuccess?: () => void;
+}
+
+// Hook personalizado para debounce
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
 }
 
 export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
@@ -124,61 +141,84 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
   const infonavitAmount = form.watch('infonavitAmount');
   const otherDeductions = form.watch('otherDeductions');
 
+  // Aplicar debounce a los valores numéricos (300ms de delay)
+  const debouncedSalary = useDebounce(salary, 300);
+  const debouncedFiscalDailySalary = useDebounce(fiscalDailySalary, 300);
+  const debouncedDaysFactor = useDebounce(daysFactor, 300);
+  const debouncedAguinaldoDays = useDebounce(aguinaldoDays, 300);
+  const debouncedVacationDays = useDebounce(vacationDays, 300);
+  const debouncedVacationPremium = useDebounce(vacationPremium, 300);
+  const debouncedPendingVacationDays = useDebounce(pendingVacationDays, 300);
+  const debouncedWorkedDays = useDebounce(workedDays, 300);
+  const debouncedGratificationDays = useDebounce(gratificationDays, 300);
+  const debouncedGratificationPesos = useDebounce(gratificationPesos, 300);
+  const debouncedSeveranceDays = useDebounce(severanceDays, 300);
+  const debouncedSeniorityPremiumDays = useDebounce(seniorityPremiumDays, 300);
+  const debouncedIsrAmount = useDebounce(isrAmount, 300);
+  const debouncedImssAmount = useDebounce(imssAmount, 300);
+  const debouncedSubsidyAmount = useDebounce(subsidyAmount, 300);
+  const debouncedInfonavitAmount = useDebounce(infonavitAmount, 300);
+  const debouncedOtherDeductions = useDebounce(otherDeductions, 300);
+
   useEffect(() => {
-    if (hireDate && terminationDate && salary > 0) {
+    // Solo calcular cuando los valores debounced cambian
+    if (hireDate && terminationDate && debouncedSalary > 0) {
       try {
         const result = calculateFiniquito({
           hireDate,
           terminationDate,
-          salary,
+          salary: debouncedSalary,
           salaryFrequency,
           borderZone,
-          fiscalDailySalary,
-          daysFactor,
-          aguinaldoDays,
-          vacationDays,
-          vacationPremium,
-          pendingVacationDays,
-          workedDays,
+          fiscalDailySalary: debouncedFiscalDailySalary,
+          daysFactor: debouncedDaysFactor,
+          aguinaldoDays: debouncedAguinaldoDays,
+          vacationDays: debouncedVacationDays,
+          vacationPremium: debouncedVacationPremium,
+          pendingVacationDays: debouncedPendingVacationDays,
+          workedDays: debouncedWorkedDays,
           gratificationType,
-          gratificationDays,
-          gratificationPesos,
-          severanceDays,
-          seniorityPremiumDays,
-          isrAmount,
-          imssAmount,
-          subsidyAmount,
-          infonavitAmount,
-          otherDeductions
+          gratificationDays: debouncedGratificationDays,
+          gratificationPesos: debouncedGratificationPesos,
+          severanceDays: debouncedSeveranceDays,
+          seniorityPremiumDays: debouncedSeniorityPremiumDays,
+          isrAmount: debouncedIsrAmount,
+          imssAmount: debouncedImssAmount,
+          subsidyAmount: debouncedSubsidyAmount,
+          infonavitAmount: debouncedInfonavitAmount,
+          otherDeductions: debouncedOtherDeductions
         });
         setCalculationResult(result);
       } catch (error) {
         console.error('Error calculando finiquito:', error);
       }
+    } else if (!hireDate || !terminationDate || debouncedSalary === 0) {
+      // Limpiar el resultado si no hay datos suficientes
+      setCalculationResult(null);
     }
   }, [
     hireDate,
     terminationDate,
-    salary,
+    debouncedSalary,
     salaryFrequency,
     borderZone,
-    fiscalDailySalary,
-    daysFactor,
-    aguinaldoDays,
-    vacationDays,
-    vacationPremium,
-    pendingVacationDays,
-    workedDays,
+    debouncedFiscalDailySalary,
+    debouncedDaysFactor,
+    debouncedAguinaldoDays,
+    debouncedVacationDays,
+    debouncedVacationPremium,
+    debouncedPendingVacationDays,
+    debouncedWorkedDays,
     gratificationType,
-    gratificationDays,
-    gratificationPesos,
-    severanceDays,
-    seniorityPremiumDays,
-    isrAmount,
-    imssAmount,
-    subsidyAmount,
-    infonavitAmount,
-    otherDeductions
+    debouncedGratificationDays,
+    debouncedGratificationPesos,
+    debouncedSeveranceDays,
+    debouncedSeniorityPremiumDays,
+    debouncedIsrAmount,
+    debouncedImssAmount,
+    debouncedSubsidyAmount,
+    debouncedInfonavitAmount,
+    debouncedOtherDeductions
   ]);
 
   // Manejar gratificación bidireccional
@@ -796,8 +836,8 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
             {/* Columna del Cálculo en Vivo - 1/3 del espacio */}
             <div className="lg:col-span-1">
               <div className="lg:sticky lg:top-6">
-                <Card className="border-2 shadow-xl py-0">
-                  <CardHeader className="bg-muted/30 border-b space-y-1 px-6 py-4">
+                <Card className="border-2 shadow-xl py-0 overflow-hidden">
+                  <CardHeader className="bg-muted/30 border-b space-y-1 px-6 py-4 rounded-t-2xl">
                     <CardTitle className="text-lg">Cálculo en Vivo</CardTitle>
                     <CardDescription className="text-xs">Actualización automática</CardDescription>
                   </CardHeader>
