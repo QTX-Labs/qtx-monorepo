@@ -10,18 +10,21 @@ import type { Finiquito } from '@workspace/database';
 import { numeroALetra } from './numero-a-letra';
 import { formatDateLong } from '../utils';
 
+// Utilidad opcional para convertir cm a puntos
+// const cm = (cmValue: number) => (cmValue * 72) / 2.54;
+
 // Estilos optimizados para simular Arial Narrow con Helvetica
-// Se usa lineHeight reducido y paddingHorizontal para lograr márgenes correctos
+// Márgenes ajustados para que coincidan visualmente con Word (~2.4 cm arriba, 2.54 cm laterales)
 const styles = StyleSheet.create({
     page: {
         fontFamily: 'Helvetica',
         fontSize: 12,
-        lineHeight: 1.15,
+        lineHeight: 1.08,
         color: '#000000',
-        paddingTop: 90,      // ~2.54 cm
-        paddingBottom: 90,   // ~2.54 cm
-        paddingLeft: 72,     // ~1.91 cm (2.54 cm en original)
-        paddingRight: 72,    // ~1.91 cm (2.54 cm en original)
+        paddingTop: 52,      // ≈ 2.4 cm (ajustado al documento Word)
+        paddingBottom: 72,   // 2.54 cm
+        paddingLeft: 72,     // 2.54 cm
+        paddingRight: 72,    // 2.54 cm
     },
     center: {
         textAlign: 'center'
@@ -31,13 +34,14 @@ const styles = StyleSheet.create({
     },
     paragraph: {
         marginBottom: 12,
-        textAlign: 'justify'
+        textAlign: 'justify',
+        textIndent: 70  // Tabulador al inicio de cada párrafo
     },
     bold: {
         fontWeight: 'bold'
     },
     signature: {
-        marginTop: 50,
+        marginTop: 40,
         textAlign: 'center',
         alignItems: 'center'
     },
@@ -49,6 +53,9 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         alignSelf: 'center'
     },
+    textUnderline: {
+        textDecoration: 'underline'
+    },
     hr: {
         borderBottomWidth: 1,
         borderBottomColor: '#000',
@@ -56,30 +63,31 @@ const styles = StyleSheet.create({
     },
     table: {
         width: '100%',
-        marginTop: 16
     },
     tableRow: {
         flexDirection: 'row',
         borderBottomWidth: 0
     },
     tableCell: {
-        flex: 1,
-        paddingVertical: 4
+        flex: 3,
+        paddingVertical: 0,
+        paddingRight: 8
     },
     tableCellRight: {
         flex: 1,
         textAlign: 'right',
-        paddingVertical: 4
+        paddingVertical: 0
     },
     tableCellBold: {
-        flex: 1,
-        paddingVertical: 4,
+        flex: 3,
+        paddingVertical: 0,
+        paddingRight: 8,
         fontWeight: 'bold'
     },
     tableCellRightBold: {
         flex: 1,
         textAlign: 'right',
-        paddingVertical: 4,
+        paddingVertical: 0,
         fontWeight: 'bold'
     }
 });
@@ -105,14 +113,11 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
     const salarioDiario = toNumber(finiquito.fiscalDailySalary);
     const salarioLetra = numeroALetra(salarioDiario);
 
-    // Construir ubicación con municipio y estado
     const municipio = finiquito.empresaMunicipio || 'CIUDAD DE MÉXICO';
     const estado = finiquito.empresaEstado || '';
     const ubicacion = estado ? `${municipio}, ${estado}` : municipio;
-
     const puesto = finiquito.employeePosition || 'EMPLEADO';
 
-    // Calcular totales para el recibo de finiquito
     const vacaciones = toNumber(finiquito.realVacationAmount);
     const primaVacacional = toNumber(finiquito.realVacationPremiumAmount);
     const aguinaldo = toNumber(finiquito.realAguinaldoAmount);
@@ -124,22 +129,16 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
             <Page size="LETTER" style={styles.page}>
                 {/* ENCABEZADO */}
                 <Text style={[styles.center, styles.paragraph]}>
-                    <Text style={styles.bold}>ASUNTO: RENUNCIA VOLUNTARIA.</Text>
+                    <Text style={[styles.bold, styles.textUnderline, styles.right]}>ASUNTO: RENUNCIA VOLUNTARIA.</Text>
                 </Text>
 
-                <Text style={styles.paragraph}>
-                    {finiquito.empresaName}
-                </Text>
-
-                <Text style={styles.paragraph}>
-                    MUNICIPIO DE {ubicacion}.
-                </Text>
-
-                <Text style={[styles.right, styles.paragraph]}>
+                <Text style={{ marginBottom: 12 }}>
+                    {finiquito.empresaName}{'\n'}
+                    MUNICIPIO DE {ubicacion}.{'\n'}
                     P R E S E N T E:
                 </Text>
 
-                {/* CUERPO PRINCIPAL DE RENUNCIA */}
+                {/* CUERPO PRINCIPAL */}
                 <Text style={styles.paragraph}>
                     POR MEDIO DEL PRESENTE OCURSO, ES MI DESEO RENUNCIAR VOLUNTARIAMENTE A MI EMPLEO, Y AL PUESTO DE{' '}
                     <Text style={styles.bold}>{puesto}</Text> QUE VENIA DESEMPEÑANDO DESDE EL {formatDateLong(finiquito.hireDate)},
@@ -174,52 +173,35 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
                 </Text>
 
                 {/* FIRMA DE RENUNCIA */}
-                <Text style={[styles.center, styles.paragraph, { marginTop: 20 }]}>
-                    ATENTAMENTE
-                </Text>
-
-                <Text style={[styles.center, styles.paragraph]}>
+                <Text style={[styles.center, { marginTop: 20, marginBottom: 12, textAlign: 'center' }]}>
+                    ATENTAMENTE{'\n'}
                     {ubicacion} A {formatDateLong(finiquito.terminationDate)}.
                 </Text>
 
-                <View style={styles.signature}>
+                <View style={[styles.signature, { marginTop: 20 }]}>
                     <View style={styles.underline} />
                     <Text>({finiquito.employeeName})</Text>
                 </View>
 
-                {/* SEPARADOR */}
-                <View style={styles.hr} />
-
                 {/* RECIBO DE FINIQUITO */}
-                <Text style={[styles.center, styles.paragraph, { marginTop: 20 }]}>
+                <Text style={[styles.center, { marginTop: 10, marginBottom: 12, textAlign: 'center' }]}>
                     <Text style={styles.bold}>R E C I B O   F I N I Q U I T O</Text>
                 </Text>
 
-                <Text style={styles.paragraph}>
-                    Nombre: {finiquito.employeeName}
+                <Text style={{ marginBottom: 12 }}>
+                  <Text style={styles.bold}>Nombre:</Text> {finiquito.employeeName}{'\n'}
+                  <Text style={styles.bold}>Fecha de ingreso:</Text> {formatDateLong(finiquito.hireDate)}{'\n'}
+                  <Text style={styles.bold}>Puesto:</Text> {puesto}{'\n'}
+                  <Text style={styles.bold}>Salario diario:</Text> ${formatCurrency(finiquito.fiscalDailySalary)}{'\n'}
+                  <Text style={styles.bold}>Cantidad con letra:</Text> {salarioLetra} 00/100 M.N.{'\n'}
+                  <Text style={styles.bold}>Recibí de {finiquito.empresaName} la cantidad de:</Text> ${formatCurrency(totalNeto)}
                 </Text>
 
-                <Text style={styles.paragraph}>
-                    Fecha de ingreso: {formatDateLong(finiquito.hireDate)}
+                <Text style={{ marginBottom: 12, textAlign: 'justify' }}>
+                  <Text style={styles.bold}>CANTIDAD CON LETRA:</Text> <Text style={styles.textUnderline}>{numeroALetra(totalNeto)}</Text> 00 / 100 M.N.
                 </Text>
 
-                <Text style={styles.paragraph}>
-                    Puesto: {puesto}
-                </Text>
-
-                <Text style={styles.paragraph}>
-                    Salario diario: ${formatCurrency(finiquito.fiscalDailySalary)}
-                </Text>
-
-                <Text style={styles.paragraph}>
-                    Cantidad con letra: {salarioLetra} 00/100 M.N.
-                </Text>
-
-                <Text style={styles.paragraph}>
-                    Recibí de {finiquito.empresaName} la cantidad de: ${formatCurrency(totalNeto)}
-                </Text>
-
-                <Text style={styles.paragraph}>
+                <Text style={{ marginBottom: 12, textAlign: 'justify' }}>
                     Por concepto de finiquito, al haber dado por terminado de manera unilateral el contrato individual de trabajo con{' '}
                     <Text style={styles.bold}>{finiquito.empresaName}</Text>, manifestando que dicha cantidad la recibo a mi entera satisfacción,
                     asimismo que durante la prestación de mis servicios a <Text style={styles.bold}>{finiquito.empresaName}</Text>, reconociendo
@@ -228,6 +210,10 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
                     fuera de la fuente de trabajo y sin estar bajo la subordinación de mi único y exclusivo patrón{' '}
                     <Text style={styles.bold}>{finiquito.empresaName}</Text>, teniendo como días de descansando los días domingos de cada semana,
                     laborando única y exclusivamente dicha jornada. La cantidad anterior se desglosa en los siguientes conceptos:
+                </Text>
+
+                <Text style={{ fontWeight: 'bold', marginBottom: 12 }}>
+                  RECIBÍ DE <Text>{finiquito.empresaName}</Text> LAS CANTIDADES SIGUIENTES:
                 </Text>
 
                 {/* TABLA DE CONCEPTOS */}
@@ -248,21 +234,21 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
                         <Text style={styles.tableCell}>SALARIOS DEVENGADOS</Text>
                         <Text style={styles.tableCellRight}>${formatCurrency(salariosDevengados)}</Text>
                     </View>
-                    <View style={styles.tableRow}>
+                    <View style={[styles.tableRow, { marginTop: 12, marginBottom: 12 }]}>
                         <Text style={styles.tableCellBold}>TOTAL NETO DE PERCEPCIONES:</Text>
                         <Text style={styles.tableCellRightBold}>${formatCurrency(totalNeto)}</Text>
                     </View>
                 </View>
 
                 {/* BLOQUE FINAL */}
-                <Text style={styles.paragraph}>
+                <Text style={{ marginBottom: 12, textAlign: 'justify' }}>
                     Manifiesto así mismo que recibí el pago de todas las prestaciones a que tuve derecho conforme a la ley y a mi contrato
                     individual de trabajo; tales como: salarios ordinarios, séptimos días, vacaciones, prima vacacional, aguinaldo y participación
                     de las utilidades cuando las hubo y demás prestaciones a que tengo derecho de acuerdo con la Ley Federal del Trabajo, sin
                     laborar días festivos.
                 </Text>
 
-                <Text style={styles.paragraph}>
+                <Text style={{ marginBottom: 12, textAlign: 'justify' }}>
                     Por ser de equidad manifiesto, que durante la prestación de mis servicios los llevé a cabo física y emocionalmente en buen
                     estado, y que durante el tiempo que preste mis servicios no sufrí riesgo de trabajo alguno o enfermedad profesional, por lo
                     que a la fecha de la firma del presente se me ha cubierto en su totalidad toda cantidad por cualquier concepto, extiendo el
@@ -272,12 +258,9 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
                 </Text>
 
                 {/* FIRMA FINAL */}
-                <Text style={[styles.center, styles.paragraph, { marginTop: 20 }]}>
-                    ATENTAMENTE
-                </Text>
-
-                <Text style={[styles.center, styles.paragraph]}>
-                    {ubicacion} A {formatDateLong(finiquito.terminationDate)}
+                <Text style={[styles.center, { marginTop: 20, marginBottom: 12, textAlign: 'center' }]}>
+                  ATENTAMENTE{'\n'}
+                  {ubicacion} A {formatDateLong(finiquito.terminationDate)}.
                 </Text>
 
                 <View style={styles.signature}>
