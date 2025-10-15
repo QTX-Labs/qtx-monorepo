@@ -65,7 +65,7 @@ const DATA_ACCORDION = [
     content:
       'Podemos actualizar esta Política de Privacidad de vez en cuando. Los cambios se publicarán aquí, y el uso continuado de la plataforma constituye aceptación.'
   }
-];}]
+];
 
 export function PrivacyPolicy(): React.JSX.Element {
   return (

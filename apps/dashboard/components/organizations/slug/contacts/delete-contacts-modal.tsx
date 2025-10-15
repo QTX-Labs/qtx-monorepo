@@ -60,10 +60,10 @@ export const DeleteContactsModal = NiceModal.create<DeleteContactsModalProps>(
       }
       const result = await deleteContacts(values);
       if (!result?.serverError && !result?.validationErrors) {
-        toast.success(subject === 'Contact' ? 'Contacto eliminado' : 'Contactos eliminados');
+        toast.success(subject === 'Contacto' ? 'Contacto eliminado' : 'Contactos eliminados');
         modal.handleClose();
       } else {
-        toast.error(subject === 'Contact' ? 'No se pudo eliminar el contacto' : 'No se pudieron eliminar los contactos');
+        toast.error(subject === 'Contacto' ? 'No se pudo eliminar el contacto' : 'No se pudieron eliminar los contactos');
       }
     };
     const renderDescription = (
