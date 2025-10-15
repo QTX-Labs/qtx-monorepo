@@ -9,6 +9,7 @@ import { useAction } from 'next-safe-action/hooks';
 import { toast } from 'sonner';
 
 import { Button } from '@workspace/ui/components/button';
+import { toLocalDate } from '~/lib/finiquitos/utils';
 import {
   Card,
   CardContent,
@@ -155,14 +156,14 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
                     {finiquito.employeeName}
                   </TableCell>
                   <TableCell>
-                    {format(new Date(finiquito.terminationDate), 'PPP', {
+                    {format(toLocalDate(finiquito.terminationDate), 'PPP', {
                       locale: es
                     })}
                   </TableCell>
                   <TableCell>${Number(finiquito.totalToPay).toFixed(2)}</TableCell>
                   <TableCell>{finiquito.user.name}</TableCell>
                   <TableCell>
-                    {format(new Date(finiquito.createdAt), 'PPP', {
+                    {format(toLocalDate(finiquito.createdAt), 'PPP', {
                       locale: es
                     })}
                   </TableCell>

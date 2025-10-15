@@ -182,3 +182,44 @@ export function validateVacationPremium(premium: number): void {
     throw new Error('La prima vacacional debe estar entre 0% y 100%');
   }
 }
+
+/**
+ * Formatea una fecha como string largo en español (para PDF)
+ * Trata la fecha como UTC para evitar problemas de timezone
+ *
+ * @example formatDateLong(new Date('2025-10-15T06:00:00.000Z')) => '15 DE OCTUBRE DE 2025'
+ */
+export function formatDateLong(date: Date | string): string {
+  const d = typeof date === 'string' ? new Date(date) : date;
+
+  // Usar métodos UTC para evitar conversión de timezone
+  const day = d.getUTCDate();
+  const month = d.getUTCMonth();
+  const year = d.getUTCFullYear();
+
+  const months = [
+    'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO',
+    'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
+  ];
+
+  return `${day} DE ${months[month]} DE ${year}`;
+}
+
+/**
+ * Convierte una fecha a formato local UTC (para usar con date-fns)
+ * Esto evita problemas de timezone tratando la fecha como si fuera local
+ *
+ * @example
+ * // Entrada: "2025-10-15T06:00:00.000Z"
+ * // Salida: Date object para "2025-10-15" en timezone local
+ */
+export function toLocalDate(date: Date | string): Date {
+  const d = typeof date === 'string' ? new Date(date) : date;
+
+  // Extraer componentes UTC y crear fecha local
+  return new Date(
+    d.getUTCFullYear(),
+    d.getUTCMonth(),
+    d.getUTCDate()
+  );
+}
