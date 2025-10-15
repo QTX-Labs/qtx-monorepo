@@ -7,6 +7,7 @@ import { MoreHorizontal, Download, Trash2, Loader2 } from 'lucide-react';
 import { type Finiquito, type User } from '@workspace/database';
 import { useAction } from 'next-safe-action/hooks';
 import { toast } from 'sonner';
+import { useRouter, useParams } from 'next/navigation';
 
 import { Button } from '@workspace/ui/components/button';
 import { toLocalDate } from '~/lib/finiquitos/utils';
@@ -63,6 +64,8 @@ interface FiniquitosListProps {
 }
 
 export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
+  const router = useRouter();
+  const params = useParams();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -117,6 +120,10 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
     }
   };
 
+  const handleRowClick = (id: string) => {
+    router.push(`/organizations/${params.slug}/finiquitos/${id}`);
+  };
+
   if (finiquitos.length === 0) {
     return (
       <Card>
@@ -151,7 +158,11 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
             </TableHeader>
             <TableBody>
               {finiquitos.map((finiquito) => (
-                <TableRow key={finiquito.id}>
+                <TableRow
+                  key={finiquito.id}
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => handleRowClick(finiquito.id)}
+                >
                   <TableCell className="font-medium">
                     {finiquito.employeeName}
                   </TableCell>
@@ -170,7 +181,12 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" disabled={isLoading}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          disabled={isLoading}
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           {isLoading ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
                           ) : (
@@ -181,13 +197,19 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem
-                          onClick={() => handleDownloadPDF(finiquito.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDownloadPDF(finiquito.id);
+                          }}
                         >
                           <Download className="mr-2 h-4 w-4" />
                           Descargar PDF
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() => handleDeleteClick(finiquito.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteClick(finiquito.id);
+                          }}
                           className="text-destructive"
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
