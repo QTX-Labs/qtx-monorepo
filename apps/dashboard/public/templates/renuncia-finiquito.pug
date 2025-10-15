@@ -3,72 +3,133 @@ html
   head
     meta(charset="utf-8")
     style.
-      body { font-family: "Times New Roman", serif; font-size: 12pt; text-align: justify; margin: 3cm 2cm; }
+      body {
+        font-family: "Times New Roman", serif;
+        font-size: 12pt;
+        line-height: 1.5;
+        text-align: justify;
+        margin: 3cm 2.5cm;
+      }
       .center { text-align: center; }
       .right { text-align: right; }
-      .signature { margin-top: 60px; text-align: center; }
-      .underline { display: inline-block; border-bottom: 1px solid #000; width: 70%; margin-top: 1em; }
-      table { width: 100%; border-collapse: collapse; margin-top: 1em; }
-      td:last-child { text-align: right; }
+      .signature {
+        text-align: center;
+        margin-top: 60px;
+      }
+      .underline {
+        display: inline-block;
+        width: 70%;
+        border-bottom: 1px solid #000;
+        margin-top: 1em;
+      }
+      hr {
+        border: none;
+        border-top: 1px solid #000;
+        margin: 40px 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1em;
+      }
+      td {
+        padding: 2px 4px;
+      }
+      td:last-child {
+        text-align: right;
+      }
+      .bold { font-weight: bold; }
 
   body
-    p.center ASUNTO: RENUNCIA VOLUNTARIA.
+    // ENCABEZADO
+    p.center
+      strong ASUNTO: RENUNCIA VOLUNTARIA.
 
     p {{razonSocial}}
     p MUNICIPIO DE {{municipio}}.
     p.right P R E S E N T E:
 
+    // CUERPO PRINCIPAL DE RENUNCIA
     p
       | POR MEDIO DEL PRESENTE OCURSO, ES MI DESEO RENUNCIAR VOLUNTARIAMENTE A MI EMPLEO, Y AL PUESTO DE
       strong {{puesto}}
-      | , QUE VENÍA DESEMPEÑANDO DESDE EL {{fechaAltaIMSS}}, ...
+      |  QUE VENIA DESEMPEÑANDO DESDE EL {{fechaAltaIMSS}}, ASIMISMO EN ESTE ACTO RENUNCIO VOLUNTARIAMENTE A MI ULTIMO SALARIO DE $
+      strong {{salarioDiario}}
+      |  ({{salarioLetra}} PESOS 00/100 M.N.), DIARIOS, MISMO SALARIO QUE PERCIBÍ DURANTE EL TIEMPO QUE EXISTIÓ LA RELACIÓN LABORAL; DE IGUAL FORMA RENUNCIO DE MANERA VOLUNTARIA AL HORARIO QUE VENIA DESEMPEÑANDO ACLARANDO QUE ÚNICAMENTE LABORÉ LA JORNADA ORDINARIA LEGAL PERMITIDA, TENIENDO UNA HORA INTERMEDIA PARA DESCANSAR Y/O TOMAR ALIMENTOS A MI ELECCIÓN YA SEA DENTRO O FUERA DE LAS INSTALACIONES DE LA FUENTE DE TRABAJO Y SIN ESTAR A SU DISPOSICIÓN, CON DESCANSO LOS DÍAS DOMINGO DE CADA SEMANA POR LO QUE EN ESTE MOMENTO MANIFIESTO QUE EL PRESENTE DOCUMENTO SE REALIZA SIN QUE OBRE MALA FE, COACCIÓN, NI NINGÚN VICIO DEL CONSENTIMIENTO.
 
     p
-      | ... RENUNCIO VOLUNTARIAMENTE A MI ÚLTIMO SALARIO DE $
-      strong {{salarioDiario}}
-      |  ({{salarioLetra}} PESOS 00/100 M.N.), ...
+      | ASIMISMO, LE INFORMO QUE DURANTE EL TIEMPO QUE EXISTIÓ LA RELACIÓN LABORAL ENTRE EL SUSCRITO Y LA FUENTE DE TRABAJO, SIEMPRE SE ME CUBRIÓ MI SALARIO EN TIEMPO Y FORMA, ASÍ COMO EL TIEMPO EXTRA CUANDO LO LABORÉ, POR LO QUE, HASTA LA FECHA, NO SE ME ADEUDA CANTIDAD ALGUNA POR ESTOS CONCEPTOS.
 
+    p
+      | ES IMPORTANTE MENCIONAR QUE DURANTE EL TIEMPO QUE EXISTIÓ LA RELACIÓN DE TRABAJO, JAMÁS SUFRÍ NINGÚN RIESGO DE TRABAJO, NI PADECÍ NINGÚN TIPO DE ENFERMEDAD CRÓNICA, NI DE NINGÚN TIPO, POR LO QUE DESDE ESTE MOMENTO DESLINDO A LA FUENTE DE TRABAJO
+      strong {{razonSocial}}
+      |  DE TODA RESPONSABILIDAD DE SEGURIDAD SOCIAL Y ANTE LA JUNTA LOCAL, FEDERAL DE CONCILIACIÓN Y ARBITRAJE ASÍ COMO LOS JUZGADOS LABORALES.
+
+    p
+      | POR LO QUE DESDE ESTOS MOMENTOS MANIFIESTO QUE LA FUENTE DE TRABAJO
+      strong {{razonSocial}}
+      |  NO ME ADEUDA CANTIDAD ALGUNA POR CONCEPTO DE AGUINALDO, VACACIONES, PRIMA VACACIONAL, REPARTO DE UTILIDADES, FONDO Y CAJA DE AHORRO, NI DE NINGÚN TIPO DE PRESTACIÓN, POR LO QUE SE EXTIENDE LA PRESENTE RENUNCIA VOLUNTARIA SIN NINGUNA OBJECIÓN Y RATIFICO LA MISMA COMO VERDADERA, SIN QUE OBRE NINGUNO DE LOS VICIOS DEL CONSENTIMIENTO.
+
+    // FIRMA DE RENUNCIA
     p.center ATENTAMENTE
-    p.center {{municipio}} A {{fechaRenuncia}}
-    p.signature
+    p.center {{municipio}} A {{fechaRenuncia}}.
+    .signature
       .underline
       p ({{nombreTrabajador}})
 
+    // SEPARADOR
     hr
-    p.center R E C I B O   F I N I Q U I T O
 
+    // RECIBO DE FINIQUITO
+    p.center
+      strong R E C I B O   F I N I Q U I T O
+
+    p Nombre: {{nombreTrabajador}}
+    p Fecha de ingreso: {{fechaAltaIMSS}}
+    p Puesto: {{puesto}}
+    p Salario diario: ${{salarioDiario}}
+
+    p Cantidad con letra: {{salarioLetra}} 00/100 M.N.
+    p Recibí de {{razonSocial}} la cantidad de: ${{finiquito.total}}
+    p
+      | Por concepto de finiquito, al haber dado por terminado de manera unilateral el contrato individual de trabajo con
+      strong {{razonSocial}}
+      | , manifestando que dicha cantidad la recibo a mi entera satisfacción, asimismo que durante la prestación de mis servicios a
+      strong {{razonSocial}}
+      | , reconociendo expresamente que a últimas fechas le prestaba mis servicios personales y subordinados de manera exclusiva en las condiciones señaladas en el presente documento, gozando de lunes a sábado con sesenta minutos para descansar y/o tomar alimentos dentro o fuera de la fuente de trabajo y sin estar bajo la subordinación de mi único y exclusivo patrón
+      strong {{razonSocial}}
+      | , teniendo como días de descansando los días domingos de cada semana, laborando única y exclusivamente dicha jornada. La cantidad anterior se desglosa en los siguientes conceptos:
+
+    // TABLA DE CONCEPTOS
     table
       tr
-        td Nombre:
-        td {{nombreTrabajador}}
-      tr
-        td Fecha de ingreso:
-        td {{fechaAltaIMSS}}
-      tr
-        td Puesto:
-        td {{puesto}}
-      tr
-        td Salario diario:
-        td ${{salarioDiario}}
-
-    table
-      tr
-        td Parte proporcional de vacaciones 2024–2025
+        td PARTE PROPORCIONAL DE VACACIONES 2024 – 2025
         td ${{finiquito.vacaciones}}
       tr
-        td Parte proporcional de prima vacacional
+        td PARTE PROPORCIONAL DE PRIMA VACACIONAL
         td ${{finiquito.primaVacacional}}
       tr
-        td Aguinaldo proporcional del 2024
+        td AGUINALDO PROPORCIONAL DEL 2024
         td ${{finiquito.aguinaldo}}
       tr
-        td Salarios devengados
+        td SALARIOS DEVENGADOS
         td ${{finiquito.salariosDevengados}}
       tr
-        td strong TOTAL NETO DE PERCEPCIONES
-        td strong ${{finiquito.total}}
+        td.bold TOTAL NETO DE PERCEPCIONES:
+        td.bold ${{finiquito.total}}
 
+    // BLOQUE FINAL
+    p
+      | Manifiesto así mismo que recibí el pago de todas las prestaciones a que tuve derecho conforme a la ley y a mi contrato individual de trabajo; tales como: salarios ordinarios, séptimos días, vacaciones, prima vacacional, aguinaldo y participación de las utilidades cuando las hubo y demás prestaciones a que tengo derecho de acuerdo con la Ley Federal del Trabajo, sin laborar días festivos.
+
+    p
+      | Por ser de equidad manifiesto, que durante la prestación de mis servicios los llevé a cabo física y emocionalmente en buen estado, y que durante el tiempo que preste mis servicios no sufrí riesgo de trabajo alguno o enfermedad profesional, por lo que a la fecha de la firma del presente se me ha cubierto en su totalidad toda cantidad por cualquier concepto, extiendo el finiquito más amplio que en derecho proceda a favor de mi único
+      strong {{razonSocial}}
+      |  ya que han sido cubiertas totalmente todas y cada una de las prestaciones y salarios a los que tengo derecho, firmando de conformidad el presente finiquito.
+
+    // FIRMA FINAL
+    p.center ATENTAMENTE
     p.center {{municipio}} A {{fechaRenuncia}}
-    p.signature
+    .signature
       .underline
       p ({{nombreTrabajador}})

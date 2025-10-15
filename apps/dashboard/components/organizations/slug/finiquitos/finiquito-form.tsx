@@ -61,6 +61,10 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
     resolver: zodResolver(finiquitoFormSchema) as any,
     defaultValues: {
       employeeName: '',
+      employeePosition: '',
+      empresaName: '',
+      empresaRFC: '',
+      empresaMunicipio: '',
       hireDate: undefined,
       terminationDate: undefined,
       salary: 0,
@@ -224,6 +228,62 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                     <FormLabel>Nombre del Empleado *</FormLabel>
                     <FormControl>
                       <Input placeholder="Juan Pérez" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="employeePosition"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Puesto</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Gerente de Ventas" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="empresaName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Razón Social de la Empresa</FormLabel>
+                    <FormControl>
+                      <Input placeholder="EMPRESA S.A. DE C.V." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="empresaRFC"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>RFC de la Empresa</FormLabel>
+                    <FormControl>
+                      <Input placeholder="ABC123456789" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="empresaMunicipio"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Municipio</FormLabel>
+                    <FormControl>
+                      <Input placeholder="GUADALAJARA" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { renderToBuffer } from '@react-pdf/renderer';
 
-import { getAuthOrganizationContext } from '@workspace/auth/context';
-import { NotFoundError } from '@workspace/common/errors';
+import { getAuthContext } from '@workspace/auth/context';
+import { NotFoundError, ForbiddenError } from '@workspace/common/errors';
+import { prisma } from '@workspace/database/client';
 
-import { getFiniquitoById } from '~/data/finiquitos/get-finiquito-by-id';
 import { FiniquitoPDF } from '~/lib/finiquitos/pdf/finiquito-pdf-template';
 
 export async function GET(
@@ -12,16 +12,39 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Verificar autenticación
-    await getAuthOrganizationContext();
+    // Verificar autenticación básica
+    const { session } = await getAuthContext();
 
     const { id } = await params;
 
-    // Obtener el finiquito
-    const finiquito = await getFiniquitoById(id);
+    // Obtener el finiquito directamente con Prisma
+    const finiquito = await prisma.finiquito.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        },
+        attachments: true
+      }
+    });
 
     if (!finiquito) {
       throw new NotFoundError('Finiquito no encontrado');
+    }
+
+    // Verificar que el usuario tenga acceso a la organización del finiquito
+    const membership = await prisma.membership.findFirst({
+      where: {
+        userId: session.user.id,
+        organizationId: finiquito.organizationId
+      }
+    });
+
+    if (!membership) {
+      throw new ForbiddenError('No tienes acceso a este finiquito');
     }
 
     // Generar PDF
@@ -39,6 +62,10 @@ export async function GET(
 
     if (error instanceof NotFoundError) {
       return NextResponse.json({ error: error.message }, { status: 404 });
+    }
+
+    if (error instanceof ForbiddenError) {
+      return NextResponse.json({ error: error.message }, { status: 403 });
     }
 
     return NextResponse.json(

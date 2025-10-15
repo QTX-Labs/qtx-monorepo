@@ -4,9 +4,15 @@ import { BorderZone, GratificationType, SalaryFrequency } from '@workspace/datab
 const finiquitoBaseSchema = z.object({
   // Datos Básicos
   employeeName: z.string().min(1, 'El nombre del empleado es requerido'),
+  employeePosition: z.string().optional(),
   employeeId: z.string().optional(),
   hireDate: z.coerce.date({ required_error: 'La fecha de ingreso es requerida' }),
   terminationDate: z.coerce.date({ required_error: 'La fecha de baja es requerida' }),
+
+  // Datos de la Empresa
+  empresaName: z.string().optional(),
+  empresaRFC: z.string().optional(),
+  empresaMunicipio: z.string().optional(),
 
   // Datos Salariales
   salary: z.coerce.number().positive('El salario debe ser mayor a 0'),
