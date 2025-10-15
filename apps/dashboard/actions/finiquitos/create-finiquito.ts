@@ -13,7 +13,10 @@ export const createFiniquito = authOrganizationActionClient
   .metadata({ actionName: 'createFiniquito' })
   .inputSchema(createFiniquitoSchema)
   .action(async ({ parsedInput, ctx }) => {
+    console.log('[createFiniquito] START - Input recibido:', JSON.stringify(parsedInput, null, 2));
+
     // Calcular finiquito
+    console.log('[createFiniquito] Iniciando cálculo...');
     const calculation = calculateFiniquito({
       hireDate: parsedInput.hireDate,
       terminationDate: parsedInput.terminationDate,
@@ -38,13 +41,30 @@ export const createFiniquito = authOrganizationActionClient
       infonavitAmount: parsedInput.infonavitAmount,
       otherDeductions: parsedInput.otherDeductions
     });
+    console.log('[createFiniquito] Cálculo completado:', {
+      netPayTotal: calculation.totals.netPayTotal,
+      gratificationDays: calculation.metadata.gratificationDays,
+      gratificationPesos: calculation.metadata.gratificationPesos
+    });
 
     // Guardar en base de datos
-    const finiquito = await prisma.finiquito.create({
+    console.log('[createFiniquito] Intentando guardar en BD...');
+    console.log('[createFiniquito] Datos a guardar:', {
+      organizationId: ctx.organization.id,
+      userId: ctx.session.user.id,
+      employeeId: parsedInput.employeeId ?? null,
+      employeeName: parsedInput.employeeName,
+      gratificationType: parsedInput.gratificationType ?? null,
+      gratificationDays: calculation.metadata.gratificationDays ?? null,
+      gratificationPesos: calculation.metadata.gratificationPesos ?? null
+    });
+
+    try {
+      const finiquito = await prisma.finiquito.create({
       data: {
         organizationId: ctx.organization.id,
         userId: ctx.session.user.id,
-        employeeId: parsedInput.employeeId,
+        employeeId: parsedInput.employeeId ?? null,
         employeeName: parsedInput.employeeName,
         empresaName: ctx.organization.name,
         clientName: ctx.organization.name,
@@ -64,8 +84,9 @@ export const createFiniquito = authOrganizationActionClient
         vacationPremiumPercentage: parsedInput.vacationPremium,
         pendingVacationDays: parsedInput.pendingVacationDays,
         pendingWorkDays: parsedInput.workedDays,
-        gratificationDays: calculation.metadata.gratificationDays,
-        gratificationPesos: calculation.metadata.gratificationPesos,
+        gratificationType: parsedInput.gratificationType ?? null,
+        gratificationDays: calculation.metadata.gratificationDays ?? null,
+        gratificationPesos: calculation.metadata.gratificationPesos ?? null,
         severanceTotalFiscal: calculation.fiscalPerceptions.severanceAmount,
         severanceTotalReal: calculation.realPerceptions.severanceAmount,
         seniorityPremiumFiscal: calculation.fiscalPerceptions.seniorityPremiumAmount,
@@ -112,15 +133,26 @@ export const createFiniquito = authOrganizationActionClient
         realNetAmount: calculation.totals.netPayReal,
         totalToPay: calculation.totals.netPayTotal
       }
-    });
+      });
+      console.log('[createFiniquito] ✅ Finiquito guardado exitosamente:', finiquito.id);
 
-    // Revalidar la página de finiquitos
-    revalidatePath(
-      replaceOrgSlug(
-        routes.dashboard.organizations.slug.Finiquitos,
-        ctx.organization.slug
-      )
-    );
+      // Revalidar la página de finiquitos
+      revalidatePath(
+        replaceOrgSlug(
+          routes.dashboard.organizations.slug.Finiquitos,
+          ctx.organization.slug
+        )
+      );
 
-    return { finiquitoId: finiquito.id };
+      console.log('[createFiniquito] SUCCESS - Retornando ID:', finiquito.id);
+      return { finiquitoId: finiquito.id };
+    } catch (error) {
+      console.error('[createFiniquito] ❌ ERROR al guardar en BD:', error);
+      console.error('[createFiniquito] Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        name: error instanceof Error ? error.name : undefined
+      });
+      throw error;
+    }
   });

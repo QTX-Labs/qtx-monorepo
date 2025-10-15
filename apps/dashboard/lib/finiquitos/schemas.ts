@@ -5,8 +5,8 @@ const finiquitoBaseSchema = z.object({
   // Datos Básicos
   employeeName: z.string().min(1, 'El nombre del empleado es requerido'),
   employeeId: z.string().optional(),
-  hireDate: z.date({ required_error: 'La fecha de ingreso es requerida' }),
-  terminationDate: z.date({ required_error: 'La fecha de baja es requerida' }),
+  hireDate: z.coerce.date({ required_error: 'La fecha de ingreso es requerida' }),
+  terminationDate: z.coerce.date({ required_error: 'La fecha de baja es requerida' }),
 
   // Datos Salariales
   salary: z.coerce.number().positive('El salario debe ser mayor a 0'),

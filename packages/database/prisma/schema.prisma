@@ -599,8 +599,10 @@ model Finiquito {
 
   // Datos básicos del empleado (snapshot)
   employeeName                String            @db.VarChar(255)
+  employeePosition            String?           @db.VarChar(255)
   empresaName                 String            @db.VarChar(255)
   empresaRFC                  String?           @db.VarChar(13)
+  empresaMunicipio            String?           @db.VarChar(255)
   clientName                  String            @db.VarChar(255)
   hireDate                    DateTime          @db.Date
   terminationDate             DateTime          @db.Date
@@ -621,6 +623,7 @@ model Finiquito {
   pendingVacationDays         Int               @default(0)
 
   // Gratificación (bidireccional)
+  gratificationType           GratificationType?
   gratificationDays           Decimal?          @db.Decimal(12, 4)
   gratificationPesos          Decimal?          @db.Decimal(12, 2)
 

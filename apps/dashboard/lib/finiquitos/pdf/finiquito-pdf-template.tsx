@@ -8,117 +8,74 @@ import {
   Font
 } from '@react-pdf/renderer';
 import type { Finiquito } from '@workspace/database';
+import { numeroALetra } from './numero-a-letra';
 
-// Estilos del PDF
+// Estilos del PDF basados en la plantilla Pug
 const styles = StyleSheet.create({
   page: {
-    padding: 40,
-    fontSize: 10,
-    fontFamily: 'Helvetica'
+    padding: '3cm 2cm',
+    fontSize: 12,
+    fontFamily: 'Times-Roman',
+    textAlign: 'justify'
   },
-  header: {
-    marginBottom: 20,
+  center: {
     textAlign: 'center'
   },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10
+  right: {
+    textAlign: 'right'
   },
-  subtitle: {
-    fontSize: 12,
-    marginBottom: 5,
-    color: '#666'
+  paragraph: {
+    marginBottom: 12,
+    lineHeight: 1.5
   },
-  section: {
-    marginBottom: 15
+  bold: {
+    fontFamily: 'Times-Bold'
   },
-  sectionTitle: {
-    fontSize: 12,
-    fontWeight: 'bold',
+  signature: {
+    marginTop: 60,
+    textAlign: 'center',
+    alignItems: 'center'
+  },
+  underline: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
+    width: '70%',
+    marginTop: 16,
     marginBottom: 8,
-    backgroundColor: '#f0f0f0',
-    padding: 5
+    alignSelf: 'center'
   },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 5,
-    paddingLeft: 10
-  },
-  label: {
-    flex: 1,
-    fontSize: 10
-  },
-  value: {
-    flex: 1,
-    fontSize: 10,
-    textAlign: 'right',
-    fontWeight: 'bold'
+  hr: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
+    marginVertical: 30
   },
   table: {
-    marginTop: 10
-  },
-  tableHeader: {
-    flexDirection: 'row',
-    backgroundColor: '#333',
-    color: '#fff',
-    padding: 8,
-    fontWeight: 'bold'
+    width: '100%',
+    marginTop: 16
   },
   tableRow: {
     flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-    padding: 8
+    borderBottomWidth: 0
   },
-  col1: {
-    flex: 3
+  tableCell: {
+    flex: 1,
+    paddingVertical: 4
   },
-  col2: {
-    flex: 2,
-    textAlign: 'right'
+  tableCellRight: {
+    flex: 1,
+    textAlign: 'right',
+    paddingVertical: 4
   },
-  col3: {
-    flex: 2,
-    textAlign: 'right'
+  tableCellBold: {
+    flex: 1,
+    paddingVertical: 4,
+    fontFamily: 'Times-Bold'
   },
-  totalRow: {
-    flexDirection: 'row',
-    backgroundColor: '#f5f5f5',
-    padding: 10,
-    marginTop: 5,
-    fontWeight: 'bold'
-  },
-  grandTotal: {
-    flexDirection: 'row',
-    backgroundColor: '#4CAF50',
-    color: '#fff',
-    padding: 12,
-    marginTop: 10,
-    fontSize: 14,
-    fontWeight: 'bold'
-  },
-  footer: {
-    marginTop: 30,
-    paddingTop: 20,
-    borderTopWidth: 2,
-    borderTopColor: '#333'
-  },
-  signatures: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 40
-  },
-  signature: {
-    textAlign: 'center',
-    width: '40%'
-  },
-  signatureLine: {
-    borderTopWidth: 1,
-    borderTopColor: '#000',
-    marginTop: 30,
-    paddingTop: 5
+  tableCellRightBold: {
+    flex: 1,
+    textAlign: 'right',
+    paddingVertical: 4,
+    fontFamily: 'Times-Bold'
   }
 });
 
@@ -135,9 +92,9 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
   };
 
   const formatCurrency = (amount: number | null | { toNumber?: () => number }) => {
-    if (amount === null) return '$0.00';
+    if (amount === null) return '0.00';
     const num = toNumber(amount);
-    return `$${num.toFixed(2)}`;
+    return num.toFixed(2);
   };
 
   const formatDate = (date: Date) => {
@@ -145,210 +102,124 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
-    });
+    }).toUpperCase();
   };
+
+  const salarioDiario = toNumber(finiquito.fiscalDailySalary);
+  const salarioLetra = numeroALetra(salarioDiario);
+  const municipio = finiquito.empresaMunicipio || 'CIUDAD DE MÉXICO';
+  const puesto = finiquito.employeePosition || 'EMPLEADO';
+
+  // Calcular totales para el recibo de finiquito
+  const vacaciones = toNumber(finiquito.realVacationAmount);
+  const primaVacacional = toNumber(finiquito.realVacationPremiumAmount);
+  const aguinaldo = toNumber(finiquito.realAguinaldoAmount);
+  const salariosDevengados = toNumber(finiquito.realWorkedDaysAmount);
+  const totalNeto = toNumber(finiquito.totalToPay);
 
   return (
     <Document>
       <Page size="LETTER" style={styles.page}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>FINIQUITO LABORAL</Text>
-          <Text style={styles.subtitle}>Liquidación de Prestaciones y Beneficios</Text>
-          <Text style={styles.subtitle}>Folio: {finiquito.id.slice(0, 8).toUpperCase()}</Text>
+        {/* Sección 1: RENUNCIA VOLUNTARIA */}
+        <Text style={[styles.center, styles.paragraph]}>
+          ASUNTO: RENUNCIA VOLUNTARIA.
+        </Text>
+
+        <Text style={styles.paragraph}>
+          {finiquito.empresaName}
+        </Text>
+
+        <Text style={styles.paragraph}>
+          MUNICIPIO DE {municipio}.
+        </Text>
+
+        <Text style={[styles.right, styles.paragraph]}>
+          P R E S E N T E:
+        </Text>
+
+        <Text style={styles.paragraph}>
+          POR MEDIO DEL PRESENTE OCURSO, ES MI DESEO RENUNCIAR VOLUNTARIAMENTE A MI EMPLEO,
+          Y AL PUESTO DE <Text style={styles.bold}>{puesto}</Text>, QUE VENÍA DESEMPEÑANDO
+          DESDE EL {formatDate(finiquito.hireDate)}, ...
+        </Text>
+
+        <Text style={styles.paragraph}>
+          ... RENUNCIO VOLUNTARIAMENTE A MI ÚLTIMO SALARIO DE ${formatCurrency(finiquito.fiscalDailySalary)}{' '}
+          ({salarioLetra} PESOS 00/100 M.N.), ...
+        </Text>
+
+        <Text style={[styles.center, styles.paragraph, { marginTop: 20 }]}>
+          ATENTAMENTE
+        </Text>
+
+        <Text style={[styles.center, styles.paragraph]}>
+          {municipio} A {formatDate(finiquito.terminationDate)}
+        </Text>
+
+        <View style={styles.signature}>
+          <View style={styles.underline} />
+          <Text>({finiquito.employeeName})</Text>
         </View>
 
-        {/* Datos del Empleado */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Datos del Empleado</Text>
-          <View style={styles.row}>
-            <Text style={styles.label}>Nombre:</Text>
-            <Text style={styles.value}>{finiquito.employeeName}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Fecha de Ingreso:</Text>
-            <Text style={styles.value}>{formatDate(finiquito.hireDate)}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Fecha de Baja:</Text>
-            <Text style={styles.value}>{formatDate(finiquito.terminationDate)}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Días Trabajados:</Text>
-            <Text style={styles.value}>{finiquito.daysWorked} días</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Años de Servicio:</Text>
-            <Text style={styles.value}>{toNumber(finiquito.yearsWorked).toFixed(2)} años</Text>
-          </View>
-        </View>
+        {/* Separador */}
+        <View style={styles.hr} />
 
-        {/* Datos Salariales */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Datos Salariales</Text>
-          <View style={styles.row}>
-            <Text style={styles.label}>Salario Base:</Text>
-            <Text style={styles.value}>{formatCurrency(finiquito.salary)}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Salario Diario Fiscal:</Text>
-            <Text style={styles.value}>{formatCurrency(finiquito.fiscalDailySalary)}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Salario Diario Real:</Text>
-            <Text style={styles.value}>{formatCurrency(finiquito.realDailySalary)}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Salario Diario Integrado:</Text>
-            <Text style={styles.value}>{formatCurrency(finiquito.integratedDailySalary)}</Text>
-          </View>
-        </View>
+        {/* Sección 2: RECIBO FINIQUITO */}
+        <Text style={[styles.center, styles.paragraph, { marginTop: 20 }]}>
+          R E C I B O   F I N I Q U I T O
+        </Text>
 
-        {/* Tabla de Percepciones */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Percepciones</Text>
-          <View style={styles.table}>
-            <View style={styles.tableHeader}>
-              <Text style={styles.col1}>Concepto</Text>
-              <Text style={styles.col2}>Columna Fiscal</Text>
-              <Text style={styles.col3}>Columna Real</Text>
-            </View>
-
-            {/* Aguinaldo */}
-            <View style={styles.tableRow}>
-              <Text style={styles.col1}>Aguinaldo</Text>
-              <Text style={styles.col2}>{formatCurrency(finiquito.fiscalAguinaldoAmount)}</Text>
-              <Text style={styles.col3}>{formatCurrency(finiquito.realAguinaldoAmount)}</Text>
-            </View>
-
-            {/* Vacaciones */}
-            <View style={styles.tableRow}>
-              <Text style={styles.col1}>Vacaciones</Text>
-              <Text style={styles.col2}>{formatCurrency(finiquito.fiscalVacationAmount)}</Text>
-              <Text style={styles.col3}>{formatCurrency(finiquito.realVacationAmount)}</Text>
-            </View>
-
-            {/* Prima Vacacional */}
-            <View style={styles.tableRow}>
-              <Text style={styles.col1}>Prima Vacacional</Text>
-              <Text style={styles.col2}>{formatCurrency(finiquito.fiscalVacationPremiumAmount)}</Text>
-              <Text style={styles.col3}>{formatCurrency(finiquito.realVacationPremiumAmount)}</Text>
-            </View>
-
-            {/* Días trabajados */}
-            {(toNumber(finiquito.fiscalWorkedDaysAmount) > 0 || toNumber(finiquito.realWorkedDaysAmount) > 0) && (
-              <View style={styles.tableRow}>
-                <Text style={styles.col1}>Días Trabajados</Text>
-                <Text style={styles.col2}>{formatCurrency(finiquito.fiscalWorkedDaysAmount)}</Text>
-                <Text style={styles.col3}>{formatCurrency(finiquito.realWorkedDaysAmount)}</Text>
-              </View>
-            )}
-
-            {/* Gratificación */}
-            {toNumber(finiquito.realGratificationAmount) > 0 && (
-              <View style={styles.tableRow}>
-                <Text style={styles.col1}>Gratificación</Text>
-                <Text style={styles.col2}>$0.00</Text>
-                <Text style={styles.col3}>{formatCurrency(finiquito.realGratificationAmount)}</Text>
-              </View>
-            )}
-
-            {/* Indemnización */}
-            {(toNumber(finiquito.severanceTotalFiscal) > 0 || toNumber(finiquito.severanceTotalReal) > 0) && (
-              <View style={styles.tableRow}>
-                <Text style={styles.col1}>Indemnización</Text>
-                <Text style={styles.col2}>{formatCurrency(finiquito.severanceTotalFiscal)}</Text>
-                <Text style={styles.col3}>{formatCurrency(finiquito.severanceTotalReal)}</Text>
-              </View>
-            )}
-
-            {/* Prima de Antigüedad */}
-            {(toNumber(finiquito.seniorityPremiumFiscal) > 0 || toNumber(finiquito.seniorityPremiumReal) > 0) && (
-              <View style={styles.tableRow}>
-                <Text style={styles.col1}>Prima de Antigüedad</Text>
-                <Text style={styles.col2}>{formatCurrency(finiquito.seniorityPremiumFiscal)}</Text>
-                <Text style={styles.col3}>{formatCurrency(finiquito.seniorityPremiumReal)}</Text>
-              </View>
-            )}
-
-            {/* Total Percepciones */}
-            <View style={styles.totalRow}>
-              <Text style={styles.col1}>Total Percepciones</Text>
-              <Text style={styles.col2}>{formatCurrency(finiquito.fiscalTotalPerceptions)}</Text>
-              <Text style={styles.col3}>{formatCurrency(finiquito.realTotalPerceptions)}</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Deducciones */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Deducciones</Text>
-          <View style={styles.table}>
-            <View style={styles.tableRow}>
-              <Text style={styles.col1}>ISR</Text>
-              <Text style={styles.col2}>{formatCurrency(finiquito.fiscalISR)}</Text>
-              <Text style={styles.col3}>{formatCurrency(finiquito.realISR)}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={styles.col1}>IMSS</Text>
-              <Text style={styles.col2}>{formatCurrency(finiquito.fiscalIMSS)}</Text>
-              <Text style={styles.col3}>{formatCurrency(finiquito.realIMSS)}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={styles.col1}>Infonavit</Text>
-              <Text style={styles.col2}>{formatCurrency(finiquito.fiscalInfonavit)}</Text>
-              <Text style={styles.col3}>{formatCurrency(finiquito.realInfonavit)}</Text>
-            </View>
-            <View style={styles.totalRow}>
-              <Text style={styles.col1}>Total Deducciones</Text>
-              <Text style={styles.col2}>{formatCurrency(finiquito.fiscalTotalDeductions)}</Text>
-              <Text style={styles.col3}>{formatCurrency(finiquito.realTotalDeductions)}</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Total a Pagar */}
-        <View style={styles.section}>
+        {/* Tabla de datos del empleado */}
+        <View style={styles.table}>
           <View style={styles.tableRow}>
-            <Text style={styles.col1}>Neto Fiscal</Text>
-            <Text style={styles.col2}>{formatCurrency(finiquito.fiscalNetAmount)}</Text>
-            <Text style={styles.col3}></Text>
+            <Text style={styles.tableCell}>Nombre:</Text>
+            <Text style={styles.tableCellRight}>{finiquito.employeeName}</Text>
           </View>
           <View style={styles.tableRow}>
-            <Text style={styles.col1}>Neto Real</Text>
-            <Text style={styles.col2}></Text>
-            <Text style={styles.col3}>{formatCurrency(finiquito.realNetAmount)}</Text>
+            <Text style={styles.tableCell}>Fecha de ingreso:</Text>
+            <Text style={styles.tableCellRight}>{formatDate(finiquito.hireDate)}</Text>
           </View>
-          <View style={styles.grandTotal}>
-            <Text style={styles.col1}>TOTAL A PAGAR</Text>
-            <Text style={[styles.col2, styles.col3]}>{formatCurrency(finiquito.totalToPay)}</Text>
+          <View style={styles.tableRow}>
+            <Text style={styles.tableCell}>Puesto:</Text>
+            <Text style={styles.tableCellRight}>{puesto}</Text>
           </View>
-        </View>
-
-        {/* Firmas */}
-        <View style={styles.footer}>
-          <View style={styles.signatures}>
-            <View style={styles.signature}>
-              <View style={styles.signatureLine}>
-                <Text>{finiquito.employeeName}</Text>
-                <Text style={{ fontSize: 8, marginTop: 5 }}>Empleado</Text>
-              </View>
-            </View>
-            <View style={styles.signature}>
-              <View style={styles.signatureLine}>
-                <Text>{finiquito.user.name}</Text>
-                <Text style={{ fontSize: 8, marginTop: 5 }}>Representante de la Empresa</Text>
-              </View>
-            </View>
+          <View style={styles.tableRow}>
+            <Text style={styles.tableCell}>Salario diario:</Text>
+            <Text style={styles.tableCellRight}>${formatCurrency(finiquito.fiscalDailySalary)}</Text>
           </View>
         </View>
 
-        {/* Pie de página */}
-        <View style={{ position: 'absolute', bottom: 20, left: 40, right: 40 }}>
-          <Text style={{ fontSize: 8, textAlign: 'center', color: '#666' }}>
-            Generado el {new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })}
-            {' • '} ForHuman - Sistema de Gestión de Finiquitos
-          </Text>
+        {/* Tabla de conceptos de finiquito */}
+        <View style={[styles.table, { marginTop: 24 }]}>
+          <View style={styles.tableRow}>
+            <Text style={styles.tableCell}>Parte proporcional de vacaciones 2024–2025</Text>
+            <Text style={styles.tableCellRight}>${formatCurrency(vacaciones)}</Text>
+          </View>
+          <View style={styles.tableRow}>
+            <Text style={styles.tableCell}>Parte proporcional de prima vacacional</Text>
+            <Text style={styles.tableCellRight}>${formatCurrency(primaVacacional)}</Text>
+          </View>
+          <View style={styles.tableRow}>
+            <Text style={styles.tableCell}>Aguinaldo proporcional del 2024</Text>
+            <Text style={styles.tableCellRight}>${formatCurrency(aguinaldo)}</Text>
+          </View>
+          <View style={styles.tableRow}>
+            <Text style={styles.tableCell}>Salarios devengados</Text>
+            <Text style={styles.tableCellRight}>${formatCurrency(salariosDevengados)}</Text>
+          </View>
+          <View style={[styles.tableRow, { marginTop: 8 }]}>
+            <Text style={styles.tableCellBold}>TOTAL NETO DE PERCEPCIONES</Text>
+            <Text style={styles.tableCellRightBold}>${formatCurrency(totalNeto)}</Text>
+          </View>
+        </View>
+
+        <Text style={[styles.center, styles.paragraph, { marginTop: 40 }]}>
+          {municipio} A {formatDate(finiquito.terminationDate)}
+        </Text>
+
+        <View style={styles.signature}>
+          <View style={styles.underline} />
+          <Text>({finiquito.employeeName})</Text>
         </View>
       </Page>
     </Document>

@@ -95,12 +95,31 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
     }
   });
 
-  // Calcular en tiempo real cuando cambien los valores
-  const watchedValues = form.watch();
+  // Observar campos específicos en lugar del objeto completo
+  const hireDate = form.watch('hireDate');
+  const terminationDate = form.watch('terminationDate');
+  const salary = form.watch('salary');
+  const salaryFrequency = form.watch('salaryFrequency');
+  const borderZone = form.watch('borderZone');
+  const fiscalDailySalary = form.watch('fiscalDailySalary');
+  const daysFactor = form.watch('daysFactor');
+  const aguinaldoDays = form.watch('aguinaldoDays');
+  const vacationDays = form.watch('vacationDays');
+  const vacationPremium = form.watch('vacationPremium');
+  const pendingVacationDays = form.watch('pendingVacationDays');
+  const workedDays = form.watch('workedDays');
+  const gratificationType = form.watch('gratificationType');
+  const gratificationDays = form.watch('gratificationDays');
+  const gratificationPesos = form.watch('gratificationPesos');
+  const severanceDays = form.watch('severanceDays');
+  const seniorityPremiumDays = form.watch('seniorityPremiumDays');
+  const isrAmount = form.watch('isrAmount');
+  const imssAmount = form.watch('imssAmount');
+  const subsidyAmount = form.watch('subsidyAmount');
+  const infonavitAmount = form.watch('infonavitAmount');
+  const otherDeductions = form.watch('otherDeductions');
 
   useEffect(() => {
-    const { hireDate, terminationDate, salary, salaryFrequency, borderZone } = watchedValues;
-
     if (hireDate && terminationDate && salary > 0) {
       try {
         const result = calculateFiniquito({
@@ -109,30 +128,53 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
           salary,
           salaryFrequency,
           borderZone,
-          fiscalDailySalary: watchedValues.fiscalDailySalary,
-          daysFactor: watchedValues.daysFactor,
-          aguinaldoDays: watchedValues.aguinaldoDays,
-          vacationDays: watchedValues.vacationDays,
-          vacationPremium: watchedValues.vacationPremium,
-          pendingVacationDays: watchedValues.pendingVacationDays,
-          workedDays: watchedValues.workedDays,
-          gratificationType: watchedValues.gratificationType,
-          gratificationDays: watchedValues.gratificationDays,
-          gratificationPesos: watchedValues.gratificationPesos,
-          severanceDays: watchedValues.severanceDays,
-          seniorityPremiumDays: watchedValues.seniorityPremiumDays,
-          isrAmount: watchedValues.isrAmount,
-          imssAmount: watchedValues.imssAmount,
-          subsidyAmount: watchedValues.subsidyAmount,
-          infonavitAmount: watchedValues.infonavitAmount,
-          otherDeductions: watchedValues.otherDeductions
+          fiscalDailySalary,
+          daysFactor,
+          aguinaldoDays,
+          vacationDays,
+          vacationPremium,
+          pendingVacationDays,
+          workedDays,
+          gratificationType,
+          gratificationDays,
+          gratificationPesos,
+          severanceDays,
+          seniorityPremiumDays,
+          isrAmount,
+          imssAmount,
+          subsidyAmount,
+          infonavitAmount,
+          otherDeductions
         });
         setCalculationResult(result);
       } catch (error) {
         console.error('Error calculando finiquito:', error);
       }
     }
-  }, [watchedValues]);
+  }, [
+    hireDate,
+    terminationDate,
+    salary,
+    salaryFrequency,
+    borderZone,
+    fiscalDailySalary,
+    daysFactor,
+    aguinaldoDays,
+    vacationDays,
+    vacationPremium,
+    pendingVacationDays,
+    workedDays,
+    gratificationType,
+    gratificationDays,
+    gratificationPesos,
+    severanceDays,
+    seniorityPremiumDays,
+    isrAmount,
+    imssAmount,
+    subsidyAmount,
+    infonavitAmount,
+    otherDeductions
+  ]);
 
   // Manejar gratificación bidireccional
   const handleGratificationDaysChange = (value: string) => {
