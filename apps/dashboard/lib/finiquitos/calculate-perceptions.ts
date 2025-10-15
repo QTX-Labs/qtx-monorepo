@@ -21,6 +21,7 @@ export interface PerceptionsInput {
   vacationDays?: number;
   vacationPremium?: number;
   pendingVacationDays?: number;
+  pendingVacationPremium?: number; // Prima vacacional pendiente en pesos
   workedDays?: number;
   gratificationAmount?: number; // Solo para columna REAL
   severanceDays?: number;
@@ -40,6 +41,7 @@ export function calculatePerceptions(input: PerceptionsInput): PerceptionsCalcul
     vacationDays = DEFAULT_PRESTACIONES.VACATION_DAYS,
     vacationPremium = DEFAULT_PRESTACIONES.VACATION_PREMIUM,
     pendingVacationDays = 0,
+    pendingVacationPremium = 0,
     workedDays = 0,
     gratificationAmount = 0,
     severanceDays = 0,
@@ -70,10 +72,10 @@ export function calculatePerceptions(input: PerceptionsInput): PerceptionsCalcul
   );
 
   // Prima vacacional de días pendientes
-  const pendingPremiumAmount = round(
-    pendingVacationAmount * vacationPremium,
-    DECIMAL_PRECISION.MONEY
-  );
+  // Si el usuario ingresó un monto directo, usarlo; sino calcularlo
+  const pendingPremiumAmount = pendingVacationPremium > 0
+    ? round(pendingVacationPremium, DECIMAL_PRECISION.MONEY)
+    : round(pendingVacationAmount * vacationPremium, DECIMAL_PRECISION.MONEY);
 
   // Días trabajados no pagados en el periodo
   const workedDaysAmount = round(workedDays * dailySalary, DECIMAL_PRECISION.MONEY);

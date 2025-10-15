@@ -20,6 +20,18 @@ export function round(value: number, decimals: number = DECIMAL_PRECISION.MONEY)
 }
 
 /**
+ * Formatea un número como moneda con comas
+ * @example formatMoney(1234567.89) => "1,234,567.89"
+ * @example formatMoney(0) => "0.00"
+ */
+export function formatMoney(value: number): string {
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(value);
+}
+
+/**
  * Calcula los días laborados entre dos fechas (inclusivo)
  */
 export function calculateDaysWorked(hireDate: Date, terminationDate: Date): number {
@@ -222,4 +234,53 @@ export function toLocalDate(date: Date | string): Date {
     d.getUTCMonth(),
     d.getUTCDate()
   );
+}
+
+/**
+ * Calcula los días de vacaciones que le corresponden a un empleado según su antigüedad
+ * Basado en prestaciones superiores de ley
+ *
+ * @param hireDate - Fecha de ingreso del empleado (fiscal)
+ * @param terminationDate - Fecha de baja del empleado (opcional, por defecto hoy)
+ * @returns Número de días de vacaciones que le corresponden
+ *
+ * @example
+ * getEmployeeVacationDays(new Date('2020-01-01')) // 18 días (4 años)
+ * getEmployeeVacationDays(new Date('2020-01-01'), new Date('2023-01-01')) // 16 días (3 años)
+ */
+export function getEmployeeVacationDays(
+  hireDate: Date | string,
+  terminationDate?: Date | string
+): number {
+  const ranges = [
+    { days: 12.0, start_year: 0.0, end_year: 1.0 },
+    { days: 14.0, start_year: 1.0, end_year: 2.0 },
+    { days: 16.0, start_year: 2.0, end_year: 3.0 },
+    { days: 18.0, start_year: 3.0, end_year: 4.0 },
+    { days: 20.0, start_year: 4.0, end_year: 5.0 },
+    { days: 22.0, start_year: 5.0, end_year: 10.0 },
+    { days: 24.0, start_year: 10.0, end_year: 15.0 },
+    { days: 26.0, start_year: 15.0, end_year: 20.0 },
+    { days: 28.0, start_year: 20.0, end_year: 25.0 },
+    { days: 30.0, start_year: 25.0, end_year: 30.0 },
+    { days: 32.0, start_year: 30.0, end_year: 50.0 }
+  ];
+
+  const today = terminationDate ? new Date(terminationDate) : new Date();
+  const hire = new Date(hireDate);
+
+  // Calcular años trabajados con precisión decimal
+  const diffTime = today.getTime() - hire.getTime();
+  const diffDays = diffTime / (1000 * 60 * 60 * 24);
+  const years = diffDays / 365.25; // Usar 365.25 para considerar años bisiestos
+
+  let vacationDays = 12; // Por defecto
+  for (const range of ranges) {
+    if (years >= range.start_year && years < range.end_year) {
+      vacationDays = range.days;
+      break;
+    }
+  }
+
+  return vacationDays;
 }

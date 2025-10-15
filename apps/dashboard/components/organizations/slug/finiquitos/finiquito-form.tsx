@@ -42,11 +42,13 @@ import {
   SelectValue
 } from '@workspace/ui/components/select';
 import { Separator } from '@workspace/ui/components/separator';
+import { Switch } from '@workspace/ui/components/switch';
 import { cn } from '@workspace/ui/lib/utils';
 
 import { createFiniquito } from '~/actions/finiquitos/create-finiquito';
 import { finiquitoFormSchema, type FiniquitoFormValues } from '~/lib/finiquitos/schemas';
 import { calculateFiniquito } from '~/lib/finiquitos/calculate-finiquito';
+import { getEmployeeVacationDays, formatMoney } from '~/lib/finiquitos/utils';
 import type { FiniquitoCalculationResult } from '~/lib/finiquitos/types';
 
 interface FiniquitoFormProps {
@@ -79,28 +81,37 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
     defaultValues: {
       employeeName: '',
       employeePosition: '',
+      employeeRFC: '',
+      employeeCURP: '',
       empresaName: '',
       empresaRFC: '',
       empresaMunicipio: '',
       empresaEstado: '',
       hireDate: undefined,
-      terminationDate: undefined,
-      salary: 0,
+      terminationDate: new Date(),
+      fiscalDailySalary: 278.80,
       salaryFrequency: SalaryFrequency.MONTHLY,
       borderZone: BorderZone.NO_FRONTERIZA,
-      fiscalDailySalary: 278.80,
+      enableComplement: false,
+      realHireDate: undefined,
+      salary: 0,
       daysFactor: 30.4,
+      enableSuperiorBenefits: false,
       aguinaldoDays: 15,
       vacationDays: 12,
-      vacationPremium: 0.25,
+      vacationPremium: 25,
       pendingVacationDays: 0,
+      pendingVacationPremium: 0,
+      complementPendingVacationDays: 0,
+      complementPendingVacationPremium: 0,
       workedDays: 0,
+      enableLiquidation: false,
       severanceDays: 0,
       seniorityPremiumDays: 0,
       isrAmount: 0,
-      imssAmount: 0,
       subsidyAmount: 0,
       infonavitAmount: 0,
+      fonacotAmount: 0,
       otherDeductions: 0
     }
   });
@@ -120,25 +131,32 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
   // Observar campos específicos en lugar del objeto completo
   const hireDate = form.watch('hireDate');
   const terminationDate = form.watch('terminationDate');
-  const salary = form.watch('salary');
+  const fiscalDailySalary = form.watch('fiscalDailySalary');
   const salaryFrequency = form.watch('salaryFrequency');
   const borderZone = form.watch('borderZone');
-  const fiscalDailySalary = form.watch('fiscalDailySalary');
+  const enableComplement = form.watch('enableComplement');
+  const realHireDate = form.watch('realHireDate');
+  const salary = form.watch('salary');
   const daysFactor = form.watch('daysFactor');
+  const enableSuperiorBenefits = form.watch('enableSuperiorBenefits');
   const aguinaldoDays = form.watch('aguinaldoDays');
   const vacationDays = form.watch('vacationDays');
   const vacationPremium = form.watch('vacationPremium');
   const pendingVacationDays = form.watch('pendingVacationDays');
+  const pendingVacationPremium = form.watch('pendingVacationPremium');
+  const complementPendingVacationDays = form.watch('complementPendingVacationDays');
+  const complementPendingVacationPremium = form.watch('complementPendingVacationPremium');
   const workedDays = form.watch('workedDays');
+  const enableLiquidation = form.watch('enableLiquidation');
   const gratificationType = form.watch('gratificationType');
   const gratificationDays = form.watch('gratificationDays');
   const gratificationPesos = form.watch('gratificationPesos');
   const severanceDays = form.watch('severanceDays');
   const seniorityPremiumDays = form.watch('seniorityPremiumDays');
   const isrAmount = form.watch('isrAmount');
-  const imssAmount = form.watch('imssAmount');
   const subsidyAmount = form.watch('subsidyAmount');
   const infonavitAmount = form.watch('infonavitAmount');
+  const fonacotAmount = form.watch('fonacotAmount');
   const otherDeductions = form.watch('otherDeductions');
 
   // Aplicar debounce a los valores numéricos (300ms de delay)
@@ -149,20 +167,39 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
   const debouncedVacationDays = useDebounce(vacationDays, 300);
   const debouncedVacationPremium = useDebounce(vacationPremium, 300);
   const debouncedPendingVacationDays = useDebounce(pendingVacationDays, 300);
+  const debouncedPendingVacationPremium = useDebounce(pendingVacationPremium, 300);
   const debouncedWorkedDays = useDebounce(workedDays, 300);
   const debouncedGratificationDays = useDebounce(gratificationDays, 300);
   const debouncedGratificationPesos = useDebounce(gratificationPesos, 300);
   const debouncedSeveranceDays = useDebounce(severanceDays, 300);
   const debouncedSeniorityPremiumDays = useDebounce(seniorityPremiumDays, 300);
   const debouncedIsrAmount = useDebounce(isrAmount, 300);
-  const debouncedImssAmount = useDebounce(imssAmount, 300);
   const debouncedSubsidyAmount = useDebounce(subsidyAmount, 300);
   const debouncedInfonavitAmount = useDebounce(infonavitAmount, 300);
+  const debouncedFonacotAmount = useDebounce(fonacotAmount, 300);
   const debouncedOtherDeductions = useDebounce(otherDeductions, 300);
 
+  // Auto-actualizar salario diario fiscal según zona fronteriza
   useEffect(() => {
-    // Solo calcular cuando los valores debounced cambian
-    if (hireDate && terminationDate && debouncedSalary > 0) {
+    const fiscalSalary = borderZone === BorderZone.FRONTERIZA ? 419.88 : 278.80;
+    form.setValue('fiscalDailySalary', fiscalSalary);
+  }, [borderZone, form]);
+
+  // Auto-calcular días de vacaciones basado en antigüedad
+  useEffect(() => {
+    if (hireDate) {
+      const calculatedVacationDays = getEmployeeVacationDays(
+        hireDate,
+        terminationDate || undefined
+      );
+      form.setValue('vacationDays', calculatedVacationDays);
+    }
+  }, [hireDate, terminationDate, form]);
+
+  useEffect(() => {
+    // Calcular tan pronto como tengamos las fechas fiscales
+    // El cálculo fiscal siempre se puede hacer, el complemento es opcional
+    if (hireDate && terminationDate) {
       try {
         const result = calculateFiniquito({
           hireDate,
@@ -176,6 +213,7 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
           vacationDays: debouncedVacationDays,
           vacationPremium: debouncedVacationPremium,
           pendingVacationDays: debouncedPendingVacationDays,
+          pendingVacationPremium: debouncedPendingVacationPremium,
           workedDays: debouncedWorkedDays,
           gratificationType,
           gratificationDays: debouncedGratificationDays,
@@ -183,22 +221,25 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
           severanceDays: debouncedSeveranceDays,
           seniorityPremiumDays: debouncedSeniorityPremiumDays,
           isrAmount: debouncedIsrAmount,
-          imssAmount: debouncedImssAmount,
           subsidyAmount: debouncedSubsidyAmount,
           infonavitAmount: debouncedInfonavitAmount,
-          otherDeductions: debouncedOtherDeductions
+          fonacotAmount: debouncedFonacotAmount,
+          otherDeductions: debouncedOtherDeductions,
+          realHireDate: realHireDate || undefined
         });
         setCalculationResult(result);
       } catch (error) {
         console.error('Error calculando finiquito:', error);
       }
-    } else if (!hireDate || !terminationDate || debouncedSalary === 0) {
-      // Limpiar el resultado si no hay datos suficientes
+    } else {
+      // Limpiar el resultado si no hay fechas fiscales
       setCalculationResult(null);
     }
   }, [
     hireDate,
     terminationDate,
+    realHireDate,
+    enableComplement,
     debouncedSalary,
     salaryFrequency,
     borderZone,
@@ -208,6 +249,7 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
     debouncedVacationDays,
     debouncedVacationPremium,
     debouncedPendingVacationDays,
+    debouncedPendingVacationPremium,
     debouncedWorkedDays,
     gratificationType,
     debouncedGratificationDays,
@@ -215,9 +257,9 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
     debouncedSeveranceDays,
     debouncedSeniorityPremiumDays,
     debouncedIsrAmount,
-    debouncedImssAmount,
     debouncedSubsidyAmount,
     debouncedInfonavitAmount,
+    debouncedFonacotAmount,
     debouncedOtherDeductions
   ]);
 
@@ -295,6 +337,46 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
 
               <FormField
                 control={form.control}
+                name="employeeRFC"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>RFC del Empleado *</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="AAAA123456XXX"
+                        {...field}
+                        onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                        maxLength={13}
+                      />
+                    </FormControl>
+                    <FormDescription>12-13 caracteres</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="employeeCURP"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>CURP del Empleado *</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="AAAA123456HDFXXX00"
+                        {...field}
+                        onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                        maxLength={18}
+                      />
+                    </FormControl>
+                    <FormDescription>18 caracteres</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="empresaName"
                 render={({ field }) => (
                   <FormItem>
@@ -314,8 +396,14 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                   <FormItem>
                     <FormLabel>RFC de la Empresa *</FormLabel>
                     <FormControl>
-                      <Input placeholder="ABC123456789" {...field} />
+                      <Input
+                        placeholder="ABC123456XXX"
+                        {...field}
+                        onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                        maxLength={13}
+                      />
                     </FormControl>
+                    <FormDescription>12-13 caracteres (persona moral/física)</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -348,13 +436,24 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                   </FormItem>
                 )}
               />
+            </div>
+          </CardContent>
+        </Card>
 
+          {/* Factores Fiscales */}
+          <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
+            <CardHeader className="space-y-1 pb-4">
+              <CardTitle className="text-xl">Factores Fiscales</CardTitle>
+              <CardDescription>Fechas y salarios para cálculo fiscal</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="hireDate"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Fecha de Ingreso *</FormLabel>
+                    <FormLabel>Fecha de Ingreso Fiscal *</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -380,6 +479,9 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                           selected={field.value}
                           onSelect={field.onChange}
                           initialFocus
+                          captionLayout="dropdown"
+                          fromYear={1960}
+                          toYear={new Date().getFullYear()}
                         />
                       </PopoverContent>
                     </Popover>
@@ -419,6 +521,9 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                           selected={field.value}
                           onSelect={field.onChange}
                           initialFocus
+                          captionLayout="dropdown"
+                          fromYear={1960}
+                          toYear={new Date().getFullYear() + 1}
                         />
                       </PopoverContent>
                     </Popover>
@@ -426,33 +531,24 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                   </FormItem>
                 )}
               />
-            </div>
-          </CardContent>
-        </Card>
 
-          {/* Datos Salariales */}
-          <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
-            <CardHeader className="space-y-1 pb-4">
-              <CardTitle className="text-xl">Datos Salariales</CardTitle>
-              <CardDescription>Salario y frecuencia de pago</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
-                name="salary"
+                name="fiscalDailySalary"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Salario *</FormLabel>
+                    <FormLabel>Salario Diario Fiscal</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         step="0.01"
-                        placeholder="12999.90"
                         {...field}
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        disabled
+                        className="bg-muted cursor-not-allowed"
                       />
                     </FormControl>
+                    <FormDescription>Este campo está bloqueado</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -487,7 +583,7 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                 name="borderZone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Zona</FormLabel>
+                    <FormLabel>Zona Fronteriza</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -503,19 +599,94 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                   </FormItem>
                 )}
               />
+            </div>
+          </CardContent>
+        </Card>
+
+          {/* Factores de Complemento */}
+          <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
+            <CardHeader className="space-y-1 pb-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-xl">Factores de Complemento</CardTitle>
+                  <CardDescription>Datos reales para cálculo de complemento</CardDescription>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="enableComplement"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center gap-2">
+                      <FormLabel className="!mt-0 text-sm">Activar Complemento</FormLabel>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="realHireDate"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Fecha de Ingreso Real {enableComplement && '*'}</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            disabled={!enableComplement}
+                            className={cn(
+                              'w-full justify-start text-left font-normal',
+                              !field.value && 'text-muted-foreground'
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {field.value ? (
+                              format(field.value, 'PPP', { locale: es })
+                            ) : (
+                              'Selecciona fecha'
+                            )}
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          initialFocus
+                          captionLayout="dropdown"
+                          fromYear={1960}
+                          toYear={new Date().getFullYear()}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <FormField
                 control={form.control}
-                name="fiscalDailySalary"
+                name="salary"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Salario Diario Fiscal</FormLabel>
+                    <FormLabel>Salario Real {enableComplement && '*'}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         step="0.01"
+                        placeholder="12999.90"
                         {...field}
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        disabled={!enableComplement}
                       />
                     </FormControl>
                     <FormMessage />
@@ -526,11 +697,30 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
           </CardContent>
         </Card>
 
-          {/* Prestaciones */}
+          {/* Prestaciones Superiores de Ley */}
           <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
             <CardHeader className="space-y-1 pb-4">
-              <CardTitle className="text-xl">Prestaciones</CardTitle>
-              <CardDescription>Aguinaldo, vacaciones y prima vacacional</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-xl">Prestaciones Superiores de Ley</CardTitle>
+                  <CardDescription>Aguinaldo, vacaciones y prima vacacional</CardDescription>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="enableSuperiorBenefits"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center gap-2">
+                      <FormLabel className="!mt-0 text-sm">Activar</FormLabel>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid gap-6 md:grid-cols-3">
@@ -545,6 +735,7 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                         type="number"
                         {...field}
                         onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                        disabled={!enableSuperiorBenefits}
                       />
                     </FormControl>
                     <FormMessage />
@@ -563,8 +754,11 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                         type="number"
                         {...field}
                         onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                        disabled
+                        className="bg-muted cursor-not-allowed"
                       />
                     </FormControl>
+                    <FormDescription>Se calcula automáticamente según antigüedad</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -579,12 +773,11 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                     <FormControl>
                       <Input
                         type="number"
-                        step="0.01"
                         {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                        disabled={!enableSuperiorBenefits}
                       />
                     </FormControl>
-                    <FormDescription>0.25 = 25%</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -593,30 +786,27 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
           </CardContent>
         </Card>
 
-          {/* Gratificación Bidireccional */}
+          {/* Beneficios Fiscales */}
           <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
             <CardHeader className="space-y-1 pb-4">
-              <CardTitle className="text-xl">Gratificación (Bidireccional)</CardTitle>
-              <CardDescription>
-                Ingresa días o pesos - el otro campo se calculará automáticamente
-              </CardDescription>
+              <CardTitle className="text-xl">Beneficios Fiscales</CardTitle>
+              <CardDescription>Vacaciones y prima vacacional pendientes</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
-                name="gratificationDays"
+                name="pendingVacationDays"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Días</FormLabel>
+                    <FormLabel>Vacaciones Pendientes (días)</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         step="0.01"
                         placeholder="0"
                         {...field}
-                        value={field.value || ''}
-                        onChange={(e) => handleGratificationDaysChange(e.target.value)}
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -626,18 +816,17 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
 
               <FormField
                 control={form.control}
-                name="gratificationPesos"
+                name="pendingVacationPremium"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Pesos</FormLabel>
+                    <FormLabel>Prima Vacacional Pendiente ($)</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         step="0.01"
                         placeholder="0.00"
                         {...field}
-                        value={field.value || ''}
-                        onChange={(e) => handleGratificationPesosChange(e.target.value)}
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -648,67 +837,184 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
           </CardContent>
         </Card>
 
-          {/* Indemnización */}
-          <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
-            <CardHeader className="space-y-1 pb-4">
-              <CardTitle className="text-xl">Indemnización</CardTitle>
-              <CardDescription>
-                Días de indemnización por despido (flexible, sin restricciones legales)
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-            <FormField
-              control={form.control}
-              name="severanceDays"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Días de Indemnización</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      placeholder="0"
-                      {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
+          {/* Beneficios de Complemento - Solo visible si enableComplement está activo */}
+          {enableComplement && (
+            <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
+              <CardHeader className="space-y-1 pb-4">
+                <CardTitle className="text-xl">Beneficios de Complemento</CardTitle>
+                <CardDescription>Vacaciones y prima vacacional pendientes de complemento</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid gap-6 md:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="complementPendingVacationDays"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Vacaciones Pendientes (días)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            placeholder="0"
+                            {...field}
+                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-          {/* Prima de Antigüedad */}
+                  <FormField
+                    control={form.control}
+                    name="complementPendingVacationPremium"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Prima Vacacional Pendiente ($)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            placeholder="0.00"
+                            {...field}
+                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Liquidación */}
           <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
             <CardHeader className="space-y-1 pb-4">
-              <CardTitle className="text-xl">Prima de Antigüedad</CardTitle>
-              <CardDescription>
-                Días de prima de antigüedad según antigüedad del trabajador
-              </CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-xl">Liquidación</CardTitle>
+                  <CardDescription>Gratificación, indemnización y prima de antigüedad</CardDescription>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="enableLiquidation"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center gap-2">
+                      <FormLabel className="!mt-0 text-sm">Activar Liquidación</FormLabel>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
             </CardHeader>
             <CardContent className="space-y-6">
-            <FormField
-              control={form.control}
-              name="seniorityPremiumDays"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Días de Prima de Antigüedad</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      placeholder="0"
-                      {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
+              {/* Gratificación Bidireccional */}
+              <div>
+                <h3 className="text-sm font-medium mb-3">Gratificación (Bidireccional)</h3>
+                <p className="text-sm text-muted-foreground mb-4">Ingresa días o pesos - el otro campo se calculará automáticamente</p>
+                <div className="grid gap-6 md:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="gratificationDays"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Días</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            placeholder="0"
+                            {...field}
+                            value={field.value || ''}
+                            onChange={(e) => handleGratificationDaysChange(e.target.value)}
+                            disabled={!enableLiquidation}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="gratificationPesos"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Pesos</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            placeholder="0.00"
+                            {...field}
+                            value={field.value || ''}
+                            onChange={(e) => handleGratificationPesosChange(e.target.value)}
+                            disabled={!enableLiquidation}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Indemnización y Prima */}
+              <div className="grid gap-6 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="severanceDays"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Días de Indemnización</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          placeholder="0"
+                          {...field}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          disabled={!enableLiquidation}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="seniorityPremiumDays"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Días de Prima de Antigüedad</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          placeholder="0"
+                          {...field}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          disabled={!enableLiquidation}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Deducciones */}
           <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
@@ -724,26 +1030,6 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>ISR</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        placeholder="0.00"
-                        {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="imssAmount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>IMSS</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -784,6 +1070,26 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Infonavit</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        placeholder="0.00"
+                        {...field}
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="fonacotAmount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Fonacot</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -848,7 +1154,7 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                         <div className="text-center p-4 bg-primary/5 rounded-lg border border-primary/20">
                           <div className="text-xs text-muted-foreground mb-1 uppercase tracking-wide">Total a Pagar</div>
                           <div className="text-2xl font-bold text-primary">
-                            ${calculationResult.totals.netPayTotal.toFixed(2)}
+                            ${formatMoney(calculationResult.totals.netPayTotal)}
                           </div>
                           <div className="text-[10px] text-muted-foreground mt-2">
                             {calculationResult.metadata.daysWorked} días • {calculationResult.metadata.yearsWorked.toFixed(2)} años
@@ -863,93 +1169,97 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                           <div className="space-y-1.5 text-xs">
                             <div className="flex justify-between">
                               <span className="text-muted-foreground">Aguinaldo</span>
-                              <span className="font-medium">${calculationResult.fiscalPerceptions.aguinaldoAmount.toFixed(2)}</span>
+                              <span className="font-medium">${formatMoney(calculationResult.fiscalPerceptions.aguinaldoAmount)}</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-muted-foreground">Vacaciones</span>
-                              <span className="font-medium">${calculationResult.fiscalPerceptions.vacationAmount.toFixed(2)}</span>
+                              <span className="font-medium">${formatMoney(calculationResult.fiscalPerceptions.vacationAmount)}</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-muted-foreground">Prima Vacacional</span>
-                              <span className="font-medium">${calculationResult.fiscalPerceptions.vacationPremiumAmount.toFixed(2)}</span>
+                              <span className="font-medium">${formatMoney(calculationResult.fiscalPerceptions.vacationPremiumAmount)}</span>
                             </div>
                             {calculationResult.fiscalPerceptions.severanceAmount > 0 && (
                               <div className="flex justify-between">
                                 <span className="text-muted-foreground">Indemnización</span>
-                                <span className="font-medium">${calculationResult.fiscalPerceptions.severanceAmount.toFixed(2)}</span>
+                                <span className="font-medium">${formatMoney(calculationResult.fiscalPerceptions.severanceAmount)}</span>
                               </div>
                             )}
                             {calculationResult.fiscalPerceptions.seniorityPremiumAmount > 0 && (
                               <div className="flex justify-between">
                                 <span className="text-muted-foreground">Prima Antigüedad</span>
-                                <span className="font-medium">${calculationResult.fiscalPerceptions.seniorityPremiumAmount.toFixed(2)}</span>
+                                <span className="font-medium">${formatMoney(calculationResult.fiscalPerceptions.seniorityPremiumAmount)}</span>
                               </div>
                             )}
                             <Separator className="my-2" />
                             <div className="flex justify-between font-semibold">
                               <span>Total Percepciones</span>
-                              <span className="text-green-600">${calculationResult.fiscalPerceptions.totalPerceptions.toFixed(2)}</span>
+                              <span className="text-green-600">${formatMoney(calculationResult.fiscalPerceptions.totalPerceptions)}</span>
                             </div>
                             <div className="flex justify-between text-destructive font-medium">
                               <span>Deducciones</span>
-                              <span>-${calculationResult.deductions.totalDeductions.toFixed(2)}</span>
+                              <span>-${formatMoney(calculationResult.deductions.totalDeductions)}</span>
                             </div>
                             <Separator className="my-2" />
                             <div className="flex justify-between font-bold text-sm bg-muted/60 p-2 rounded">
                               <span>Neto Fiscal</span>
-                              <span className="text-primary">${calculationResult.totals.netPayFiscal.toFixed(2)}</span>
+                              <span className="text-primary">${formatMoney(calculationResult.totals.netPayFiscal)}</span>
                             </div>
                           </div>
                         </div>
 
-                        <Separator />
+                        {/* Desglose Real - Solo visible si enableComplement está activo */}
+                        {enableComplement && (
+                          <>
+                            <Separator />
 
-                        {/* Desglose Real */}
-                        <div>
-                          <h3 className="font-bold mb-2 text-xs uppercase text-muted-foreground">Columna Real</h3>
-                          <div className="space-y-1.5 text-xs">
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">Aguinaldo</span>
-                              <span className="font-medium">${calculationResult.realPerceptions.aguinaldoAmount.toFixed(2)}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">Vacaciones</span>
-                              <span className="font-medium">${calculationResult.realPerceptions.vacationAmount.toFixed(2)}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">Prima Vacacional</span>
-                              <span className="font-medium">${calculationResult.realPerceptions.vacationPremiumAmount.toFixed(2)}</span>
-                            </div>
-                            {calculationResult.realPerceptions.gratificationAmount > 0 && (
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">Gratificación</span>
-                                <span className="font-medium">${calculationResult.realPerceptions.gratificationAmount.toFixed(2)}</span>
+                            <div>
+                              <h3 className="font-bold mb-2 text-xs uppercase text-muted-foreground">Columna Real</h3>
+                              <div className="space-y-1.5 text-xs">
+                                <div className="flex justify-between">
+                                  <span className="text-muted-foreground">Aguinaldo</span>
+                                  <span className="font-medium">${formatMoney(calculationResult.realPerceptions.aguinaldoAmount)}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-muted-foreground">Vacaciones</span>
+                                  <span className="font-medium">${formatMoney(calculationResult.realPerceptions.vacationAmount)}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-muted-foreground">Prima Vacacional</span>
+                                  <span className="font-medium">${formatMoney(calculationResult.realPerceptions.vacationPremiumAmount)}</span>
+                                </div>
+                                {calculationResult.realPerceptions.gratificationAmount > 0 && (
+                                  <div className="flex justify-between">
+                                    <span className="text-muted-foreground">Gratificación</span>
+                                    <span className="font-medium">${formatMoney(calculationResult.realPerceptions.gratificationAmount)}</span>
+                                  </div>
+                                )}
+                                {calculationResult.realPerceptions.severanceAmount > 0 && (
+                                  <div className="flex justify-between">
+                                    <span className="text-muted-foreground">Indemnización</span>
+                                    <span className="font-medium">${formatMoney(calculationResult.realPerceptions.severanceAmount)}</span>
+                                  </div>
+                                )}
+                                {calculationResult.realPerceptions.seniorityPremiumAmount > 0 && (
+                                  <div className="flex justify-between">
+                                    <span className="text-muted-foreground">Prima Antigüedad</span>
+                                    <span className="font-medium">${formatMoney(calculationResult.realPerceptions.seniorityPremiumAmount)}</span>
+                                  </div>
+                                )}
+                                <Separator className="my-2" />
+                                <div className="flex justify-between font-semibold">
+                                  <span>Total Percepciones</span>
+                                  <span className="text-green-600">${formatMoney(calculationResult.realPerceptions.totalPerceptions)}</span>
+                                </div>
+                                <Separator className="my-2" />
+                                <div className="flex justify-between font-bold text-sm bg-muted/60 p-2 rounded">
+                                  <span>Neto Real</span>
+                                  <span className="text-primary">${formatMoney(calculationResult.totals.netPayReal)}</span>
+                                </div>
                               </div>
-                            )}
-                            {calculationResult.realPerceptions.severanceAmount > 0 && (
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">Indemnización</span>
-                                <span className="font-medium">${calculationResult.realPerceptions.severanceAmount.toFixed(2)}</span>
-                              </div>
-                            )}
-                            {calculationResult.realPerceptions.seniorityPremiumAmount > 0 && (
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">Prima Antigüedad</span>
-                                <span className="font-medium">${calculationResult.realPerceptions.seniorityPremiumAmount.toFixed(2)}</span>
-                              </div>
-                            )}
-                            <Separator className="my-2" />
-                            <div className="flex justify-between font-semibold">
-                              <span>Total Percepciones</span>
-                              <span className="text-green-600">${calculationResult.realPerceptions.totalPerceptions.toFixed(2)}</span>
                             </div>
-                            <Separator className="my-2" />
-                            <div className="flex justify-between font-bold text-sm bg-muted/60 p-2 rounded">
-                              <span>Neto Real</span>
-                              <span className="text-primary">${calculationResult.totals.netPayReal.toFixed(2)}</span>
-                            </div>
-                          </div>
-                        </div>
+                          </>
+                        )}
                       </div>
                     ) : (
                       <div className="text-center py-12">

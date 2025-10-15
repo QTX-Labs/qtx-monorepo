@@ -8,9 +8,9 @@ import { DECIMAL_PRECISION } from './constants';
 
 export interface DeductionsInput {
   isr?: number;
-  imss?: number;
   subsidy?: number;
   infonavit?: number;
+  fonacot?: number;
   other?: number;
 }
 
@@ -23,22 +23,22 @@ export interface DeductionsInput {
 export function calculateDeductions(input: DeductionsInput = {}): DeductionsCalculation {
   const {
     isr = 0,
-    imss = 0,
     subsidy = 0,
     infonavit = 0,
+    fonacot = 0,
     other = 0
   } = input;
 
   const totalDeductions = round(
-    isr + imss + subsidy + infonavit + other,
+    isr + subsidy + infonavit + fonacot + other,
     DECIMAL_PRECISION.MONEY
   );
 
   return {
     isr: round(isr, DECIMAL_PRECISION.MONEY),
-    imss: round(imss, DECIMAL_PRECISION.MONEY),
     subsidy: round(subsidy, DECIMAL_PRECISION.MONEY),
     infonavit: round(infonavit, DECIMAL_PRECISION.MONEY),
+    fonacot: round(fonacot, DECIMAL_PRECISION.MONEY),
     otherDeductions: round(other, DECIMAL_PRECISION.MONEY),
     totalDeductions
   };

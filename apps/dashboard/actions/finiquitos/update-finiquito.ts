@@ -54,7 +54,6 @@ export const updateFiniquito = authOrganizationActionClient
         seniorityPremiumDays:
           data.seniorityPremiumDays ?? 0,
         isrAmount: data.isrAmount ?? Number(existing.fiscalISR),
-        imssAmount: data.imssAmount ?? Number(existing.fiscalIMSS),
         subsidyAmount: data.subsidyAmount ?? Number(existing.fiscalSubsidy),
         infonavitAmount: data.infonavitAmount ?? Number(existing.fiscalInfonavit),
         otherDeductions: data.otherDeductions ?? Number(existing.fiscalOtherDeductions)
@@ -111,7 +110,7 @@ export const updateFiniquito = authOrganizationActionClient
           realTotalPerceptions: calculation.realPerceptions.totalPerceptions,
           // Deducciones Fiscales
           fiscalISR: calculation.deductions.isr,
-          fiscalIMSS: calculation.deductions.imss,
+          fiscalIMSS: 0,
           fiscalSubsidy: calculation.deductions.subsidy,
           fiscalInfonavit: calculation.deductions.infonavit,
           fiscalOtherDeductions: calculation.deductions.otherDeductions,

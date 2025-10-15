@@ -22,9 +22,11 @@ export interface FiniquitoInput {
   // Prestaciones
   aguinaldoDays?: number;
   vacationDays?: number;
-  vacationPremium?: number;
+  vacationPremium?: number; // Porcentaje entero (25 = 25%)
   pendingVacationDays?: number;
+  pendingVacationPremium?: number;
   workedDays?: number;
+  realHireDate?: Date;
 
   // Gratificación (bidireccional - solo uno debe tener valor)
   gratificationType?: any; // GratificationType from database
@@ -39,9 +41,9 @@ export interface FiniquitoInput {
 
   // Deducciones
   isrAmount?: number;
-  imssAmount?: number;
   subsidyAmount?: number;
   infonavitAmount?: number;
+  fonacotAmount?: number;
   otherDeductions?: number;
 }
 
@@ -74,9 +76,9 @@ export interface PerceptionsCalculation {
  */
 export interface DeductionsCalculation {
   isr: number;
-  imss: number;
   subsidy: number;
   infonavit: number;
+  fonacot: number;
   otherDeductions: number;
   totalDeductions: number;
 }

@@ -31,17 +31,28 @@ import { DEFAULT_DAYS_FACTOR, DEFAULT_PRESTACIONES, DECIMAL_PRECISION } from './
 export function calculateFiniquito(input: FiniquitoInput): FiniquitoCalculationResult {
   // Validaciones
   validateDates(input.hireDate, input.terminationDate);
-  validateSalary(input.salary);
+  // Solo validar salary si es mayor a 0 (para permitir cálculo fiscal sin complemento)
+  if (input.salary > 0) {
+    validateSalary(input.salary);
+  }
 
-  const vacationPremium = input.vacationPremium ?? DEFAULT_PRESTACIONES.VACATION_PREMIUM;
+  // Convertir porcentaje entero a decimal (25 -> 0.25)
+  const vacationPremiumPercent = input.vacationPremium ?? (DEFAULT_PRESTACIONES.VACATION_PREMIUM * 100);
+  const vacationPremium = vacationPremiumPercent / 100;
   validateVacationPremium(vacationPremium);
 
   // Factor de días
   const daysFactor = input.daysFactor ?? DEFAULT_DAYS_FACTOR;
 
-  // Calcular metadata
-  const daysWorked = calculateDaysWorked(input.hireDate, input.terminationDate);
-  const yearsWorked = calculateYearsWorked(daysWorked);
+  // Calcular metadata FISCALES (con fecha de ingreso fiscal)
+  const fiscalDaysWorked = calculateDaysWorked(input.hireDate, input.terminationDate);
+  const fiscalYearsWorked = calculateYearsWorked(fiscalDaysWorked);
+
+  // Calcular metadata REALES (con fecha de ingreso real si está disponible)
+  const realDaysWorked = input.realHireDate
+    ? calculateDaysWorked(input.realHireDate, input.terminationDate)
+    : fiscalDaysWorked;
+  const realYearsWorked = calculateYearsWorked(realDaysWorked);
 
   // Calcular salarios
   const fiscalDailySalary = input.fiscalDailySalary ?? getMinimumSalary(input.borderZone);
@@ -76,23 +87,25 @@ export function calculateFiniquito(input: FiniquitoInput): FiniquitoCalculationR
     gratificationDays = gratificationPesosToDays(gratificationPesos, realDailySalary);
   }
 
+  // Metadata usa los días fiscales para compatibilidad
   const metadata: CalculationMetadata = {
-    daysWorked,
-    yearsWorked,
+    daysWorked: fiscalDaysWorked,
+    yearsWorked: fiscalYearsWorked,
     daysFactor,
     gratificationDays,
     gratificationPesos
   };
 
-  // Calcular percepciones FISCALES
+  // Calcular percepciones FISCALES (usa fechas fiscales)
   const fiscalPerceptions = calculatePerceptions({
-    daysWorked,
-    yearsWorked,
+    daysWorked: fiscalDaysWorked,
+    yearsWorked: fiscalYearsWorked,
     dailySalary: fiscalDailySalary,
     aguinaldoDays: input.aguinaldoDays,
     vacationDays: input.vacationDays,
     vacationPremium,
     pendingVacationDays: input.pendingVacationDays,
+    pendingVacationPremium: input.pendingVacationPremium,
     workedDays: input.workedDays,
     gratificationAmount: 0, // Gratificación NO va en columna fiscal
     severanceDays: input.severanceDays,
@@ -100,15 +113,16 @@ export function calculateFiniquito(input: FiniquitoInput): FiniquitoCalculationR
     daysFactor
   });
 
-  // Calcular percepciones REALES
+  // Calcular percepciones REALES (usa fechas reales si están disponibles)
   const realPerceptions = calculatePerceptions({
-    daysWorked,
-    yearsWorked,
+    daysWorked: realDaysWorked,
+    yearsWorked: realYearsWorked,
     dailySalary: realDailySalary,
     aguinaldoDays: input.aguinaldoDays,
     vacationDays: input.vacationDays,
     vacationPremium,
     pendingVacationDays: input.pendingVacationDays,
+    pendingVacationPremium: input.pendingVacationPremium,
     workedDays: input.workedDays,
     gratificationAmount: gratificationPesos ?? 0, // Gratificación solo en columna REAL
     severanceDays: input.severanceDays,
@@ -120,18 +134,18 @@ export function calculateFiniquito(input: FiniquitoInput): FiniquitoCalculationR
   const fiscalISR = input.isrAmount ?? calculateISR(fiscalPerceptions.totalPerceptions);
   const fiscalDeductions = calculateDeductions({
     isr: fiscalISR,
-    imss: input.imssAmount,
     subsidy: input.subsidyAmount,
     infonavit: input.infonavitAmount,
+    fonacot: input.fonacotAmount,
     other: input.otherDeductions
   });
 
   // Calcular deducciones REALES (generalmente $0)
   const realDeductions = calculateDeductions({
     isr: 0,
-    imss: 0,
     subsidy: 0,
     infonavit: 0,
+    fonacot: 0,
     other: 0
   });
 
