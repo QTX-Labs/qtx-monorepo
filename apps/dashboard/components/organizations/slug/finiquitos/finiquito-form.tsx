@@ -65,6 +65,7 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
       empresaName: '',
       empresaRFC: '',
       empresaMunicipio: '',
+      empresaEstado: '',
       hireDate: undefined,
       terminationDate: undefined,
       salary: 0,
@@ -288,6 +289,20 @@ export function FiniquitoForm({ onCancel, onSuccess }: FiniquitoFormProps) {
                     <FormLabel>Municipio</FormLabel>
                     <FormControl>
                       <Input placeholder="GUADALAJARA" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="empresaEstado"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Estado</FormLabel>
+                    <FormControl>
+                      <Input placeholder="JALISCO" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

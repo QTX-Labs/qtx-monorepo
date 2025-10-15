@@ -603,6 +603,7 @@ model Finiquito {
   empresaName                 String            @db.VarChar(255)
   empresaRFC                  String?           @db.VarChar(13)
   empresaMunicipio            String?           @db.VarChar(255)
+  empresaEstado               String?           @db.VarChar(255)
   clientName                  String            @db.VarChar(255)
   hireDate                    DateTime          @db.Date
   terminationDate             DateTime          @db.Date

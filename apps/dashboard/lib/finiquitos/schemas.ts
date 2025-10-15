@@ -13,6 +13,7 @@ const finiquitoBaseSchema = z.object({
   empresaName: z.string().optional(),
   empresaRFC: z.string().optional(),
   empresaMunicipio: z.string().optional(),
+  empresaEstado: z.string().optional(),
 
   // Datos Salariales
   salary: z.coerce.number().positive('El salario debe ser mayor a 0'),

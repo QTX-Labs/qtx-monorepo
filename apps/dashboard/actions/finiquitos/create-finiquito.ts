@@ -70,6 +70,7 @@ export const createFiniquito = authOrganizationActionClient
         empresaName: parsedInput.empresaName || ctx.organization.name,
         empresaRFC: parsedInput.empresaRFC ?? null,
         empresaMunicipio: parsedInput.empresaMunicipio ?? null,
+        empresaEstado: parsedInput.empresaEstado ?? null,
         clientName: parsedInput.empresaName || ctx.organization.name,
         hireDate: parsedInput.hireDate,
         terminationDate: parsedInput.terminationDate,

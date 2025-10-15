@@ -107,7 +107,12 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
 
   const salarioDiario = toNumber(finiquito.fiscalDailySalary);
   const salarioLetra = numeroALetra(salarioDiario);
+
+  // Construir ubicación con municipio y estado
   const municipio = finiquito.empresaMunicipio || 'CIUDAD DE MÉXICO';
+  const estado = finiquito.empresaEstado || '';
+  const ubicacion = estado ? `${municipio}, ${estado}` : municipio;
+
   const puesto = finiquito.employeePosition || 'EMPLEADO';
 
   // Calcular totales para el recibo de finiquito
@@ -130,7 +135,7 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
         </Text>
 
         <Text style={styles.paragraph}>
-          MUNICIPIO DE {municipio}.
+          MUNICIPIO DE {ubicacion}.
         </Text>
 
         <Text style={[styles.right, styles.paragraph]}>
@@ -177,7 +182,7 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
         </Text>
 
         <Text style={[styles.center, styles.paragraph]}>
-          {municipio} A {formatDate(finiquito.terminationDate)}.
+          {ubicacion} A {formatDate(finiquito.terminationDate)}.
         </Text>
 
         <View style={styles.signature}>
@@ -275,7 +280,7 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
         </Text>
 
         <Text style={[styles.center, styles.paragraph]}>
-          {municipio} A {formatDate(finiquito.terminationDate)}
+          {ubicacion} A {formatDate(finiquito.terminationDate)}
         </Text>
 
         <View style={styles.signature}>
