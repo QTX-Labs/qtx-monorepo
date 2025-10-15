@@ -8,6 +8,7 @@ import { type Finiquito, type User } from '@workspace/database';
 import { useAction } from 'next-safe-action/hooks';
 import { toast } from 'sonner';
 import { useRouter, useParams } from 'next/navigation';
+import numeral from 'numeral';
 
 import { Button } from '@workspace/ui/components/button';
 import { toLocalDate } from '~/lib/finiquitos/utils';
@@ -171,7 +172,7 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
                       locale: es
                     })}
                   </TableCell>
-                  <TableCell>${Number(finiquito.totalToPay).toFixed(2)}</TableCell>
+                  <TableCell>${numeral(Number(finiquito.totalToPay)).format('0,0.00')}</TableCell>
                   <TableCell>{finiquito.user.name}</TableCell>
                   <TableCell>
                     {format(toLocalDate(finiquito.createdAt), 'PPP', {

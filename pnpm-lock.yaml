@@ -131,6 +131,9 @@ importers:
       next-secure-headers:
         specifier: 2.2.0
         version: 2.2.0
+      numeral:
+        specifier: ^2.0.6
+        version: 2.0.6
       nuqs:
         specifier: 2.4.3
         version: 2.4.3(next@15.3.3(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
@@ -195,6 +198,9 @@ importers:
       '@types/node':
         specifier: 22.15.30
         version: 22.15.30
+      '@types/numeral':
+        specifier: ^2.0.5
+        version: 2.0.5
       '@types/qrcode':
         specifier: 1.5.5
         version: 1.5.5
@@ -4031,6 +4037,9 @@ packages:
   '@types/nodemailer@6.4.17':
     resolution: {integrity: sha512-I9CCaIp6DTldEg7vyUTZi8+9Vo0hi1/T8gv3C89yk1rSAAzoKQ8H8ki/jBYJSFoH/BisgLP8tkZMlQ91CIquww==}
 
+  '@types/numeral@2.0.5':
+    resolution: {integrity: sha512-kH8I7OSSwQu9DS9JYdFWbuvhVzvFRoCPCkGxNwoGgaPeDfEPJlcxNvEOypZhQ3XXHsGbfIuYcxcJxKUfJHnRfw==}
+
   '@types/pg-pool@2.0.6':
     resolution: {integrity: sha512-TaAUE5rq2VQYxab5Ts7WZhKNmuN78Q6PiFonTDdpbx8a1H0M1vhy3rhiMjl+e2iHmogyMw7jZF4FrE6eJUy5HQ==}
 
@@ -6747,6 +6756,9 @@ packages:
   npm-run-path@4.0.1:
     resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==}
     engines: {node: '>=8'}
+
+  numeral@2.0.6:
+    resolution: {integrity: sha512-qaKRmtYPZ5qdw4jWJD6bxEf1FJEqllJrwxCLIm0sQU/A7v2/czigzOb+C2uSiFsa9lBUzeH7M1oK+Q+OLxL3kA==}
 
   nuqs@2.4.3:
     resolution: {integrity: sha512-BgtlYpvRwLYiJuWzxt34q2bXu/AIS66sLU1QePIMr2LWkb+XH0vKXdbLSgn9t6p7QKzwI7f38rX3Wl9llTXQ8Q==}
@@ -12607,6 +12619,8 @@ snapshots:
     dependencies:
       '@types/node': 22.15.30
 
+  '@types/numeral@2.0.5': {}
+
   '@types/pg-pool@2.0.6':
     dependencies:
       '@types/pg': 8.6.1
@@ -15838,6 +15852,8 @@ snapshots:
   npm-run-path@4.0.1:
     dependencies:
       path-key: 3.1.1
+
+  numeral@2.0.6: {}
 
   nuqs@2.4.3(next@15.3.3(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0):
     dependencies:

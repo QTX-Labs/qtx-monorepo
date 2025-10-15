@@ -6,6 +6,7 @@ import {
     View,
     StyleSheet,
 } from '@react-pdf/renderer';
+import numeral from 'numeral';
 import type { Finiquito } from '@workspace/database';
 import { numeroALetra } from './numero-a-letra';
 import { formatDateLong } from '../utils';
@@ -18,7 +19,7 @@ import { formatDateLong } from '../utils';
 const styles = StyleSheet.create({
     page: {
         fontFamily: 'Helvetica',
-        fontSize: 12,
+        fontSize: 11,
         lineHeight: 1.08,
         color: '#000000',
         paddingTop: 52,      // ≈ 2.4 cm (ajustado al documento Word)
@@ -107,7 +108,7 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
     const formatCurrency = (amount: number | null | { toNumber?: () => number }) => {
         if (amount === null) return '0.00';
         const num = toNumber(amount);
-        return num.toFixed(2);
+        return numeral(num).format('0,0.00');
     };
 
     const salarioDiario = toNumber(finiquito.fiscalDailySalary);
@@ -173,7 +174,7 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
                 </Text>
 
                 {/* FIRMA DE RENUNCIA */}
-                <Text style={[styles.center, { marginTop: 20, marginBottom: 12, textAlign: 'center' }]}>
+                <Text style={[styles.center, { marginTop: 70, marginBottom: 12, textAlign: 'center' }]}>
                     ATENTAMENTE{'\n'}
                     {ubicacion} A {formatDateLong(finiquito.terminationDate)}.
                 </Text>
@@ -194,10 +195,7 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
                   <Text style={styles.bold}>Puesto:</Text> {puesto}{'\n'}
                   <Text style={styles.bold}>Salario diario:</Text> ${formatCurrency(finiquito.fiscalDailySalary)}{'\n'}
                   <Text style={styles.bold}>Cantidad con letra:</Text> {salarioLetra} 00/100 M.N.{'\n'}
-                  <Text style={styles.bold}>Recibí de {finiquito.empresaName} la cantidad de:</Text> ${formatCurrency(totalNeto)}
-                </Text>
-
-                <Text style={{ marginBottom: 12, textAlign: 'justify' }}>
+                  <Text style={styles.bold}>Recibí de {finiquito.empresaName} la cantidad de:</Text> ${formatCurrency(totalNeto)}{'\n'}
                   <Text style={styles.bold}>CANTIDAD CON LETRA:</Text> <Text style={styles.textUnderline}>{numeroALetra(totalNeto)}</Text> 00 / 100 M.N.
                 </Text>
 

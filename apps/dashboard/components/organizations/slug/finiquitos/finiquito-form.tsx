@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useAction } from 'next-safe-action/hooks';
 import { toast } from 'sonner';
+import numeral from 'numeral';
 
 import { SalaryFrequency, BorderZone, GratificationType } from '@workspace/database';
 import { Button } from '@workspace/ui/components/button';
@@ -977,7 +978,7 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                         <div className="text-center p-4 bg-primary/5 rounded-lg border border-primary/20">
                           <div className="text-xs text-muted-foreground mb-1 uppercase tracking-wide">Total a Pagar</div>
                           <div className="text-2xl font-bold text-primary">
-                            ${calculationResult.totals.netPayTotal.toFixed(2)}
+                            ${numeral(calculationResult.totals.netPayTotal).format('0,0.00')}
                           </div>
                           <div className="text-[10px] text-muted-foreground mt-2">
                             {calculationResult.metadata.daysWorked} días • {calculationResult.metadata.yearsWorked.toFixed(2)} años
@@ -992,41 +993,41 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                           <div className="space-y-1.5 text-xs">
                             <div className="flex justify-between">
                               <span className="text-muted-foreground">Aguinaldo</span>
-                              <span className="font-medium">${calculationResult.fiscalPerceptions.aguinaldoAmount.toFixed(2)}</span>
+                              <span className="font-medium">${numeral(calculationResult.fiscalPerceptions.aguinaldoAmount).format('0,0.00')}</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-muted-foreground">Vacaciones</span>
-                              <span className="font-medium">${calculationResult.fiscalPerceptions.vacationAmount.toFixed(2)}</span>
+                              <span className="font-medium">${numeral(calculationResult.fiscalPerceptions.vacationAmount).format('0,0.00')}</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-muted-foreground">Prima Vacacional</span>
-                              <span className="font-medium">${calculationResult.fiscalPerceptions.vacationPremiumAmount.toFixed(2)}</span>
+                              <span className="font-medium">${numeral(calculationResult.fiscalPerceptions.vacationPremiumAmount).format('0,0.00')}</span>
                             </div>
                             {calculationResult.fiscalPerceptions.severanceAmount > 0 && (
                               <div className="flex justify-between">
                                 <span className="text-muted-foreground">Indemnización</span>
-                                <span className="font-medium">${calculationResult.fiscalPerceptions.severanceAmount.toFixed(2)}</span>
+                                <span className="font-medium">${numeral(calculationResult.fiscalPerceptions.severanceAmount).format('0,0.00')}</span>
                               </div>
                             )}
                             {calculationResult.fiscalPerceptions.seniorityPremiumAmount > 0 && (
                               <div className="flex justify-between">
                                 <span className="text-muted-foreground">Prima Antigüedad</span>
-                                <span className="font-medium">${calculationResult.fiscalPerceptions.seniorityPremiumAmount.toFixed(2)}</span>
+                                <span className="font-medium">${numeral(calculationResult.fiscalPerceptions.seniorityPremiumAmount).format('0,0.00')}</span>
                               </div>
                             )}
                             <Separator className="my-2" />
                             <div className="flex justify-between font-semibold">
                               <span>Total Percepciones</span>
-                              <span className="text-green-600">${calculationResult.fiscalPerceptions.totalPerceptions.toFixed(2)}</span>
+                              <span className="text-green-600">${numeral(calculationResult.fiscalPerceptions.totalPerceptions).format('0,0.00')}</span>
                             </div>
                             <div className="flex justify-between text-destructive font-medium">
                               <span>Deducciones</span>
-                              <span>-${calculationResult.deductions.totalDeductions.toFixed(2)}</span>
+                              <span>-${numeral(calculationResult.deductions.totalDeductions).format('0,0.00')}</span>
                             </div>
                             <Separator className="my-2" />
                             <div className="flex justify-between font-bold text-sm bg-muted/60 p-2 rounded">
                               <span>Neto Fiscal</span>
-                              <span className="text-primary">${calculationResult.totals.netPayFiscal.toFixed(2)}</span>
+                              <span className="text-primary">${numeral(calculationResult.totals.netPayFiscal).format('0,0.00')}</span>
                             </div>
                           </div>
                         </div>
@@ -1039,43 +1040,43 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                           <div className="space-y-1.5 text-xs">
                             <div className="flex justify-between">
                               <span className="text-muted-foreground">Aguinaldo</span>
-                              <span className="font-medium">${calculationResult.realPerceptions.aguinaldoAmount.toFixed(2)}</span>
+                              <span className="font-medium">${numeral(calculationResult.realPerceptions.aguinaldoAmount).format('0,0.00')}</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-muted-foreground">Vacaciones</span>
-                              <span className="font-medium">${calculationResult.realPerceptions.vacationAmount.toFixed(2)}</span>
+                              <span className="font-medium">${numeral(calculationResult.realPerceptions.vacationAmount).format('0,0.00')}</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-muted-foreground">Prima Vacacional</span>
-                              <span className="font-medium">${calculationResult.realPerceptions.vacationPremiumAmount.toFixed(2)}</span>
+                              <span className="font-medium">${numeral(calculationResult.realPerceptions.vacationPremiumAmount).format('0,0.00')}</span>
                             </div>
                             {calculationResult.realPerceptions.gratificationAmount > 0 && (
                               <div className="flex justify-between">
                                 <span className="text-muted-foreground">Gratificación</span>
-                                <span className="font-medium">${calculationResult.realPerceptions.gratificationAmount.toFixed(2)}</span>
+                                <span className="font-medium">${numeral(calculationResult.realPerceptions.gratificationAmount).format('0,0.00')}</span>
                               </div>
                             )}
                             {calculationResult.realPerceptions.severanceAmount > 0 && (
                               <div className="flex justify-between">
                                 <span className="text-muted-foreground">Indemnización</span>
-                                <span className="font-medium">${calculationResult.realPerceptions.severanceAmount.toFixed(2)}</span>
+                                <span className="font-medium">${numeral(calculationResult.realPerceptions.severanceAmount).format('0,0.00')}</span>
                               </div>
                             )}
                             {calculationResult.realPerceptions.seniorityPremiumAmount > 0 && (
                               <div className="flex justify-between">
                                 <span className="text-muted-foreground">Prima Antigüedad</span>
-                                <span className="font-medium">${calculationResult.realPerceptions.seniorityPremiumAmount.toFixed(2)}</span>
+                                <span className="font-medium">${numeral(calculationResult.realPerceptions.seniorityPremiumAmount).format('0,0.00')}</span>
                               </div>
                             )}
                             <Separator className="my-2" />
                             <div className="flex justify-between font-semibold">
                               <span>Total Percepciones</span>
-                              <span className="text-green-600">${calculationResult.realPerceptions.totalPerceptions.toFixed(2)}</span>
+                              <span className="text-green-600">${numeral(calculationResult.realPerceptions.totalPerceptions).format('0,0.00')}</span>
                             </div>
                             <Separator className="my-2" />
                             <div className="flex justify-between font-bold text-sm bg-muted/60 p-2 rounded">
                               <span>Neto Real</span>
-                              <span className="text-primary">${calculationResult.totals.netPayReal.toFixed(2)}</span>
+                              <span className="text-primary">${numeral(calculationResult.totals.netPayReal).format('0,0.00')}</span>
                             </div>
                           </div>
                         </div>
