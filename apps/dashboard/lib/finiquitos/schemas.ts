@@ -42,9 +42,9 @@ const finiquitoBaseSchema = z.object({
 
   // Prestaciones Superiores de Ley
   enableSuperiorBenefits: z.boolean().default(false),
-  aguinaldoDays: z.coerce.number().nonnegative().default(15),
+  aguinaldoDays: z.coerce.number().min(15, 'Los días de aguinaldo no pueden ser menores a 15').default(15),
   vacationDays: z.coerce.number().nonnegative().default(12),
-  vacationPremium: z.coerce.number().min(0).max(100).default(25), // Ahora es porcentaje entero (25 = 25%)
+  vacationPremium: z.coerce.number().min(25, 'La prima vacacional no puede ser menor a 25%').max(100).default(25), // Ahora es porcentaje entero (25 = 25%)
 
   // Beneficios Fiscales
   pendingVacationDays: z.coerce.number().nonnegative().default(0),

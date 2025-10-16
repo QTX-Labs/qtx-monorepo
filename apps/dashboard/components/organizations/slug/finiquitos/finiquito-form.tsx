@@ -174,6 +174,8 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
   const debouncedVacationPremium = useDebounce(vacationPremium, 300);
   const debouncedPendingVacationDays = useDebounce(pendingVacationDays, 300);
   const debouncedPendingVacationPremium = useDebounce(pendingVacationPremium, 300);
+  const debouncedComplementPendingVacationDays = useDebounce(complementPendingVacationDays, 300);
+  const debouncedComplementPendingVacationPremium = useDebounce(complementPendingVacationPremium, 300);
   const debouncedWorkedDays = useDebounce(workedDays, 300);
   const debouncedGratificationDays = useDebounce(gratificationDays, 300);
   const debouncedGratificationPesos = useDebounce(gratificationPesos, 300);
@@ -202,6 +204,35 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
     }
   }, [hireDate, terminationDate, form]);
 
+  // Restablecer aguinaldo y prima vacacional a valores por defecto cuando se desactiva
+  useEffect(() => {
+    if (!enableSuperiorBenefits) {
+      form.setValue('aguinaldoDays', 15);
+      form.setValue('vacationPremium', 25);
+    }
+  }, [enableSuperiorBenefits, form]);
+
+  // Restablecer campos de Liquidación a 0 cuando se desactiva
+  useEffect(() => {
+    if (!enableLiquidation) {
+      form.setValue('gratificationDays', 0);
+      form.setValue('gratificationPesos', 0);
+      form.setValue('severanceDays', 0);
+      form.setValue('seniorityPremiumDays', 0);
+    }
+  }, [enableLiquidation, form]);
+
+  // Restablecer campos de Complemento a valores por defecto cuando se desactiva
+  useEffect(() => {
+    if (!enableComplement) {
+      form.setValue('realHireDate', undefined);
+      form.setValue('salary', 0);
+      form.setValue('salaryFrequency', SalaryFrequency.MONTHLY);
+      form.setValue('complementPendingVacationDays', 0);
+      form.setValue('complementPendingVacationPremium', 0);
+    }
+  }, [enableComplement, form]);
+
   useEffect(() => {
     // Calcular tan pronto como tengamos las fechas fiscales
     // El cálculo fiscal siempre se puede hacer, el complemento es opcional
@@ -220,6 +251,8 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
           vacationPremium: debouncedVacationPremium,
           pendingVacationDays: debouncedPendingVacationDays,
           pendingVacationPremium: debouncedPendingVacationPremium,
+          complementPendingVacationDays: debouncedComplementPendingVacationDays,
+          complementPendingVacationPremium: debouncedComplementPendingVacationPremium,
           workedDays: debouncedWorkedDays,
           gratificationType,
           gratificationDays: debouncedGratificationDays,
@@ -256,6 +289,8 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
     debouncedVacationPremium,
     debouncedPendingVacationDays,
     debouncedPendingVacationPremium,
+    debouncedComplementPendingVacationDays,
+    debouncedComplementPendingVacationPremium,
     debouncedWorkedDays,
     gratificationType,
     debouncedGratificationDays,
@@ -283,8 +318,15 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
 
   // Manejar gratificación bidireccional
   const handleGratificationDaysChange = (value: string) => {
+    // Permitir cadena vacía para limpiar el campo
+    if (value === '' || value === null || value === undefined) {
+      form.setValue('gratificationDays', 0);
+      form.setValue('gratificationPesos', 0);
+      return;
+    }
+
     const days = parseFloat(value);
-    if (!isNaN(days) && days > 0) {
+    if (!isNaN(days) && days >= 0) {
       const realDailySalary = calculationResult?.salaries.realDailySalary || 0;
       const pesos = days * realDailySalary;
       form.setValue('gratificationDays', days);
@@ -294,8 +336,15 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
   };
 
   const handleGratificationPesosChange = (value: string) => {
+    // Permitir cadena vacía para limpiar el campo
+    if (value === '' || value === null || value === undefined) {
+      form.setValue('gratificationDays', 0);
+      form.setValue('gratificationPesos', 0);
+      return;
+    }
+
     const pesos = parseFloat(value);
-    if (!isNaN(pesos) && pesos > 0) {
+    if (!isNaN(pesos) && pesos >= 0) {
       const realDailySalary = calculationResult?.salaries.realDailySalary || 0;
       const days = realDailySalary > 0 ? pesos / realDailySalary : 0;
       form.setValue('gratificationPesos', pesos);
@@ -454,18 +503,7 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                         </FormItem>
                       )}
                     />
-                  </div>
-                </CardContent>
-              </Card>
 
-              {/* Factores Fiscales */}
-              <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
-                <CardHeader className="space-y-1 pb-4">
-                  <CardTitle className="text-xl">Factores Fiscales</CardTitle>
-                  <CardDescription>Fechas y salarios para cálculo fiscal</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid gap-6 md:grid-cols-2">
                     <FormField
                       control={form.control}
                       name="clientName"
@@ -482,6 +520,18 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                         </FormItem>
                       )}
                     />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Factores Fiscales */}
+              <Card className="border-2 hover:border-muted-foreground/20 transition-colors">
+                <CardHeader className="space-y-1 pb-4">
+                  <CardTitle className="text-xl">Factores Fiscales</CardTitle>
+                  <CardDescription>Fechas y salarios para cálculo fiscal</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid gap-6 md:grid-cols-2">
 
                     <FormField
                       control={form.control}
@@ -584,30 +634,6 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                             />
                           </FormControl>
                           <FormDescription>Este campo está bloqueado</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="salaryFrequency"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Frecuencia de Pago</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value={SalaryFrequency.DAILY}>Diario</SelectItem>
-                              <SelectItem value={SalaryFrequency.WEEKLY}>Semanal</SelectItem>
-                              <SelectItem value={SalaryFrequency.BIWEEKLY}>Quincenal</SelectItem>
-                              <SelectItem value={SalaryFrequency.MONTHLY}>Mensual</SelectItem>
-                            </SelectContent>
-                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -724,6 +750,30 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                               disabled={!enableComplement}
                             />
                           </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="salaryFrequency"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Frecuencia de Pago</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!enableComplement}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value={SalaryFrequency.DAILY}>Diario</SelectItem>
+                              <SelectItem value={SalaryFrequency.WEEKLY}>Semanal</SelectItem>
+                              <SelectItem value={SalaryFrequency.BIWEEKLY}>Quincenal</SelectItem>
+                              <SelectItem value={SalaryFrequency.MONTHLY}>Mensual</SelectItem>
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -864,11 +914,13 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                           <FormControl>
                             <Input
                               type="number"
+                              min="15"
                               {...field}
                               onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                               disabled={!enableSuperiorBenefits}
                             />
                           </FormControl>
+                          <FormDescription>Mínimo: 15 días</FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -904,11 +956,14 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                           <FormControl>
                             <Input
                               type="number"
+                              min="25"
+                              max="100"
                               {...field}
                               onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                               disabled={!enableSuperiorBenefits}
                             />
                           </FormControl>
+                          <FormDescription>Mínimo: 25%</FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}

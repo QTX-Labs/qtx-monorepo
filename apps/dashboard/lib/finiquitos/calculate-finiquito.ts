@@ -114,6 +114,7 @@ export function calculateFiniquito(input: FiniquitoInput): FiniquitoCalculationR
   });
 
   // Calcular percepciones REALES (usa fechas reales si están disponibles)
+  // Usa campos de "Beneficios de Complemento" en lugar de "Beneficios Fiscales"
   const realPerceptions = calculatePerceptions({
     daysWorked: realDaysWorked,
     yearsWorked: realYearsWorked,
@@ -121,8 +122,8 @@ export function calculateFiniquito(input: FiniquitoInput): FiniquitoCalculationR
     aguinaldoDays: input.aguinaldoDays,
     vacationDays: input.vacationDays,
     vacationPremium,
-    pendingVacationDays: input.pendingVacationDays,
-    pendingVacationPremium: input.pendingVacationPremium,
+    pendingVacationDays: input.complementPendingVacationDays ?? 0, // Beneficios de Complemento
+    pendingVacationPremium: input.complementPendingVacationPremium ?? 0, // Beneficios de Complemento
     workedDays: input.workedDays,
     gratificationAmount: gratificationPesos ?? 0, // Gratificación solo en columna REAL
     severanceDays: input.severanceDays,

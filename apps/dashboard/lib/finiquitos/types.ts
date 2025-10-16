@@ -23,8 +23,10 @@ export interface FiniquitoInput {
   aguinaldoDays?: number;
   vacationDays?: number;
   vacationPremium?: number; // Porcentaje entero (25 = 25%)
-  pendingVacationDays?: number;
-  pendingVacationPremium?: number;
+  pendingVacationDays?: number; // Beneficios Fiscales
+  pendingVacationPremium?: number; // Beneficios Fiscales
+  complementPendingVacationDays?: number; // Beneficios de Complemento
+  complementPendingVacationPremium?: number; // Beneficios de Complemento
   workedDays?: number;
   realHireDate?: Date;
 
