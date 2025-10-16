@@ -35,7 +35,7 @@ export const DAYS_IN_YEAR_WITH_LEAP = 365.25;
 export const DEFAULT_PRESTACIONES = {
   AGUINALDO_DAYS: 15,
   VACATION_DAYS: 12,
-  VACATION_PREMIUM: 0.25 // 25%
+  VACATION_PREMIUM: 25 // 25% (se guarda como número entero, se divide entre 100 en los cálculos)
 } as const;
 
 /**

@@ -36,10 +36,9 @@ export function calculateFiniquito(input: FiniquitoInput): FiniquitoCalculationR
     validateSalary(input.salary);
   }
 
-  // Convertir porcentaje entero a decimal (25 -> 0.25)
-  const vacationPremiumPercent = input.vacationPremium ?? (DEFAULT_PRESTACIONES.VACATION_PREMIUM * 100);
-  const vacationPremium = vacationPremiumPercent / 100;
-  validateVacationPremium(vacationPremium);
+  // Obtener prima vacacional (viene como porcentaje entero: 25 para 25%)
+  const vacationPremiumPercent = input.vacationPremium ?? DEFAULT_PRESTACIONES.VACATION_PREMIUM;
+  validateVacationPremium(vacationPremiumPercent);
 
   // Factor de días
   const daysFactor = input.daysFactor ?? DEFAULT_DAYS_FACTOR;
@@ -65,7 +64,7 @@ export function calculateFiniquito(input: FiniquitoInput): FiniquitoCalculationR
     fiscalDailySalary,
     input.aguinaldoDays,
     input.vacationDays,
-    vacationPremium
+    vacationPremiumPercent
   );
 
   const salaries: SalaryCalculation = {
@@ -103,7 +102,7 @@ export function calculateFiniquito(input: FiniquitoInput): FiniquitoCalculationR
     dailySalary: fiscalDailySalary,
     aguinaldoDays: input.aguinaldoDays,
     vacationDays: input.vacationDays,
-    vacationPremium,
+    vacationPremium: vacationPremiumPercent,
     pendingVacationDays: input.pendingVacationDays,
     pendingVacationPremium: input.pendingVacationPremium,
     workedDays: input.workedDays,
@@ -121,7 +120,7 @@ export function calculateFiniquito(input: FiniquitoInput): FiniquitoCalculationR
     dailySalary: realDailySalary,
     aguinaldoDays: input.aguinaldoDays,
     vacationDays: input.vacationDays,
-    vacationPremium,
+    vacationPremium: vacationPremiumPercent,
     pendingVacationDays: input.complementPendingVacationDays ?? 0, // Beneficios de Complemento
     pendingVacationPremium: input.complementPendingVacationPremium ?? 0, // Beneficios de Complemento
     workedDays: input.workedDays,

@@ -620,7 +620,7 @@ model Finiquito {
   // Prestaciones
   aguinaldoDays               Int               @default(15)
   vacationDays                Int               @default(12)
-  vacationPremiumPercentage   Decimal           @db.Decimal(5, 4) @default(0.25)
+  vacationPremiumPercentage   Decimal           @db.Decimal(5, 2) @default(25)
   pendingVacationDays         Int               @default(0)
 
   // Gratificación (bidireccional)

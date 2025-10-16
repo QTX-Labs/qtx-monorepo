@@ -92,7 +92,7 @@ export function calculateIntegratedDailySalary(
   vacationPremium: number = DEFAULT_PRESTACIONES.VACATION_PREMIUM
 ): number {
   const aguinaldoFactor = aguinaldoDays / DAYS_IN_YEAR;
-  const vacationFactor = (vacationDays * vacationPremium) / DAYS_IN_YEAR;
+  const vacationFactor = (vacationDays * (vacationPremium / 100)) / DAYS_IN_YEAR;
   const multiplier = 1 + aguinaldoFactor + vacationFactor;
 
   return round(fiscalDailySalary * multiplier, DECIMAL_PRECISION.MONEY);
@@ -131,7 +131,7 @@ export function calculateVacationPremiumFactor(
   vacationFactor: number,
   vacationPremium: number = DEFAULT_PRESTACIONES.VACATION_PREMIUM
 ): number {
-  return round(vacationFactor * vacationPremium, DECIMAL_PRECISION.FACTOR);
+  return round(vacationFactor * (vacationPremium / 100), DECIMAL_PRECISION.FACTOR);
 }
 
 /**
@@ -190,7 +190,7 @@ export function validateSalary(salary: number): void {
  * Valida que la prima vacacional esté en rango válido
  */
 export function validateVacationPremium(premium: number): void {
-  if (premium < 0 || premium > 1) {
+  if (premium < 0 || premium > 100) {
     throw new Error('La prima vacacional debe estar entre 0% y 100%');
   }
 }

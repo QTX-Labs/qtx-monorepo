@@ -75,7 +75,7 @@ export function calculatePerceptions(input: PerceptionsInput): PerceptionsCalcul
   // Si el usuario ingresó un monto directo, usarlo; sino calcularlo
   const pendingPremiumAmount = pendingVacationPremium > 0
     ? round(pendingVacationPremium, DECIMAL_PRECISION.MONEY)
-    : round(pendingVacationAmount * vacationPremium, DECIMAL_PRECISION.MONEY);
+    : round(pendingVacationAmount * (vacationPremium / 100), DECIMAL_PRECISION.MONEY);
 
   // Días trabajados no pagados en el periodo
   const workedDaysAmount = round(workedDays * dailySalary, DECIMAL_PRECISION.MONEY);
