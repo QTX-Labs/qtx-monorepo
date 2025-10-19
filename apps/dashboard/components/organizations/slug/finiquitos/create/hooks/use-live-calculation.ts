@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { SalaryFrequency } from '@workspace/database';
+
 import { calculateFiniquitoComplete } from '~/lib/finiquitos/calculate-finiquito-complete';
 import type { CalculateFiniquitoOutput } from '~/lib/finiquitos/types/calculate-finiquito-types';
 import type { Step1BaseConfig } from '~/lib/finiquitos/schemas/step1-base-config-schema';
@@ -48,7 +50,7 @@ export function useLiveCalculation({
         fiscalDailySalary: step1Data.fiscalDailySalary,
         integratedDailySalary: step1Data.integratedDailySalary,
         borderZone: step1Data.borderZone,
-        salaryFrequency: step1Data.salaryFrequency,
+        salaryFrequency: step1Data.salaryFrequency ?? SalaryFrequency.MONTHLY,
         aguinaldoDays: step1Data.aguinaldoDays,
         vacationDays: step1Data.vacationDays,
         vacationPremiumPercentage: step1Data.vacationPremiumPercentage,
@@ -68,6 +70,12 @@ export function useLiveCalculation({
           otras: 0,
           subsidio: 0,
         },
+        // Pasar factores editados del Step 2 para cálculo en vivo
+        manualFactors: debouncedStep2Data ? {
+          finiquito: debouncedStep2Data.factoresFiniquito,
+          liquidacion: debouncedStep2Data.factoresLiquidacion,
+          complemento: debouncedStep2Data.factoresComplemento,
+        } : undefined,
       });
 
       setCalculation(result);

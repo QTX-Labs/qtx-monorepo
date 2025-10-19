@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { prisma } from '@workspace/database/client';
+import { SalaryFrequency } from '@workspace/database';
 import { replaceOrgSlug, routes } from '@workspace/routes';
 
 import { authOrganizationActionClient } from '~/actions/safe-action';
@@ -25,7 +26,7 @@ export const createFiniquito = authOrganizationActionClient
       fiscalDailySalary: parsedInput.fiscalDailySalary,
       integratedDailySalary: parsedInput.integratedDailySalary,
       borderZone: parsedInput.borderZone,
-      salaryFrequency: parsedInput.salaryFrequency,
+      salaryFrequency: parsedInput.salaryFrequency ?? SalaryFrequency.MONTHLY,
       aguinaldoDays: parsedInput.aguinaldoDays,
       vacationDays: parsedInput.vacationDays,
       vacationPremiumPercentage: parsedInput.vacationPremiumPercentage,
@@ -73,7 +74,7 @@ export const createFiniquito = authOrganizationActionClient
           hireDate: parsedInput.hireDate,
           terminationDate: parsedInput.terminationDate,
           salary: parsedInput.fiscalDailySalary, // Usar fiscal como base
-          salaryFrequency: parsedInput.salaryFrequency,
+          salaryFrequency: parsedInput.salaryFrequency ?? SalaryFrequency.MONTHLY,
           borderZone: parsedInput.borderZone,
           fiscalDailySalary: parsedInput.fiscalDailySalary,
           realDailySalary: parsedInput.realDailySalary ?? parsedInput.fiscalDailySalary,

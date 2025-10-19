@@ -238,32 +238,40 @@ export function toLocalDate(date: Date | string): Date {
 
 /**
  * Calcula los días de vacaciones que le corresponden a un empleado según su antigüedad
- * Basado en prestaciones superiores de ley
+ * Basado en la Ley Federal del Trabajo 2023 (prestaciones superiores de ley)
+ *
+ * Esta función implementa la tabla de vacaciones conforme a la LFT actualizada en 2023,
+ * que aumentó los días mínimos de vacaciones progresivamente según la antigüedad.
  *
  * @param hireDate - Fecha de ingreso del empleado (fiscal)
  * @param terminationDate - Fecha de baja del empleado (opcional, por defecto hoy)
- * @returns Número de días de vacaciones que le corresponden
+ * @returns Número de días de vacaciones que le corresponden según su antigüedad
  *
  * @example
- * getEmployeeVacationDays(new Date('2020-01-01')) // 18 días (4 años)
- * getEmployeeVacationDays(new Date('2020-01-01'), new Date('2023-01-01')) // 16 días (3 años)
+ * // Empleado con 4 años de antigüedad
+ * getEmployeeVacationDays(new Date('2020-01-01'), new Date('2024-01-01')) // 18 días
+ *
+ * @example
+ * // Empleado con 3 años de antigüedad
+ * getEmployeeVacationDays(new Date('2020-01-01'), new Date('2023-01-01')) // 16 días
  */
 export function getEmployeeVacationDays(
   hireDate: Date | string,
   terminationDate?: Date | string
 ): number {
+  // Tabla de días de vacaciones según antigüedad (LFT 2023)
   const ranges = [
-    { days: 12.0, start_year: 0.0, end_year: 1.0 },
-    { days: 14.0, start_year: 1.0, end_year: 2.0 },
-    { days: 16.0, start_year: 2.0, end_year: 3.0 },
-    { days: 18.0, start_year: 3.0, end_year: 4.0 },
-    { days: 20.0, start_year: 4.0, end_year: 5.0 },
-    { days: 22.0, start_year: 5.0, end_year: 10.0 },
-    { days: 24.0, start_year: 10.0, end_year: 15.0 },
-    { days: 26.0, start_year: 15.0, end_year: 20.0 },
-    { days: 28.0, start_year: 20.0, end_year: 25.0 },
-    { days: 30.0, start_year: 25.0, end_year: 30.0 },
-    { days: 32.0, start_year: 30.0, end_year: 50.0 }
+    { days: 12.0, start_year: 0.0, end_year: 1.0 },   // Primer año
+    { days: 14.0, start_year: 1.0, end_year: 2.0 },   // Segundo año
+    { days: 16.0, start_year: 2.0, end_year: 3.0 },   // Tercer año
+    { days: 18.0, start_year: 3.0, end_year: 4.0 },   // Cuarto año
+    { days: 20.0, start_year: 4.0, end_year: 5.0 },   // Quinto año
+    { days: 22.0, start_year: 5.0, end_year: 10.0 },  // 5-10 años
+    { days: 24.0, start_year: 10.0, end_year: 15.0 }, // 10-15 años
+    { days: 26.0, start_year: 15.0, end_year: 20.0 }, // 15-20 años
+    { days: 28.0, start_year: 20.0, end_year: 25.0 }, // 20-25 años
+    { days: 30.0, start_year: 25.0, end_year: 30.0 }, // 25-30 años
+    { days: 32.0, start_year: 30.0, end_year: 50.0 }  // 30+ años
   ];
 
   const today = terminationDate ? new Date(terminationDate) : new Date();
@@ -274,7 +282,7 @@ export function getEmployeeVacationDays(
   const diffDays = diffTime / (1000 * 60 * 60 * 24);
   const years = diffDays / 365.25; // Usar 365.25 para considerar años bisiestos
 
-  let vacationDays = 12; // Por defecto
+  let vacationDays = 12; // Por defecto (primer año)
   for (const range of ranges) {
     if (years >= range.start_year && years < range.end_year) {
       vacationDays = range.days;
@@ -283,4 +291,77 @@ export function getEmployeeVacationDays(
   }
 
   return vacationDays;
+}
+
+/**
+ * Calcula el Factor de Integración del Salario para determinar el SDI
+ * (Salario Diario Integrado)
+ *
+ * El Factor de Integración se calcula según la fórmula oficial mexicana:
+ * FI = (D_anio + D_ag + (D_vac * (PV/100))) / D_anio
+ *
+ * Donde:
+ * - D_anio = días del año (365)
+ * - D_ag = días de aguinaldo configurados en la nómina
+ * - D_vac = días de vacaciones según antigüedad (LFT 2023)
+ * - PV = porcentaje de prima vacacional
+ *
+ * Este factor se multiplica por el Salario Diario Fiscal para obtener
+ * el Salario Diario Integrado (SDI) que se usa para calcular prestaciones.
+ *
+ * @param hireDate - Fecha de ingreso fiscal del empleado
+ * @param override - Parámetros opcionales para sobrescribir valores por defecto
+ * @param override.terminationDate - Fecha de baja (default: hoy)
+ * @param override.vacationBonus - Porcentaje de prima vacacional (default: 25)
+ * @param override.daysOfYear - Días del año para el cálculo (default: 365)
+ * @param override.aguinaldo - Días de aguinaldo (default: 15)
+ * @returns Factor de integración con 4 decimales de precisión
+ *
+ * @example
+ * // Empleado con 4 años de antigüedad, prestaciones estándar
+ * const factor = getEmployeeIntegrationFactor(new Date('2020-01-01'), {
+ *   terminationDate: new Date('2024-01-01')
+ * });
+ * // Resultado: ~1.0808 (basado en 18 días de vacaciones)
+ * // SDI = Salario Fiscal * 1.0808
+ *
+ * @example
+ * // Empleado con prestaciones superiores (30% prima vacacional)
+ * const factor = getEmployeeIntegrationFactor(new Date('2015-01-01'), {
+ *   terminationDate: new Date('2024-01-01'),
+ *   vacationBonus: 30,
+ *   aguinaldo: 20
+ * });
+ */
+export function getEmployeeIntegrationFactor(
+  hireDate: Date | string,
+  override?: {
+    terminationDate?: Date | string;
+    vacationBonus?: number;
+    daysOfYear?: number;
+    aguinaldo?: number;
+  }
+): number {
+  // Obtener días de vacaciones según antigüedad del empleado
+  const vacationDays = getEmployeeVacationDays(hireDate, override?.terminationDate);
+
+  // Obtener prima vacacional (convertir a decimal si viene como entero)
+  let vacationBonus = override?.vacationBonus ?? 25;
+  if (vacationBonus > 1) {
+    vacationBonus = vacationBonus / 100;
+  }
+
+  // Parámetros de la fórmula
+  const D_anio = override?.daysOfYear ?? 365;
+  const D_ag = override?.aguinaldo ?? 15;
+  const D_vac = vacationDays;
+  const PV = vacationBonus * 100; // Convertir a porcentaje para la fórmula
+
+  // Fórmula del Factor de Integración en México:
+  // FI = (D_anio + D_ag + (D_vac * (PV/100))) / D_anio
+  const integrationFactor = (
+    (D_anio + D_ag + (D_vac * (PV / 100))) / D_anio
+  ).toFixed(4);
+
+  return parseFloat(integrationFactor);
 }

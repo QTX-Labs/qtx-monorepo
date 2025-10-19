@@ -116,7 +116,7 @@ function WizardContent() {
 export function FiniquitoWizard() {
   return (
     <WizardProvider>
-      <Card className="w-full max-w-5xl mx-auto">
+      <Card className="w-full">
         <CardHeader>
           <CardTitle>Crear Nuevo Finiquito</CardTitle>
           <CardDescription>

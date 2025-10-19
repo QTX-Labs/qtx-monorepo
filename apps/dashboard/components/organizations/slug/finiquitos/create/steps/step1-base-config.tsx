@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { BorderZone, SalaryFrequency } from '@workspace/database';
@@ -26,6 +27,7 @@ import { Separator } from '@workspace/ui/components/separator';
 
 import { step1BaseConfigSchema, type Step1BaseConfig as Step1BaseConfigType } from '~/lib/finiquitos/schemas/step1-base-config-schema';
 import { calculateFiniquitoComplete } from '~/lib/finiquitos/calculate-finiquito-complete';
+import { getEmployeeVacationDays, getEmployeeIntegrationFactor } from '~/lib/finiquitos/utils';
 import { useWizard } from '../wizard-context';
 
 export function Step1BaseConfig() {
@@ -45,10 +47,11 @@ export function Step1BaseConfig() {
       clientName: '',
       hireDate: new Date(),
       terminationDate: new Date(),
-      fiscalDailySalary: 0,
+      fiscalDailySalary: 278.80, // Default for NO_FRONTERIZA
       integratedDailySalary: 0,
-      salaryFrequency: SalaryFrequency.WEEKLY,
+      integrationFactor: 0,
       borderZone: BorderZone.NO_FRONTERIZA,
+      salaryFrequency: SalaryFrequency.MONTHLY, // Default, solo usado en Complemento
       aguinaldoDays: 15,
       vacationDays: 12,
       vacationPremiumPercentage: 25,
@@ -63,7 +66,48 @@ export function Step1BaseConfig() {
     },
   });
 
+  // Watch relevant fields for auto-calculations
+  const borderZone = form.watch('borderZone');
+  const hireDate = form.watch('hireDate');
+  const terminationDate = form.watch('terminationDate');
+  const aguinaldoDays = form.watch('aguinaldoDays');
+  const vacationPremiumPercentage = form.watch('vacationPremiumPercentage');
   const complementoActivado = form.watch('complementoActivado');
+
+  // AUTO-CÁLCULO 1: Salario Diario Fiscal según Zona Fronteriza
+  // NO_FRONTERIZA: 278.80 | FRONTERIZA: 419.88
+  useEffect(() => {
+    const fiscalSalary = borderZone === BorderZone.FRONTERIZA ? 419.88 : 278.80;
+    form.setValue('fiscalDailySalary', fiscalSalary);
+  }, [borderZone, form]);
+
+  // AUTO-CÁLCULO 2: Días de Vacaciones según Antigüedad (LFT 2023)
+  // Usa getEmployeeVacationDays(hireDate, terminationDate)
+  useEffect(() => {
+    if (hireDate && terminationDate) {
+      const calculatedVacationDays = getEmployeeVacationDays(hireDate, terminationDate);
+      form.setValue('vacationDays', calculatedVacationDays);
+    }
+  }, [hireDate, terminationDate, form]);
+
+  // AUTO-CÁLCULO 3: Salario Diario Integrado y Factor de Integración
+  // SDI = Salario Fiscal × Factor de Integración
+  // Factor de Integración considera: días aguinaldo, días vacaciones, prima vacacional
+  useEffect(() => {
+    if (hireDate && terminationDate) {
+      const integrationFactor = getEmployeeIntegrationFactor(hireDate, {
+        terminationDate,
+        aguinaldo: aguinaldoDays,
+        vacationBonus: vacationPremiumPercentage,
+      });
+
+      const fiscalSalary = borderZone === BorderZone.FRONTERIZA ? 419.88 : 278.80;
+      const integratedSalary = parseFloat((fiscalSalary * integrationFactor).toFixed(2));
+
+      form.setValue('integrationFactor', integrationFactor);
+      form.setValue('integratedDailySalary', integratedSalary);
+    }
+  }, [hireDate, terminationDate, aguinaldoDays, vacationPremiumPercentage, borderZone, form]);
 
   const onSubmit = (data: Step1BaseConfigType) => {
     // Guardar datos del paso 1
@@ -77,7 +121,7 @@ export function Step1BaseConfig() {
       fiscalDailySalary: data.fiscalDailySalary,
       integratedDailySalary: data.integratedDailySalary,
       borderZone: data.borderZone,
-      salaryFrequency: data.salaryFrequency,
+      salaryFrequency: data.salaryFrequency ?? SalaryFrequency.MONTHLY, // Solo usado en Complemento
       aguinaldoDays: data.aguinaldoDays,
       vacationDays: data.vacationDays,
       vacationPremiumPercentage: data.vacationPremiumPercentage,
@@ -100,10 +144,19 @@ export function Step1BaseConfig() {
     });
 
     // Guardar factores en step2Data
+    // NOTA: diasTrabajados y septimoDia se inicializan en 0 para que el usuario los llene manualmente
     updateStep2({
-      factoresFiniquito: calculation.factores.finiquito,
+      factoresFiniquito: {
+        ...calculation.factores.finiquito,
+        diasTrabajados: 0,
+        septimoDia: 0,
+      },
       factoresLiquidacion: calculation.factores.liquidacion,
-      factoresComplemento: calculation.factores.complemento,
+      factoresComplemento: calculation.factores.complemento ? {
+        ...calculation.factores.complemento,
+        diasTrabajados: 0,
+        septimoDia: 0,
+      } : undefined,
     });
 
     // Guardar cálculo en context
@@ -196,7 +249,7 @@ export function Step1BaseConfig() {
               name="empresaRFC"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>RFC de la Empresa</FormLabel>
+                  <FormLabel>RFC de la Empresa *</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="EMP850101XXX" maxLength={13} />
                   </FormControl>
@@ -266,44 +319,6 @@ export function Step1BaseConfig() {
 
             <FormField
               control={form.control}
-              name="fiscalDailySalary"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Salario Diario Fiscal *</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="integratedDailySalary"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Salario Diario Integrado *</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
               name="borderZone"
               render={({ field }) => (
                 <FormItem>
@@ -326,23 +341,71 @@ export function Step1BaseConfig() {
 
             <FormField
               control={form.control}
-              name="salaryFrequency"
+              name="fiscalDailySalary"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Frecuencia de Pago *</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar frecuencia" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value={SalaryFrequency.DAILY}>Diario</SelectItem>
-                      <SelectItem value={SalaryFrequency.WEEKLY}>Semanal</SelectItem>
-                      <SelectItem value={SalaryFrequency.BIWEEKLY}>Quincenal</SelectItem>
-                      <SelectItem value={SalaryFrequency.MONTHLY}>Mensual</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Salario Diario Fiscal</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      disabled
+                      {...field}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      className="bg-muted"
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Auto-calculado según zona fronteriza
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="integratedDailySalary"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Salario Diario Integrado</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      disabled
+                      {...field}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      className="bg-muted"
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Auto-calculado: SDF × Factor de Integración
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="integrationFactor"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Factor de Integración</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.0001"
+                      disabled
+                      {...field}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      className="bg-muted"
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Auto-calculado según prestaciones
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -387,11 +450,15 @@ export function Step1BaseConfig() {
                     <Input
                       type="number"
                       step="1"
+                      disabled
+                      className="bg-muted"
                       {...field}
                       onChange={(e) => field.onChange(parseInt(e.target.value) || 12)}
                     />
                   </FormControl>
-                  <FormDescription>Mínimo legal: 6 días</FormDescription>
+                  <FormDescription>
+                    Auto-calculado según antigüedad
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

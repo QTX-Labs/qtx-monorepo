@@ -47,6 +47,14 @@ export type CalculateFiniquitoInput = {
     otras?: number;
     subsidio?: number;
   };
+
+  // ===== FACTORES MANUALES (OPCIONALES) =====
+  // Permite sobrescribir factores calculados con valores editados por el usuario
+  manualFactors?: {
+    finiquito?: Partial<FactoresFiniquito>;
+    liquidacion?: Partial<FactoresLiquidacion>;
+    complemento?: Partial<FactoresFiniquito>;
+  };
 };
 
 /**

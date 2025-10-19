@@ -38,26 +38,147 @@ import {
   calculateYearsWorked,
   round
 } from './utils';
-import { DECIMAL_PRECISION, MINIMUM_SALARIES } from './constants';
+import { DECIMAL_PRECISION } from './constants';
 
-// Constantes 2025
-const UMA_2025 = 113.14;
-const ISR_RATES_2025: ISRRates = {
-  effectiveDate: new Date('2025-01-01'),
+// ===== CONSTANTES DE PAYROLL 2024-2025 =====
+
+// Tabla ISR 2024 (Mensual)
+const ISR_RATES_2024: ISRRates = {
+  effectiveDate: new Date('2024-01-01'),
   rangeValues: [
-    { lowerLimit: 0.01, upperLimit: 7735.00, fixedFee: 0.00, percentageOverSurplus: 1.92 },
-    { lowerLimit: 7735.01, upperLimit: 65651.07, fixedFee: 148.51, percentageOverSurplus: 6.40 },
-    { lowerLimit: 65651.08, upperLimit: 115375.90, fixedFee: 3855.14, percentageOverSurplus: 10.88 },
-    { lowerLimit: 115375.91, upperLimit: 134119.41, fixedFee: 9265.20, percentageOverSurplus: 16.00 },
-    { lowerLimit: 134119.42, upperLimit: 160577.65, fixedFee: 12264.16, percentageOverSurplus: 17.92 },
-    { lowerLimit: 160577.66, upperLimit: 323862.00, fixedFee: 17005.47, percentageOverSurplus: 21.36 },
-    { lowerLimit: 323862.01, upperLimit: 510451.00, fixedFee: 51883.01, percentageOverSurplus: 23.52 },
-    { lowerLimit: 510451.01, upperLimit: 974535.03, fixedFee: 95768.74, percentageOverSurplus: 30.00 },
-    { lowerLimit: 974535.04, upperLimit: 1299380.04, fixedFee: 234993.95, percentageOverSurplus: 32.00 },
-    { lowerLimit: 1299380.05, upperLimit: 3898140.12, fixedFee: 338944.34, percentageOverSurplus: 34.00 },
-    { lowerLimit: 3898140.13, upperLimit: 999999999.99, fixedFee: 1222522.76, percentageOverSurplus: 35.00 },
+    { lowerLimit: 0.01, upperLimit: 746.04, fixedFee: 0.00, percentageOverSurplus: 1.92 },
+    { lowerLimit: 746.05, upperLimit: 6332.05, fixedFee: 14.32, percentageOverSurplus: 6.40 },
+    { lowerLimit: 6332.06, upperLimit: 11128.01, fixedFee: 371.83, percentageOverSurplus: 10.88 },
+    { lowerLimit: 11128.02, upperLimit: 12935.82, fixedFee: 893.63, percentageOverSurplus: 16.00 },
+    { lowerLimit: 12935.83, upperLimit: 15487.71, fixedFee: 1182.88, percentageOverSurplus: 17.92 },
+    { lowerLimit: 15487.72, upperLimit: 31236.49, fixedFee: 1640.18, percentageOverSurplus: 21.36 },
+    { lowerLimit: 31236.50, upperLimit: 49233.00, fixedFee: 5004.12, percentageOverSurplus: 23.52 },
+    { lowerLimit: 49233.01, upperLimit: 93993.90, fixedFee: 9236.89, percentageOverSurplus: 30.00 },
+    { lowerLimit: 93993.91, upperLimit: 125325.20, fixedFee: 22665.17, percentageOverSurplus: 32.00 },
+    { lowerLimit: 125325.21, upperLimit: 375975.61, fixedFee: 32691.18, percentageOverSurplus: 34.00 },
+    { lowerLimit: 375975.62, upperLimit: 0, fixedFee: 117912.32, percentageOverSurplus: 35.00 },
   ]
 };
+
+// Valores UMA históricos
+const UMA_VALUES = [
+  { value: 103.74, effectiveDate: new Date('2024-01-01') },
+  { value: 108.57, effectiveDate: new Date('2024-02-01') },
+  { value: 113.14, effectiveDate: new Date('2025-02-01') },
+];
+
+// Valores UMI históricos
+const UMI_VALUES = [
+  { value: 96.32, effectiveDate: new Date('2024-01-01') },
+  { value: 100.81, effectiveDate: new Date('2024-02-01') },
+];
+
+// Valores ISN
+const ISN_VALUES = [
+  { value: 1.8, effectiveDate: new Date('2024-01-01T00:00:00.000Z') },
+];
+
+// Cuotas IMSS 2024
+const SOCIAL_COST_FEES_2024 = {
+  effectiveDate: new Date('2024-01-01'),
+  retiro: {
+    umasLimit: 25,
+    workersPercentage: 0,
+    employersPercentage: 2,
+  },
+  infonavit: {
+    umasLimit: 25,
+    workersPercentage: 0,
+    employersPercentage: 5,
+  },
+  cesantiaYVejez: {
+    umasLimit: 25,
+    workersPercentage: 1.125,
+    employersPercentage: 0,
+  },
+  invalidezYVida: {
+    umasLimit: 25,
+    workersPercentage: 0.625,
+    employersPercentage: 1.75,
+  },
+  enfermedadesYMaternidad: {
+    dinero: {
+      umasLimit: 25,
+      workersPercentage: 0.25,
+      employersPercentage: 0.7,
+    },
+    cuotaFija: {
+      umasLimit: 25,
+      workersPercentage: 0,
+      employersPercentage: 20.4,
+    },
+    gastosMedicos: {
+      umasLimit: 25,
+      workersPercentage: 0.375,
+      employersPercentage: 1.05,
+    },
+    cuotaAdicional: {
+      umasLimit: 3,
+      workersPercentage: 0.4,
+      employersPercentage: 1.1,
+    },
+  },
+  guarderiasYPrestacionesSociales: {
+    umasLimit: 25,
+    workersPercentage: 0,
+    employersPercentage: 1,
+  },
+};
+
+// Cesantía y Vejez 2024
+const CESANTIA_VEJEZ_FEES_2024 = {
+  effectiveDate: new Date('2024-01-01'),
+  rangeValues: [
+    { lowerLimit: 0, upperLimit: 1, percentage: 3.15 },
+    { lowerLimit: 1.01, upperLimit: 1.5, percentage: 3.413 },
+    { lowerLimit: 1.51, upperLimit: 2.15, percentage: 4 },
+    { lowerLimit: 2.16, upperLimit: 2.5, percentage: 4.353 },
+    { lowerLimit: 2.51, upperLimit: 3, percentage: 4.588 },
+    { lowerLimit: 3.01, upperLimit: 3.5, percentage: 4.756 },
+    { lowerLimit: 3.51, upperLimit: 4, percentage: 4.882 },
+    { lowerLimit: 4.01, upperLimit: 0, percentage: 5.331 },
+  ],
+};
+
+// Cesantía y Vejez 2025
+const CESANTIA_VEJEZ_FEES_2025 = {
+  effectiveDate: new Date('2025-01-01'),
+  rangeValues: [
+    { lowerLimit: 0, upperLimit: 1, percentage: 3.15 },
+    { lowerLimit: 1.01, upperLimit: 1.5, percentage: 3.544 },
+    { lowerLimit: 1.51, upperLimit: 2.15, percentage: 4.426 },
+    { lowerLimit: 2.16, upperLimit: 2.5, percentage: 4.954 },
+    { lowerLimit: 2.51, upperLimit: 3, percentage: 5.307 },
+    { lowerLimit: 3.01, upperLimit: 3.5, percentage: 5.559 },
+    { lowerLimit: 3.51, upperLimit: 4, percentage: 5.747 },
+    { lowerLimit: 4.01, upperLimit: 0, percentage: 6.422 },
+  ],
+};
+
+// Prima de Riesgo de Trabajo 2025
+const LABOR_RISK_PREMIUM_2025 = {
+  percentage: 1.65325,
+  effectiveDate: new Date('2025-03-01T00:00:00.000Z'),
+};
+
+// Salarios Mínimos
+const MINIMUM_SALARY_VALUES = [
+  {
+    effectiveDate: '2024-01-01T06:00:00.000Z',
+    generalSalary: 248.93,
+    borderZoneSalary: 374.89,
+  },
+  {
+    effectiveDate: '2025-01-01T06:00:00.000Z',
+    generalSalary: 278.8,
+    borderZoneSalary: 419.88,
+  },
+];
 
 // Configuración por defecto de PayrollSettings
 const DEFAULT_PAYROLL_SETTINGS: PayrollSettings = {
@@ -79,21 +200,15 @@ const DEFAULT_PAYROLL_SETTINGS: PayrollSettings = {
 
 // PayrollConstants por defecto
 const DEFAULT_PAYROLL_CONSTANTS: PayrollConstants = {
-  minimumSalaryValues: [
-    {
-      effectiveDate: '2025-01-01',
-      generalSalary: MINIMUM_SALARIES[BorderZone.NO_FRONTERIZA],
-      borderZoneSalary: MINIMUM_SALARIES[BorderZone.FRONTERIZA],
-    }
-  ],
-  umaValues: [{ effectiveDate: new Date('2025-01-01'), value: UMA_2025 }],
-  umiValues: [{ effectiveDate: new Date('2025-01-01'), value: 100.81 }],
-  isnValues: [],
-  socialCostFees: [],
-  cesantiaVejezFees: [],
-  laborRiskPremiums: [],
-  isrRates: [ISR_RATES_2025],
-};
+  isrRates: [ISR_RATES_2024],
+  isnValues: ISN_VALUES,
+  umaValues: UMA_VALUES,
+  umiValues: UMI_VALUES,
+  socialCostFees: [SOCIAL_COST_FEES_2024],
+  cesantiaVejezFees: [CESANTIA_VEJEZ_FEES_2024, CESANTIA_VEJEZ_FEES_2025],
+  laborRiskPremiums: [LABOR_RISK_PREMIUM_2025],
+  minimumSalaryValues: MINIMUM_SALARY_VALUES,
+}
 
 /**
  * Calcula un finiquito completo integrando ambas calculadoras
@@ -141,26 +256,33 @@ export function calculateFiniquitoComplete(
 
   // ===== PASO 2: CALCULAR FACTORES ADICIONALES =====
 
-  const diasTrabajados = calculateDaysWorked(input.hireDate, input.terminationDate);
-  const septimoDia = round(diasTrabajados / 7, DECIMAL_PRECISION.FACTOR);
+  const diasTrabajadosCalculado = calculateDaysWorked(input.hireDate, input.terminationDate);
+  const septimoDiaCalculado = round(diasTrabajadosCalculado / 7, DECIMAL_PRECISION.FACTOR);
+
+  // Sobrescribir con factores manuales si existen (del Step 2)
+  const diasTrabajados = input.manualFactors?.finiquito?.diasTrabajados ?? diasTrabajadosCalculado;
+  const septimoDia = input.manualFactors?.finiquito?.septimoDia ?? septimoDiaCalculado;
+  const vacaciones = input.manualFactors?.finiquito?.vacaciones ?? resultFactores.fiscal.proportionalSettlementConcepts.vacations;
+  const primaVacacional = input.manualFactors?.finiquito?.primaVacacional ?? resultFactores.fiscal.proportionalSettlementConcepts.vacationBonus;
+  const aguinaldo = input.manualFactors?.finiquito?.aguinaldo ?? resultFactores.fiscal.proportionalSettlementConcepts.christmasBonus;
 
   // ===== PASO 3: PREPARAR INPUT PARA CALCULADORA DE FINIQUITOS =====
 
   const conceptosFiniquito: ConceptosFiniquito = {
     diasTrabajados: diasTrabajados,
     septimoDia: septimoDia,
-    vacaciones: resultFactores.fiscal.proportionalSettlementConcepts.vacations,
+    vacaciones: vacaciones,
     vacacionesPendientes: resultFactores.fiscal.proportionalSettlementConcepts.pendingVacations || 0,
-    primaVacacional: resultFactores.fiscal.proportionalSettlementConcepts.vacationBonus,
+    primaVacacional: primaVacacional,
     primaVacacionalPendiente: resultFactores.fiscal.proportionalSettlementConcepts.pendingVacationBonus || 0,
-    aguinaldo: resultFactores.fiscal.proportionalSettlementConcepts.christmasBonus,
+    aguinaldo: aguinaldo,
     diasRetroactivosSueldo: 0, // No lo usamos
   };
 
   const conceptosLiquidacion: ConceptosLiquidacion | undefined = input.liquidacion?.enabled ? {
-    indemnizacionVeinteDias: resultFactores.fiscal.proportionalSeveranceConcepts?.twentyDaysSeverance || 0,
-    indemnizacionNoventaDias: resultFactores.fiscal.proportionalSeveranceConcepts?.ninetyDaysSeverance || 0,
-    primaAntiguedad: resultFactores.fiscal.proportionalSeveranceConcepts?.seniorityBonus || 0,
+    indemnizacionVeinteDias: input.manualFactors?.liquidacion?.indemnizacion20Dias ?? (resultFactores.fiscal.proportionalSeveranceConcepts?.twentyDaysSeverance || 0),
+    indemnizacionNoventaDias: input.manualFactors?.liquidacion?.indemnizacion90Dias ?? (resultFactores.fiscal.proportionalSeveranceConcepts?.ninetyDaysSeverance || 0),
+    primaAntiguedad: input.manualFactors?.liquidacion?.primaAntiguedad ?? (resultFactores.fiscal.proportionalSeveranceConcepts?.seniorityBonus || 0),
   } : undefined;
 
   const factoresCalculo: FactoresCalculoFiniquitoLiquidacion = {
@@ -205,17 +327,24 @@ export function calculateFiniquitoComplete(
   // Factores de complemento si está activado
   let factoresComplemento: FactoresCalculoFiniquitoLiquidacion | undefined;
   if (input.complemento?.enabled && resultFactores.complement) {
-    const diasTrabajadosComplemento = calculateDaysWorked(input.complemento.realHireDate, input.terminationDate);
-    const septimoDiaComplemento = round(diasTrabajadosComplemento / 7, DECIMAL_PRECISION.FACTOR);
+    const diasTrabajadosComplementoCalculado = calculateDaysWorked(input.complemento.realHireDate, input.terminationDate);
+    const septimoDiaComplementoCalculado = round(diasTrabajadosComplementoCalculado / 7, DECIMAL_PRECISION.FACTOR);
+
+    // Sobrescribir con factores manuales si existen (del Step 2)
+    const diasTrabajadosComplemento = input.manualFactors?.complemento?.diasTrabajados ?? diasTrabajadosComplementoCalculado;
+    const septimoDiaComplemento = input.manualFactors?.complemento?.septimoDia ?? septimoDiaComplementoCalculado;
+    const vacacionesComplemento = input.manualFactors?.complemento?.vacaciones ?? resultFactores.complement.proportionalSettlementConcepts.vacations;
+    const primaVacacionalComplemento = input.manualFactors?.complemento?.primaVacacional ?? resultFactores.complement.proportionalSettlementConcepts.vacationBonus;
+    const aguinaldoComplemento = input.manualFactors?.complemento?.aguinaldo ?? resultFactores.complement.proportionalSettlementConcepts.christmasBonus;
 
     const conceptosFiniquitoComplemento: ConceptosFiniquito = {
       diasTrabajados: diasTrabajadosComplemento,
       septimoDia: septimoDiaComplemento,
-      vacaciones: resultFactores.complement.proportionalSettlementConcepts.vacations,
+      vacaciones: vacacionesComplemento,
       vacacionesPendientes: resultFactores.complement.proportionalSettlementConcepts.pendingVacations || 0,
-      primaVacacional: resultFactores.complement.proportionalSettlementConcepts.vacationBonus,
+      primaVacacional: primaVacacionalComplemento,
       primaVacacionalPendiente: resultFactores.complement.proportionalSettlementConcepts.pendingVacationBonus || 0,
-      aguinaldo: resultFactores.complement.proportionalSettlementConcepts.christmasBonus,
+      aguinaldo: aguinaldoComplemento,
       diasRetroactivosSueldo: 0,
     };
 
@@ -312,8 +441,8 @@ export function calculateFiniquitoComplete(
 
     deducciones: {
       isrTotal: (resultCalculation.calculoISR.isrFiniquito.totalImpuesto || 0) +
-                (resultCalculation.calculoISR.isrArt174?.totalImpuesto || 0) +
-                (resultCalculation.calculoISR.isrIndemnizacion.totalImpuesto || 0),
+        (resultCalculation.calculoISR.isrArt174?.totalImpuesto || 0) +
+        (resultCalculation.calculoISR.isrIndemnizacion.totalImpuesto || 0),
       infonavit: input.deduccionesManuales?.infonavit || 0,
       fonacot: input.deduccionesManuales?.fonacot || 0,
       otras: input.deduccionesManuales?.otras || 0,
@@ -338,8 +467,8 @@ export function calculateFiniquitoComplete(
         neto: resultCalculation.complementoNeto || 0,
       } : undefined,
       totalAPagar: resultCalculation.finiquito.neto +
-                   resultCalculation.liquidacion.neto +
-                   (resultCalculation.complementoNeto || 0),
+        resultCalculation.liquidacion.neto +
+        (resultCalculation.complementoNeto || 0),
     },
 
     metadata: {

@@ -27,10 +27,9 @@ export const step1BaseConfigSchema = z.object({
 
   // Datos de la Empresa
   empresaName: z.string().min(1, 'El nombre de la empresa es requerido'),
-  empresaRFC: z.union([
-    z.string().regex(/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/, 'RFC inválido. Formato: ABC123456XXX (12-13 caracteres)'),
-    z.literal('')
-  ]).optional(),
+  empresaRFC: z.string()
+    .min(1, 'El RFC de la empresa es requerido')
+    .regex(/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/, 'RFC inválido. Formato: ABC123456XXX (12-13 caracteres)'),
   empresaMunicipio: z.string().optional(),
   empresaEstado: z.string().optional(),
   clientName: z.string().min(1, 'El nombre del cliente es requerido'),
@@ -38,11 +37,21 @@ export const step1BaseConfigSchema = z.object({
   // ===== FACTORES FISCALES =====
   hireDate: z.coerce.date({ required_error: 'La fecha de ingreso fiscal es requerida' }),
   terminationDate: z.coerce.date({ required_error: 'La fecha de baja es requerida' }),
-  fiscalDailySalary: z.coerce.number().positive('El salario diario fiscal debe ser mayor a 0'),
-  integratedDailySalary: z.coerce.number().positive('El salario diario integrado debe ser mayor a 0'),
-  salaryFrequency: z.nativeEnum(SalaryFrequency, {
-    required_error: 'La frecuencia de pago es requerida'
-  }),
+
+  // Salario Diario Fiscal - Auto-calculado según zona fronteriza
+  // NO_FRONTERIZA: 278.80 | FRONTERIZA: 419.88
+  fiscalDailySalary: z.coerce.number(),
+
+  // Salario Diario Integrado - Auto-calculado usando factor de integración
+  // SDI = Salario Fiscal × Factor de Integración
+  integratedDailySalary: z.coerce.number(),
+
+  // Factor de Integración - Auto-calculado (solo para mostrar en UI)
+  integrationFactor: z.coerce.number().optional(),
+
+  // Frecuencia de Pago - Solo usado en la sección de Complemento
+  salaryFrequency: z.nativeEnum(SalaryFrequency).optional(),
+
   borderZone: z.nativeEnum(BorderZone, {
     required_error: 'La zona fronteriza es requerida'
   }),
@@ -51,8 +60,10 @@ export const step1BaseConfigSchema = z.object({
   aguinaldoDays: z.coerce.number()
     .min(15, 'Los días de aguinaldo no pueden ser menores a 15 (mínimo de ley)')
     .default(15),
+
+  // Días de Vacaciones - Auto-calculado según antigüedad (LFT 2023)
+  // Se calcula con getEmployeeVacationDays(hireDate, terminationDate)
   vacationDays: z.coerce.number()
-    .min(6, 'Los días de vacaciones no pueden ser menores a 6 (mínimo de ley)')
     .default(12),
   vacationPremiumPercentage: z.coerce.number()
     .min(25, 'La prima vacacional no puede ser menor a 25% (mínimo de ley)')
