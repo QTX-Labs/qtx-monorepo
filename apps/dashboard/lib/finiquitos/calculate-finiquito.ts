@@ -22,7 +22,7 @@ import {
   round
 } from './utils';
 import { calculatePerceptions } from './calculate-perceptions';
-import { calculateDeductions, calculateISR } from './calculate-deductions';
+import { calculateDeductions, calculateISRComplete } from './calculate-deductions';
 import { DEFAULT_DAYS_FACTOR, DEFAULT_PRESTACIONES, DECIMAL_PRECISION } from './constants';
 
 /**
@@ -131,9 +131,40 @@ export function calculateFiniquito(input: FiniquitoInput): FiniquitoCalculationR
   });
 
   // Calcular deducciones FISCALES
-  const fiscalISR = input.isrAmount ?? calculateISR(fiscalPerceptions.totalPerceptions);
+  // Si el usuario proporcionó ISR manual, usarlo; de lo contrario, calcularlo automáticamente
+  let isrFiniquito = 0;
+  let isrArt174 = 0;
+  let isrIndemnizacion = 0;
+
+  if (input.isrFiniquitoAmount !== undefined || input.isrArt174Amount !== undefined || input.isrIndemnizacionAmount !== undefined) {
+    // Usar ISR manual proporcionado por el usuario
+    isrFiniquito = input.isrFiniquitoAmount ?? 0;
+    isrArt174 = input.isrArt174Amount ?? 0;
+    isrIndemnizacion = input.isrIndemnizacionAmount ?? 0;
+  } else {
+    // Calcular ISR automáticamente usando la calculadora
+    const isrCalculation = calculateISRComplete({
+      daysWorked: fiscalDaysWorked,
+      fiscalDailySalary,
+      workedDaysAmount: fiscalPerceptions.workedDaysAmount,
+      vacationAmount: fiscalPerceptions.vacationAmount,
+      pendingVacationAmount: fiscalPerceptions.pendingVacationAmount,
+      aguinaldoAmount: fiscalPerceptions.aguinaldoAmount,
+      vacationPremiumAmount: fiscalPerceptions.vacationPremiumAmount,
+      pendingPremiumAmount: fiscalPerceptions.pendingPremiumAmount,
+      severanceAmount: fiscalPerceptions.severanceAmount,
+      seniorityPremiumAmount: fiscalPerceptions.seniorityPremiumAmount,
+    });
+
+    isrFiniquito = isrCalculation.isrFiniquito;
+    isrArt174 = isrCalculation.isrArt174;
+    isrIndemnizacion = isrCalculation.isrIndemnizacion;
+  }
+
   const fiscalDeductions = calculateDeductions({
-    isr: fiscalISR,
+    isrFiniquito,
+    isrArt174,
+    isrIndemnizacion,
     subsidy: input.subsidyAmount,
     infonavit: input.infonavitAmount,
     fonacot: input.fonacotAmount,
@@ -142,7 +173,9 @@ export function calculateFiniquito(input: FiniquitoInput): FiniquitoCalculationR
 
   // Calcular deducciones REALES (generalmente $0)
   const realDeductions = calculateDeductions({
-    isr: 0,
+    isrFiniquito: 0,
+    isrArt174: 0,
+    isrIndemnizacion: 0,
     subsidy: 0,
     infonavit: 0,
     fonacot: 0,

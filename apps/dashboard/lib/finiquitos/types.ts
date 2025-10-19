@@ -41,8 +41,11 @@ export interface FiniquitoInput {
   // Prima de antigüedad (días)
   seniorityPremiumDays?: number;
 
-  // Deducciones
-  isrAmount?: number;
+  // Deducciones - ISR (calculados automáticamente, pero editables)
+  isrFiniquitoAmount?: number;
+  isrArt174Amount?: number;
+  isrIndemnizacionAmount?: number;
+  // Otras deducciones
   subsidyAmount?: number;
   infonavitAmount?: number;
   fonacotAmount?: number;
@@ -77,7 +80,9 @@ export interface PerceptionsCalculation {
  * Resultado del cálculo de deducciones
  */
 export interface DeductionsCalculation {
-  isr: number;
+  isrFiniquito: number;
+  isrArt174: number;
+  isrIndemnizacion: number;
   subsidy: number;
   infonavit: number;
   fonacot: number;

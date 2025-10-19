@@ -35,7 +35,9 @@ export const createFiniquito = authOrganizationActionClient
       gratificationPesos: parsedInput.gratificationPesos,
       severanceDays: parsedInput.severanceDays,
       seniorityPremiumDays: parsedInput.seniorityPremiumDays,
-      isrAmount: parsedInput.isrAmount,
+      isrFiniquitoAmount: parsedInput.isrFiniquitoAmount,
+      isrArt174Amount: parsedInput.isrArt174Amount,
+      isrIndemnizacionAmount: parsedInput.isrIndemnizacionAmount,
       subsidyAmount: parsedInput.subsidyAmount,
       infonavitAmount: parsedInput.infonavitAmount,
       otherDeductions: parsedInput.otherDeductions
@@ -118,7 +120,9 @@ export const createFiniquito = authOrganizationActionClient
         realGratificationAmount: calculation.realPerceptions.gratificationAmount,
         realTotalPerceptions: calculation.realPerceptions.totalPerceptions,
         // Deducciones Fiscales
-        fiscalISR: calculation.deductions.isr,
+        fiscalISRFiniquito: calculation.deductions.isrFiniquito,
+        fiscalISRArt174: calculation.deductions.isrArt174,
+        fiscalISRIndemnizacion: calculation.deductions.isrIndemnizacion,
         fiscalIMSS: 0,
         fiscalSubsidy: calculation.deductions.subsidy,
         fiscalInfonavit: calculation.deductions.infonavit,

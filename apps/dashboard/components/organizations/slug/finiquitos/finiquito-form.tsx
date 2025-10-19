@@ -114,7 +114,9 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
       enableLiquidation: false,
       severanceDays: 0,
       seniorityPremiumDays: 0,
-      isrAmount: 0,
+      isrFiniquitoAmount: 0,
+      isrArt174Amount: 0,
+      isrIndemnizacionAmount: 0,
       subsidyAmount: 0,
       infonavitAmount: 0,
       fonacotAmount: 0,
@@ -159,7 +161,9 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
   const gratificationPesos = form.watch('gratificationPesos');
   const severanceDays = form.watch('severanceDays');
   const seniorityPremiumDays = form.watch('seniorityPremiumDays');
-  const isrAmount = form.watch('isrAmount');
+  const isrFiniquitoAmount = form.watch('isrFiniquitoAmount');
+  const isrArt174Amount = form.watch('isrArt174Amount');
+  const isrIndemnizacionAmount = form.watch('isrIndemnizacionAmount');
   const subsidyAmount = form.watch('subsidyAmount');
   const infonavitAmount = form.watch('infonavitAmount');
   const fonacotAmount = form.watch('fonacotAmount');
@@ -181,7 +185,9 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
   const debouncedGratificationPesos = useDebounce(gratificationPesos, 300);
   const debouncedSeveranceDays = useDebounce(severanceDays, 300);
   const debouncedSeniorityPremiumDays = useDebounce(seniorityPremiumDays, 300);
-  const debouncedIsrAmount = useDebounce(isrAmount, 300);
+  const debouncedIsrFiniquitoAmount = useDebounce(isrFiniquitoAmount, 300);
+  const debouncedIsrArt174Amount = useDebounce(isrArt174Amount, 300);
+  const debouncedIsrIndemnizacionAmount = useDebounce(isrIndemnizacionAmount, 300);
   const debouncedSubsidyAmount = useDebounce(subsidyAmount, 300);
   const debouncedInfonavitAmount = useDebounce(infonavitAmount, 300);
   const debouncedFonacotAmount = useDebounce(fonacotAmount, 300);
@@ -259,7 +265,9 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
           gratificationPesos: debouncedGratificationPesos,
           severanceDays: debouncedSeveranceDays,
           seniorityPremiumDays: debouncedSeniorityPremiumDays,
-          isrAmount: debouncedIsrAmount,
+          isrFiniquitoAmount: debouncedIsrFiniquitoAmount,
+          isrArt174Amount: debouncedIsrArt174Amount,
+          isrIndemnizacionAmount: debouncedIsrIndemnizacionAmount,
           subsidyAmount: debouncedSubsidyAmount,
           infonavitAmount: debouncedInfonavitAmount,
           fonacotAmount: debouncedFonacotAmount,
@@ -297,7 +305,9 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
     debouncedGratificationPesos,
     debouncedSeveranceDays,
     debouncedSeniorityPremiumDays,
-    debouncedIsrAmount,
+    debouncedIsrFiniquitoAmount,
+    debouncedIsrArt174Amount,
+    debouncedIsrIndemnizacionAmount,
     debouncedSubsidyAmount,
     debouncedInfonavitAmount,
     debouncedFonacotAmount,
@@ -1212,10 +1222,10 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                   <div className="grid gap-6 md:grid-cols-2">
                     <FormField
                       control={form.control}
-                      name="isrAmount"
+                      name="isrFiniquitoAmount"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>ISR</FormLabel>
+                          <FormLabel>ISR Finiquito</FormLabel>
                           <FormControl>
                             <Input
                               type="number"
@@ -1225,6 +1235,55 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                               onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                             />
                           </FormControl>
+                          <FormDescription>
+                            ISR sobre días trabajados, vacaciones y 7º día
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="isrArt174Amount"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>ISR Art. 174</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              placeholder="0.00"
+                              {...field}
+                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            ISR sobre aguinaldo y prima vacacional
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="isrIndemnizacionAmount"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>ISR Indemnización</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              placeholder="0.00"
+                              {...field}
+                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            ISR sobre indemnización (solo si aplica)
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}

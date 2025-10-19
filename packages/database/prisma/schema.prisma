@@ -664,7 +664,9 @@ model Finiquito {
   realTotalPerceptions        Decimal           @db.Decimal(12, 2)
 
   // Deducciones
-  fiscalISR                   Decimal           @db.Decimal(12, 2) @default(0)
+  fiscalISRFiniquito          Decimal           @db.Decimal(12, 2) @default(0)
+  fiscalISRArt174             Decimal           @db.Decimal(12, 2) @default(0)
+  fiscalISRIndemnizacion      Decimal           @db.Decimal(12, 2) @default(0)
   fiscalIMSS                  Decimal           @db.Decimal(12, 2) @default(0)
   fiscalSubsidy               Decimal           @db.Decimal(12, 2) @default(0)
   fiscalInfonavit             Decimal           @db.Decimal(12, 2) @default(0)

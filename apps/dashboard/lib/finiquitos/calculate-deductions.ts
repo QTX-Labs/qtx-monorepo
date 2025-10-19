@@ -5,17 +5,38 @@
 import type { DeductionsCalculation } from './types';
 import { round } from './utils';
 import { DECIMAL_PRECISION } from './constants';
-import { CalculadoraFiniquitoLiquidacion, ISRCalculator } from './calculadora-finiquitos/interface';
-import { ImplementationV1 } from './calculadora-finiquitos/implementation';
 import { ISRCalculatorImpl } from './calculadora-isr/implementation';
-import { ISRRates, ResultadoISRFiniquitoLiquidacion } from './calculadora-finiquitos/models';
+import { ISRRates } from './calculadora-finiquitos/models';
 
 export interface DeductionsInput {
-    isr?: number;
+    isrFiniquito?: number;
+    isrArt174?: number;
+    isrIndemnizacion?: number;
     subsidy?: number;
     infonavit?: number;
     fonacot?: number;
     other?: number;
+}
+
+export interface ISRCalculationInput {
+    // Datos del empleado
+    daysWorked: number;
+    fiscalDailySalary: number;
+
+    // Percepciones del finiquito
+    workedDaysAmount: number;
+    vacationAmount: number;
+    pendingVacationAmount: number;
+    aguinaldoAmount: number;
+    vacationPremiumAmount: number;
+    pendingPremiumAmount: number;
+
+    // Indemnización (solo si está activa)
+    severanceAmount?: number;
+    seniorityPremiumAmount?: number;
+
+    // Otras percepciones gravadas
+    otherTaxablePerceptions?: number;
 }
 
 /**
@@ -26,7 +47,9 @@ export interface DeductionsInput {
  */
 export function calculateDeductions(input: DeductionsInput = {}): DeductionsCalculation {
     const {
-        isr = 0,
+        isrFiniquito = 0,
+        isrArt174 = 0,
+        isrIndemnizacion = 0,
         subsidy = 0,
         infonavit = 0,
         fonacot = 0,
@@ -34,12 +57,14 @@ export function calculateDeductions(input: DeductionsInput = {}): DeductionsCalc
     } = input;
 
     const totalDeductions = round(
-        isr + subsidy + infonavit + fonacot + other,
+        isrFiniquito + isrArt174 + isrIndemnizacion + subsidy + infonavit + fonacot + other,
         DECIMAL_PRECISION.MONEY
     );
 
     return {
-        isr: round(isr, DECIMAL_PRECISION.MONEY),
+        isrFiniquito: round(isrFiniquito, DECIMAL_PRECISION.MONEY),
+        isrArt174: round(isrArt174, DECIMAL_PRECISION.MONEY),
+        isrIndemnizacion: round(isrIndemnizacion, DECIMAL_PRECISION.MONEY),
         subsidy: round(subsidy, DECIMAL_PRECISION.MONEY),
         infonavit: round(infonavit, DECIMAL_PRECISION.MONEY),
         fonacot: round(fonacot, DECIMAL_PRECISION.MONEY),
@@ -49,50 +74,96 @@ export function calculateDeductions(input: DeductionsInput = {}): DeductionsCalc
 }
 
 /**
- * Calcula ISR simplificado
+ * Calcula los 3 tipos de ISR para finiquitos
  *
- * NOTA: Esta es una implementación simplificada.
- * Para cálculo real se requiere tabla de ISR vigente.
+ * - ISR Finiquito: Gravado sobre días trabajados, vacaciones, 7º día
+ * - ISR Art 174: Gravado sobre aguinaldo y prima vacacional
+ * - ISR Indemnización: Gravado sobre indemnización (solo si hay indemnización)
+ */
+export function calculateISRComplete(input: ISRCalculationInput): {
+    isrFiniquito: number;
+    isrArt174: number;
+    isrIndemnizacion: number;
+} {
+    const isrCalculator = new ISRCalculatorImpl();
+
+    // Helper para crear objetos Perception con base gravable = monto total (simplificado)
+    const createPerception = (amount: number, quantity: number = 0): any => ({
+        totalQuantity: quantity,
+        totalTaxBase: amount, // Por ahora, todo es gravable (simplificado)
+        totalExemptBase: 0,
+        totalAmount: amount,
+        detail: []
+    });
+
+    // 1. ISR Finiquito (días trabajados, vacaciones, 7º día)
+    let isrFiniquito = 0;
+    try {
+        const resultFiniquito = isrCalculator.calcularISRFiniquito({
+            diasTrabajados: createPerception(input.workedDaysAmount, input.daysWorked),
+            septimoDia: createPerception(0, 0), // 7º día incluido en días trabajados
+            vacaciones: createPerception(input.vacationAmount),
+            vacacionesPendientes: createPerception(input.pendingVacationAmount),
+            sueldoDiario: input.fiscalDailySalary,
+            otrasPercepciones: [],
+            tablaISR: TABLA_ISR_ANUAL,
+        });
+        isrFiniquito = resultFiniquito?.totalImpuesto || 0;
+    } catch (error) {
+        console.error('Error calculating ISR Finiquito:', error);
+        isrFiniquito = 0;
+    }
+
+    // 2. ISR Art 174 (aguinaldo y prima vacacional)
+    let isrArt174 = 0;
+    try {
+        const resultArt174 = isrCalculator.calcularISRArt174({
+            aguinaldo: createPerception(input.aguinaldoAmount),
+            primaVacacional: createPerception(input.vacationPremiumAmount),
+            primaVacacionalPendiente: createPerception(input.pendingPremiumAmount),
+            sueldoDiario: input.fiscalDailySalary,
+            tablaISR: TABLA_ISR_ANUAL,
+        });
+        isrArt174 = resultArt174?.totalImpuesto || 0;
+    } catch (error) {
+        console.error('Error calculating ISR Art 174:', error);
+        isrArt174 = 0;
+    }
+
+    // 3. ISR Indemnización (solo si hay indemnización)
+    let isrIndemnizacion = 0;
+    if ((input.severanceAmount || 0) > 0 || (input.seniorityPremiumAmount || 0) > 0) {
+        try {
+            const resultIndemnizacion = isrCalculator.calcularISRArt93({
+                indemnizacionVeinteDias: createPerception(0), // Placeholder
+                indemnizacionNoventaDias: createPerception(input.severanceAmount || 0),
+                primaAntiguedad: createPerception(input.seniorityPremiumAmount || 0),
+                sueldoDiario: input.fiscalDailySalary,
+                tablaISR: TABLA_ISR_ANUAL,
+            });
+            isrIndemnizacion = resultIndemnizacion?.totalImpuesto || 0;
+        } catch (error) {
+            console.error('Error calculating ISR Indemnización:', error);
+            isrIndemnizacion = 0;
+        }
+    }
+
+    return {
+        isrFiniquito: round(isrFiniquito, DECIMAL_PRECISION.MONEY),
+        isrArt174: round(isrArt174, DECIMAL_PRECISION.MONEY),
+        isrIndemnizacion: round(isrIndemnizacion, DECIMAL_PRECISION.MONEY),
+    };
+}
+
+/**
+ * Calcula ISR simplificado (legacy - mantener por compatibilidad)
  *
- * Por ahora retorna 0 o un valor muy pequeño como en el ejemplo del cliente
+ * @deprecated Usar calculateISRComplete en su lugar
  */
 export function calculateISR(totalPerceptions: number): number {
-
-    const isrCalculator: ISRCalculator = new ISRCalculatorImpl();
-
-    // const calculoISR: ResultadoISRFiniquitoLiquidacion = {
-    //   isrFiniquito: isrCalculator.calcularISRFiniquito({
-    //     diasTrabajados: percepcionesFiniquito.diasTrabajados,
-    //     septimoDia: percepcionesFiniquito.septimoDia,
-    //     vacaciones: percepcionesFiniquito.vacaciones,
-    //     vacacionesPendientes: percepcionesFiniquito.vacacionesPendientes,
-    //     sueldoDiario: input.factoresCalculo.salarioDiario,
-    //     otrasPercepciones: input.factoresCalculo.otrasPercepciones,
-    //     tablaISR: TABLA_ISR_ANUAL,
-    //   }),
-    //   isrArt174: isrCalculator.calcularISRArt174({
-    //     primaVacacional: percepcionesFiniquito.primaVacacional,
-    //     primaVacacionalPendiente:
-    //       percepcionesFiniquito.primaVacacionalPendiente,
-    //     aguinaldo: percepcionesFiniquito.aguinaldo,
-    //     sueldoDiario: input.factoresCalculo.salarioDiario,
-    //     tablaISR: TABLA_ISR_ANUAL,
-    //   }),
-    //   isrIndemnizacion: isrCalculator.calcularISRArt93({
-    //     indemnizacionVeinteDias:
-    //       percepcionesLiquidacion.indemnizacionVeinteDias,
-    //     indemnizacionNoventaDias:
-    //       percepcionesLiquidacion.indemnizacionNoventaDias,
-    //     primaAntiguedad: percepcionesLiquidacion.primaAntiguedad,
-    //     sueldoDiario: input.factoresCalculo.salarioDiario,
-    //     tablaISR: TABLA_ISR_ANUAL,
-    //   }),
-    // };
-
     if (totalPerceptions < 1000) {
         return round(0.50, DECIMAL_PRECISION.MONEY);
     }
-
     return 0;
 }
 
@@ -162,7 +233,7 @@ const TABLA_ISR_ANUAL: ISRRates = {
         {
             "fixedFee": 1414947.85,
             "lowerLimit": 4511707.38,
-            "upperLimit": "En adelante",
+            "upperLimit": 999999999,
             "percentageOverSurplus": 35
         }
     ]

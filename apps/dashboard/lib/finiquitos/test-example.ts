@@ -73,7 +73,9 @@ export function runTestExample() {
   console.log(`   TOTAL REAL: $${result.realPerceptions.totalPerceptions.toFixed(2)}\n`);
 
   console.log('📉 DEDUCCIONES FISCAL:');
-  console.log(`   ISR: $${result.deductions.isr.toFixed(2)}`);
+  console.log(`   ISR Finiquito: $${result.deductions.isrFiniquito.toFixed(2)}`);
+  console.log(`   ISR Art 174: $${result.deductions.isrArt174.toFixed(2)}`);
+  console.log(`   ISR Indemnización: $${result.deductions.isrIndemnizacion.toFixed(2)}`);
   console.log(`   TOTAL DEDUCCIONES: $${result.deductions.totalDeductions.toFixed(2)}\n`);
 
   console.log('💵 NETOS:');

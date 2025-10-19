@@ -65,8 +65,11 @@ const finiquitoBaseSchema = z.object({
   severanceDays: z.coerce.number().nonnegative().default(0),
   seniorityPremiumDays: z.coerce.number().nonnegative().default(0),
 
-  // Deducciones
-  isrAmount: z.coerce.number().nonnegative().default(0),
+  // Deducciones - ISR (calculados automáticamente, pero editables)
+  isrFiniquitoAmount: z.coerce.number().nonnegative().default(0),
+  isrArt174Amount: z.coerce.number().nonnegative().default(0),
+  isrIndemnizacionAmount: z.coerce.number().nonnegative().default(0),
+  // Otras deducciones
   subsidyAmount: z.coerce.number().nonnegative().default(0),
   infonavitAmount: z.coerce.number().nonnegative().default(0),
   fonacotAmount: z.coerce.number().nonnegative().default(0),

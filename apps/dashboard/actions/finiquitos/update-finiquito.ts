@@ -51,9 +51,10 @@ export const updateFiniquito = authOrganizationActionClient
         gratificationDays: data.gratificationDays ?? (existing.gratificationDays ? Number(existing.gratificationDays) : undefined),
         gratificationPesos: data.gratificationPesos ?? (existing.gratificationPesos ? Number(existing.gratificationPesos) : undefined),
         severanceDays: data.severanceDays ?? 0,
-        seniorityPremiumDays:
-          data.seniorityPremiumDays ?? 0,
-        isrAmount: data.isrAmount ?? Number(existing.fiscalISR),
+        seniorityPremiumDays: data.seniorityPremiumDays ?? 0,
+        isrFiniquitoAmount: data.isrFiniquitoAmount ?? Number(existing.fiscalISRFiniquito),
+        isrArt174Amount: data.isrArt174Amount ?? Number(existing.fiscalISRArt174),
+        isrIndemnizacionAmount: data.isrIndemnizacionAmount ?? Number(existing.fiscalISRIndemnizacion),
         subsidyAmount: data.subsidyAmount ?? Number(existing.fiscalSubsidy),
         infonavitAmount: data.infonavitAmount ?? Number(existing.fiscalInfonavit),
         otherDeductions: data.otherDeductions ?? Number(existing.fiscalOtherDeductions)
@@ -109,7 +110,9 @@ export const updateFiniquito = authOrganizationActionClient
           realGratificationAmount: calculation.realPerceptions.gratificationAmount,
           realTotalPerceptions: calculation.realPerceptions.totalPerceptions,
           // Deducciones Fiscales
-          fiscalISR: calculation.deductions.isr,
+          fiscalISRFiniquito: calculation.deductions.isrFiniquito,
+          fiscalISRArt174: calculation.deductions.isrArt174,
+          fiscalISRIndemnizacion: calculation.deductions.isrIndemnizacion,
           fiscalIMSS: 0,
           fiscalSubsidy: calculation.deductions.subsidy,
           fiscalInfonavit: calculation.deductions.infonavit,
