@@ -1005,6 +1005,9 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                               onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                             />
                           </FormControl>
+                          <FormDescription>
+                            Positivo (+) si se deben al empleado, negativo (-) si el empleado debe días
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -1057,6 +1060,9 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                                 onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                               />
                             </FormControl>
+                            <FormDescription>
+                              Positivo (+) si se deben al empleado, negativo (-) si el empleado debe días
+                            </FormDescription>
                             <FormMessage />
                           </FormItem>
                         )}

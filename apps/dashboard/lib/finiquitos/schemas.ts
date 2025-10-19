@@ -47,11 +47,11 @@ const finiquitoBaseSchema = z.object({
   vacationPremium: z.coerce.number().min(25, 'La prima vacacional no puede ser menor a 25%').max(100).default(25), // Ahora es porcentaje entero (25 = 25%)
 
   // Beneficios Fiscales
-  pendingVacationDays: z.coerce.number().nonnegative().default(0),
+  pendingVacationDays: z.coerce.number().default(0), // Permite negativos cuando el empleado debe días
   pendingVacationPremium: z.coerce.number().nonnegative().default(0),
 
   // Beneficios de Complemento
-  complementPendingVacationDays: z.coerce.number().nonnegative().default(0),
+  complementPendingVacationDays: z.coerce.number().default(0), // Permite negativos cuando el empleado debe días
   complementPendingVacationPremium: z.coerce.number().nonnegative().default(0),
 
   // Días trabajados en periodo
