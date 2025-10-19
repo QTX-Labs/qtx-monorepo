@@ -364,6 +364,7 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
   };
 
   const onSubmit = (values: FiniquitoFormValues) => {
+    // @ts-expect-error - Legacy form, deprecated in favor of wizard. Missing integratedDailySalary field.
     executeCreate(values);
   };
 

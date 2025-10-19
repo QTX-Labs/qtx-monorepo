@@ -1,20 +1,27 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
 
 import { prisma } from '@workspace/database/client';
 import { NotFoundError } from '@workspace/common/errors';
 import { replaceOrgSlug, routes } from '@workspace/routes';
 
 import { authOrganizationActionClient } from '~/actions/safe-action';
-import { updateFiniquitoSchema } from '~/lib/finiquitos/schemas';
-import { calculateFiniquito } from '~/lib/finiquitos/calculate-finiquito';
+import { updateFiniquitoSchema } from '~/lib/finiquitos/schemas/step4-review-schema';
+import { calculateFiniquitoComplete } from '~/lib/finiquitos/calculate-finiquito-complete';
+import { mapCalculationToPrisma } from './helpers/map-calculation';
+
+// Extender schema para incluir el ID
+const updateFiniquitoInputSchema = updateFiniquitoSchema.extend({
+  id: z.string().uuid('ID inválido')
+});
 
 export const updateFiniquito = authOrganizationActionClient
   .metadata({ actionName: 'updateFiniquito' })
-  .inputSchema(updateFiniquitoSchema)
+  .inputSchema(updateFiniquitoInputSchema)
   .action(async ({ parsedInput, ctx }) => {
-    const { id, ...data } = parsedInput;
+    const { id, ...updates } = parsedInput;
 
     // Verificar que el finiquito existe y pertenece a la organización
     const existing = await prisma.finiquito.findUnique({
@@ -25,111 +32,115 @@ export const updateFiniquito = authOrganizationActionClient
       throw new NotFoundError('Finiquito no encontrado');
     }
 
-    // Recalcular si hay datos relevantes
-    let calculation;
-    if (
-      data.hireDate ||
-      data.terminationDate ||
-      data.salary ||
-      data.salaryFrequency ||
-      data.borderZone
-    ) {
-      calculation = calculateFiniquito({
-        hireDate: data.hireDate ?? existing.hireDate,
-        terminationDate: data.terminationDate ?? existing.terminationDate,
-        salary: data.salary ?? Number(existing.salary),
-        salaryFrequency: data.salaryFrequency ?? existing.salaryFrequency,
-        borderZone: data.borderZone ?? existing.borderZone,
-        fiscalDailySalary: data.fiscalDailySalary ?? Number(existing.fiscalDailySalary),
-        daysFactor: data.daysFactor ?? Number(existing.daysFactor),
-        aguinaldoDays: data.aguinaldoDays ?? existing.aguinaldoDays,
-        vacationDays: data.vacationDays ?? existing.vacationDays,
-        vacationPremium: data.vacationPremium ?? Number(existing.vacationPremiumPercentage),
-        pendingVacationDays:
-          data.pendingVacationDays ?? existing.pendingVacationDays,
-        workedDays: data.workedDays ?? existing.pendingWorkDays,
-        gratificationDays: data.gratificationDays ?? (existing.gratificationDays ? Number(existing.gratificationDays) : undefined),
-        gratificationPesos: data.gratificationPesos ?? (existing.gratificationPesos ? Number(existing.gratificationPesos) : undefined),
-        severanceDays: data.severanceDays ?? 0,
-        seniorityPremiumDays: data.seniorityPremiumDays ?? 0,
-        isrFiniquitoAmount: data.isrFiniquitoAmount ?? Number(existing.fiscalISRFiniquito),
-        isrArt174Amount: data.isrArt174Amount ?? Number(existing.fiscalISRArt174),
-        isrIndemnizacionAmount: data.isrIndemnizacionAmount ?? Number(existing.fiscalISRIndemnizacion),
-        subsidyAmount: data.subsidyAmount ?? Number(existing.fiscalSubsidy),
-        infonavitAmount: data.infonavitAmount ?? Number(existing.fiscalInfonavit),
-        otherDeductions: data.otherDeductions ?? Number(existing.fiscalOtherDeductions)
-      });
+    // Solo soportar actualizaciones para finiquitos v2
+    if (existing.version !== 2) {
+      throw new Error('Solo se pueden actualizar finiquitos con la nueva estructura (version 2)');
+    }
+
+    // Determinar si necesitamos recalcular
+    const needsRecalculation = !!(
+      updates.hireDate ||
+      updates.terminationDate ||
+      updates.fiscalDailySalary ||
+      updates.integratedDailySalary ||
+      updates.salaryFrequency ||
+      updates.borderZone ||
+      updates.aguinaldoDays ||
+      updates.vacationDays ||
+      updates.vacationPremiumPercentage ||
+      updates.pendingVacationDays ||
+      updates.pendingVacationPremium ||
+      updates.complementoActivado ||
+      updates.realHireDate ||
+      updates.realDailySalary ||
+      updates.liquidacionActivada ||
+      updates.deduccionesManuales ||
+      updates.factoresFiniquito ||
+      updates.factoresLiquidacion ||
+      updates.factoresComplemento
+    );
+
+    let calculatedFields = {};
+
+    if (needsRecalculation) {
+      // Mergear datos existentes con updates para recalcular
+      const mergedInput = {
+        employeeId: updates.employeeId ?? existing.employeeId ?? undefined,
+        hireDate: updates.hireDate ?? existing.hireDate,
+        terminationDate: updates.terminationDate ?? existing.terminationDate,
+        fiscalDailySalary: updates.fiscalDailySalary ?? Number(existing.fiscalDailySalary),
+        integratedDailySalary: updates.integratedDailySalary ?? Number(existing.integratedDailySalary),
+        borderZone: updates.borderZone ?? existing.borderZone,
+        salaryFrequency: updates.salaryFrequency ?? existing.salaryFrequency,
+        aguinaldoDays: updates.aguinaldoDays ?? existing.aguinaldoDays,
+        vacationDays: updates.vacationDays ?? existing.vacationDays,
+        vacationPremiumPercentage: updates.vacationPremiumPercentage ?? Number(existing.vacationPremiumPercentage),
+        pendingVacationDays: updates.pendingVacationDays ?? existing.pendingVacationDays,
+        pendingVacationPremium: updates.pendingVacationPremium ?? 0,
+        complemento: (updates.complementoActivado ?? existing.complementoActivado) ? {
+          enabled: true,
+          realHireDate: (updates.realHireDate ?? existing.realHireDate)!,
+          realDailySalary: (updates.realDailySalary ?? Number(existing.realDailySalary)),
+          pendingVacationDays: 0,
+          pendingVacationPremium: 0,
+        } : undefined,
+        liquidacion: (updates.liquidacionActivada ?? existing.liquidacionActivada) ? { enabled: true } : undefined,
+        deduccionesManuales: updates.deduccionesManuales ?? {
+          infonavit: existing.montoDeduccionInfonavit ? Number(existing.montoDeduccionInfonavit) : 0,
+          fonacot: existing.montoDeduccionFonacot ? Number(existing.montoDeduccionFonacot) : 0,
+          otras: existing.montoDeduccionOtrasDeducciones ? Number(existing.montoDeduccionOtrasDeducciones) : 0,
+          subsidio: existing.montoDeduccionSubsidio ? Number(existing.montoDeduccionSubsidio) : 0,
+        },
+      };
+
+      const calculation = calculateFiniquitoComplete(mergedInput);
+      calculatedFields = mapCalculationToPrisma(calculation);
     }
 
     // Actualizar en base de datos
     const finiquito = await prisma.finiquito.update({
       where: { id },
       data: {
-        ...(data.employeeName && { employeeName: data.employeeName }),
-        ...(data.employeeId && { employeeId: data.employeeId }),
-        ...(data.hireDate && { hireDate: data.hireDate }),
-        ...(data.terminationDate && { terminationDate: data.terminationDate }),
-        ...(data.salary && { salary: data.salary }),
-        ...(data.salaryFrequency && { salaryFrequency: data.salaryFrequency }),
-        ...(data.borderZone && { borderZone: data.borderZone }),
-        ...(data.daysFactor && { daysFactor: data.daysFactor }),
-        ...(data.notes !== undefined && { notes: data.notes }),
-        ...(calculation && {
-          fiscalDailySalary: calculation.salaries.fiscalDailySalary,
-          realDailySalary: calculation.salaries.realDailySalary,
-          integratedDailySalary: calculation.salaries.integratedDailySalary,
-          daysWorked: calculation.metadata.daysWorked,
-          yearsWorked: calculation.metadata.yearsWorked,
-          gratificationDays: calculation.metadata.gratificationDays,
-          gratificationPesos: calculation.metadata.gratificationPesos,
-          severanceTotalFiscal: calculation.fiscalPerceptions.severanceAmount,
-          severanceTotalReal: calculation.realPerceptions.severanceAmount,
-          seniorityPremiumFiscal: calculation.fiscalPerceptions.seniorityPremiumAmount,
-          seniorityPremiumReal: calculation.realPerceptions.seniorityPremiumAmount,
-          // Percepciones Fiscales
-          fiscalAguinaldoFactor: calculation.fiscalPerceptions.aguinaldoFactor,
-          fiscalAguinaldoAmount: calculation.fiscalPerceptions.aguinaldoAmount,
-          fiscalVacationFactor: calculation.fiscalPerceptions.vacationFactor,
-          fiscalVacationAmount: calculation.fiscalPerceptions.vacationAmount,
-          fiscalVacationPremiumFactor: calculation.fiscalPerceptions.vacationPremiumFactor,
-          fiscalVacationPremiumAmount: calculation.fiscalPerceptions.vacationPremiumAmount,
-          fiscalPendingVacationAmount: calculation.fiscalPerceptions.pendingVacationAmount,
-          fiscalPendingPremiumAmount: calculation.fiscalPerceptions.pendingPremiumAmount,
-          fiscalWorkedDaysAmount: calculation.fiscalPerceptions.workedDaysAmount,
-          fiscalTotalPerceptions: calculation.fiscalPerceptions.totalPerceptions,
-          // Percepciones Reales
-          realAguinaldoFactor: calculation.realPerceptions.aguinaldoFactor,
-          realAguinaldoAmount: calculation.realPerceptions.aguinaldoAmount,
-          realVacationFactor: calculation.realPerceptions.vacationFactor,
-          realVacationAmount: calculation.realPerceptions.vacationAmount,
-          realVacationPremiumFactor: calculation.realPerceptions.vacationPremiumFactor,
-          realVacationPremiumAmount: calculation.realPerceptions.vacationPremiumAmount,
-          realPendingVacationAmount: calculation.realPerceptions.pendingVacationAmount,
-          realPendingPremiumAmount: calculation.realPerceptions.pendingPremiumAmount,
-          realWorkedDaysAmount: calculation.realPerceptions.workedDaysAmount,
-          realGratificationAmount: calculation.realPerceptions.gratificationAmount,
-          realTotalPerceptions: calculation.realPerceptions.totalPerceptions,
-          // Deducciones Fiscales
-          fiscalISRFiniquito: calculation.deductions.isrFiniquito,
-          fiscalISRArt174: calculation.deductions.isrArt174,
-          fiscalISRIndemnizacion: calculation.deductions.isrIndemnizacion,
-          fiscalIMSS: 0,
-          fiscalSubsidy: calculation.deductions.subsidy,
-          fiscalInfonavit: calculation.deductions.infonavit,
-          fiscalOtherDeductions: calculation.deductions.otherDeductions,
-          fiscalTotalDeductions: calculation.deductions.totalDeductions,
-          // Deducciones Reales (generalmente $0)
-          realISR: 0,
-          realIMSS: 0,
-          realSubsidy: 0,
-          realInfonavit: 0,
-          realOtherDeductions: 0,
-          realTotalDeductions: 0,
-          // Totales
-          fiscalNetAmount: calculation.totals.netPayFiscal,
-          realNetAmount: calculation.totals.netPayReal,
-          totalToPay: calculation.totals.netPayTotal
-        })
+        // Datos básicos (solo si se proveyeron en updates)
+        ...(updates.employeeName && { employeeName: updates.employeeName }),
+        ...(updates.employeePosition !== undefined && { employeePosition: updates.employeePosition }),
+        // employeeId is not updatable after creation
+        ...(updates.empresaName && { empresaName: updates.empresaName }),
+        ...(updates.empresaRFC !== undefined && { empresaRFC: updates.empresaRFC }),
+        ...(updates.empresaMunicipio !== undefined && { empresaMunicipio: updates.empresaMunicipio }),
+        ...(updates.empresaEstado !== undefined && { empresaEstado: updates.empresaEstado }),
+        ...(updates.clientName && { clientName: updates.clientName }),
+
+        // Datos salariales y fechas
+        ...(updates.hireDate && { hireDate: updates.hireDate }),
+        ...(updates.terminationDate && { terminationDate: updates.terminationDate }),
+        ...(updates.fiscalDailySalary && {
+          fiscalDailySalary: updates.fiscalDailySalary,
+          salary: updates.fiscalDailySalary
+        }),
+        ...(updates.realDailySalary && { realDailySalary: updates.realDailySalary }),
+        ...(updates.integratedDailySalary && { integratedDailySalary: updates.integratedDailySalary }),
+        ...(updates.realHireDate !== undefined && { realHireDate: updates.realHireDate }),
+        ...(updates.salaryFrequency && { salaryFrequency: updates.salaryFrequency }),
+        ...(updates.borderZone && { borderZone: updates.borderZone }),
+
+        // Prestaciones
+        ...(updates.aguinaldoDays && { aguinaldoDays: updates.aguinaldoDays }),
+        ...(updates.vacationDays && { vacationDays: updates.vacationDays }),
+        ...(updates.vacationPremiumPercentage && { vacationPremiumPercentage: updates.vacationPremiumPercentage }),
+        ...(updates.pendingVacationDays !== undefined && { pendingVacationDays: updates.pendingVacationDays }),
+
+        // Toggles
+        ...(updates.liquidacionActivada !== undefined && { liquidacionActivada: updates.liquidacionActivada }),
+        ...(updates.complementoActivado !== undefined && { complementoActivado: updates.complementoActivado }),
+
+        // Factor de días
+        ...(updates.daysFactor && { daysFactor: updates.daysFactor }),
+        ...(updates.daysFactorModified !== undefined && { daysFactorModified: updates.daysFactorModified }),
+        ...(updates.daysFactorModificationReason !== undefined && { daysFactorModificationReason: updates.daysFactorModificationReason }),
+
+        // Campos calculados (si hubo recálculo)
+        ...calculatedFields,
       }
     });
 

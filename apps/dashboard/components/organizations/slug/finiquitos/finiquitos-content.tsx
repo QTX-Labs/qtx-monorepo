@@ -6,7 +6,7 @@ import { type Finiquito, type User } from '@workspace/database';
 
 import { Button } from '@workspace/ui/components/button';
 
-import { FiniquitoForm } from './finiquito-form';
+import { FiniquitoWizard } from './create/finiquito-wizard';
 import { FiniquitosList } from './finiquitos-list';
 
 type FiniquitoListItem = Pick<
@@ -66,7 +66,9 @@ export function FiniquitosContent({ finiquitos, isAdmin }: FiniquitosContentProp
       </div>
 
       {isCreating ? (
-        <FiniquitoForm onCancel={() => setIsCreating(false)} onSuccess={() => setIsCreating(false)} isAdmin={isAdmin} />
+        <div className="px-4 sm:px-6 lg:px-8">
+          <FiniquitoWizard />
+        </div>
       ) : (
         <div className="px-4 sm:px-6 lg:px-8">
           <FiniquitosList finiquitos={finiquitos} />

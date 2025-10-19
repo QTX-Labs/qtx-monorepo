@@ -6,140 +6,101 @@ import { prisma } from '@workspace/database/client';
 import { replaceOrgSlug, routes } from '@workspace/routes';
 
 import { authOrganizationActionClient } from '~/actions/safe-action';
-import { createFiniquitoSchema } from '~/lib/finiquitos/schemas';
-import { calculateFiniquito } from '~/lib/finiquitos/calculate-finiquito';
+import { step4ReviewSchema } from '~/lib/finiquitos/schemas/step4-review-schema';
+import { calculateFiniquitoComplete } from '~/lib/finiquitos/calculate-finiquito-complete';
+import { mapCalculationToPrisma } from './helpers/map-calculation';
 
 export const createFiniquito = authOrganizationActionClient
   .metadata({ actionName: 'createFiniquito' })
-  .inputSchema(createFiniquitoSchema)
+  .inputSchema(step4ReviewSchema)
   .action(async ({ parsedInput, ctx }) => {
     console.log('[createFiniquito] START - Input recibido:', JSON.stringify(parsedInput, null, 2));
 
-    // Calcular finiquito
-    console.log('[createFiniquito] Iniciando cálculo...');
-    const calculation = calculateFiniquito({
+    // Preparar input para cálculo
+    console.log('[createFiniquito] Preparando input para calculateFiniquitoComplete...');
+    const calculation = calculateFiniquitoComplete({
+      employeeId: parsedInput.employeeId,
       hireDate: parsedInput.hireDate,
       terminationDate: parsedInput.terminationDate,
-      salary: parsedInput.salary,
-      salaryFrequency: parsedInput.salaryFrequency,
-      borderZone: parsedInput.borderZone,
       fiscalDailySalary: parsedInput.fiscalDailySalary,
-      daysFactor: parsedInput.daysFactor,
+      integratedDailySalary: parsedInput.integratedDailySalary,
+      borderZone: parsedInput.borderZone,
+      salaryFrequency: parsedInput.salaryFrequency,
       aguinaldoDays: parsedInput.aguinaldoDays,
       vacationDays: parsedInput.vacationDays,
-      vacationPremium: parsedInput.vacationPremium,
+      vacationPremiumPercentage: parsedInput.vacationPremiumPercentage,
       pendingVacationDays: parsedInput.pendingVacationDays,
-      workedDays: parsedInput.workedDays,
-      gratificationType: parsedInput.gratificationType,
-      gratificationDays: parsedInput.gratificationDays,
-      gratificationPesos: parsedInput.gratificationPesos,
-      severanceDays: parsedInput.severanceDays,
-      seniorityPremiumDays: parsedInput.seniorityPremiumDays,
-      isrFiniquitoAmount: parsedInput.isrFiniquitoAmount,
-      isrArt174Amount: parsedInput.isrArt174Amount,
-      isrIndemnizacionAmount: parsedInput.isrIndemnizacionAmount,
-      subsidyAmount: parsedInput.subsidyAmount,
-      infonavitAmount: parsedInput.infonavitAmount,
-      otherDeductions: parsedInput.otherDeductions
+      pendingVacationPremium: parsedInput.pendingVacationPremium,
+      complemento: parsedInput.complementoActivado && parsedInput.realHireDate && parsedInput.realDailySalary ? {
+        enabled: true,
+        realHireDate: parsedInput.realHireDate,
+        realDailySalary: parsedInput.realDailySalary,
+        pendingVacationDays: parsedInput.complementPendingVacationDays,
+        pendingVacationPremium: parsedInput.complementPendingVacationPremium,
+      } : undefined,
+      liquidacion: parsedInput.liquidacionActivada ? { enabled: true } : undefined,
+      deduccionesManuales: parsedInput.deduccionesManuales,
     });
     console.log('[createFiniquito] Cálculo completado:', {
-      netPayTotal: calculation.totals.netPayTotal,
-      gratificationDays: calculation.metadata.gratificationDays,
-      gratificationPesos: calculation.metadata.gratificationPesos
+      totalAPagar: calculation.totales.totalAPagar,
+      isrTotal: calculation.deducciones.isrTotal,
     });
+
+    // Mapear resultados de cálculo a campos de Prisma
+    const calculatedFields = mapCalculationToPrisma(calculation);
 
     // Guardar en base de datos
     console.log('[createFiniquito] Intentando guardar en BD...');
-    console.log('[createFiniquito] Datos a guardar:', {
-      organizationId: ctx.organization.id,
-      userId: ctx.session.user.id,
-      employeeId: parsedInput.employeeId ?? null,
-      employeeName: parsedInput.employeeName,
-      gratificationType: parsedInput.gratificationType ?? null,
-      gratificationDays: calculation.metadata.gratificationDays ?? null,
-      gratificationPesos: calculation.metadata.gratificationPesos ?? null
-    });
 
     try {
       const finiquito = await prisma.finiquito.create({
-      data: {
-        organizationId: ctx.organization.id,
-        userId: ctx.session.user.id,
-        employeeId: parsedInput.employeeId ?? null,
-        employeeName: parsedInput.employeeName,
-        employeePosition: parsedInput.employeePosition ?? null,
-        empresaName: parsedInput.empresaName || ctx.organization.name,
-        empresaRFC: parsedInput.empresaRFC ?? null,
-        empresaMunicipio: parsedInput.empresaMunicipio ?? null,
-        empresaEstado: parsedInput.empresaEstado ?? null,
-        clientName: parsedInput.empresaName || ctx.organization.name,
-        hireDate: parsedInput.hireDate,
-        terminationDate: parsedInput.terminationDate,
-        salary: parsedInput.salary,
-        salaryFrequency: parsedInput.salaryFrequency,
-        borderZone: parsedInput.borderZone,
-        fiscalDailySalary: calculation.salaries.fiscalDailySalary,
-        realDailySalary: calculation.salaries.realDailySalary,
-        integratedDailySalary: calculation.salaries.integratedDailySalary,
-        daysFactor: parsedInput.daysFactor,
-        daysWorked: calculation.metadata.daysWorked,
-        yearsWorked: calculation.metadata.yearsWorked,
-        aguinaldoDays: parsedInput.aguinaldoDays,
-        vacationDays: parsedInput.vacationDays,
-        vacationPremiumPercentage: parsedInput.vacationPremium,
-        pendingVacationDays: parsedInput.pendingVacationDays,
-        pendingWorkDays: parsedInput.workedDays,
-        gratificationType: parsedInput.gratificationType ?? null,
-        gratificationDays: calculation.metadata.gratificationDays ?? null,
-        gratificationPesos: calculation.metadata.gratificationPesos ?? null,
-        severanceTotalFiscal: calculation.fiscalPerceptions.severanceAmount,
-        severanceTotalReal: calculation.realPerceptions.severanceAmount,
-        seniorityPremiumFiscal: calculation.fiscalPerceptions.seniorityPremiumAmount,
-        seniorityPremiumReal: calculation.realPerceptions.seniorityPremiumAmount,
-        // Percepciones Fiscales
-        fiscalAguinaldoFactor: calculation.fiscalPerceptions.aguinaldoFactor,
-        fiscalAguinaldoAmount: calculation.fiscalPerceptions.aguinaldoAmount,
-        fiscalVacationFactor: calculation.fiscalPerceptions.vacationFactor,
-        fiscalVacationAmount: calculation.fiscalPerceptions.vacationAmount,
-        fiscalVacationPremiumFactor: calculation.fiscalPerceptions.vacationPremiumFactor,
-        fiscalVacationPremiumAmount: calculation.fiscalPerceptions.vacationPremiumAmount,
-        fiscalPendingVacationAmount: calculation.fiscalPerceptions.pendingVacationAmount,
-        fiscalPendingPremiumAmount: calculation.fiscalPerceptions.pendingPremiumAmount,
-        fiscalWorkedDaysAmount: calculation.fiscalPerceptions.workedDaysAmount,
-        fiscalTotalPerceptions: calculation.fiscalPerceptions.totalPerceptions,
-        // Percepciones Reales
-        realAguinaldoFactor: calculation.realPerceptions.aguinaldoFactor,
-        realAguinaldoAmount: calculation.realPerceptions.aguinaldoAmount,
-        realVacationFactor: calculation.realPerceptions.vacationFactor,
-        realVacationAmount: calculation.realPerceptions.vacationAmount,
-        realVacationPremiumFactor: calculation.realPerceptions.vacationPremiumFactor,
-        realVacationPremiumAmount: calculation.realPerceptions.vacationPremiumAmount,
-        realPendingVacationAmount: calculation.realPerceptions.pendingVacationAmount,
-        realPendingPremiumAmount: calculation.realPerceptions.pendingPremiumAmount,
-        realWorkedDaysAmount: calculation.realPerceptions.workedDaysAmount,
-        realGratificationAmount: calculation.realPerceptions.gratificationAmount,
-        realTotalPerceptions: calculation.realPerceptions.totalPerceptions,
-        // Deducciones Fiscales
-        fiscalISRFiniquito: calculation.deductions.isrFiniquito,
-        fiscalISRArt174: calculation.deductions.isrArt174,
-        fiscalISRIndemnizacion: calculation.deductions.isrIndemnizacion,
-        fiscalIMSS: 0,
-        fiscalSubsidy: calculation.deductions.subsidy,
-        fiscalInfonavit: calculation.deductions.infonavit,
-        fiscalOtherDeductions: calculation.deductions.otherDeductions,
-        fiscalTotalDeductions: calculation.deductions.totalDeductions,
-        // Deducciones Reales (generalmente $0)
-        realISR: 0,
-        realIMSS: 0,
-        realSubsidy: 0,
-        realInfonavit: 0,
-        realOtherDeductions: 0,
-        realTotalDeductions: 0,
-        // Totales
-        fiscalNetAmount: calculation.totals.netPayFiscal,
-        realNetAmount: calculation.totals.netPayReal,
-        totalToPay: calculation.totals.netPayTotal
-      }
+        data: {
+          // Relaciones
+          organizationId: ctx.organization.id,
+          userId: ctx.session.user.id,
+          employeeId: parsedInput.employeeId ?? null,
+
+          // Datos básicos del empleado (snapshot)
+          employeeName: parsedInput.employeeName,
+          employeePosition: parsedInput.employeePosition ?? null,
+          empresaName: parsedInput.empresaName,
+          empresaRFC: parsedInput.empresaRFC || null,
+          empresaMunicipio: parsedInput.empresaMunicipio ?? null,
+          empresaEstado: parsedInput.empresaEstado ?? null,
+          clientName: parsedInput.clientName,
+
+          // Datos salariales
+          hireDate: parsedInput.hireDate,
+          terminationDate: parsedInput.terminationDate,
+          salary: parsedInput.fiscalDailySalary, // Usar fiscal como base
+          salaryFrequency: parsedInput.salaryFrequency,
+          borderZone: parsedInput.borderZone,
+          fiscalDailySalary: parsedInput.fiscalDailySalary,
+          realDailySalary: parsedInput.realDailySalary ?? parsedInput.fiscalDailySalary,
+          integratedDailySalary: parsedInput.integratedDailySalary,
+          realHireDate: parsedInput.realHireDate ?? null,
+          pendingWorkDays: 0, // No se usa en nueva estructura
+
+          // Prestaciones
+          aguinaldoDays: parsedInput.aguinaldoDays,
+          vacationDays: parsedInput.vacationDays,
+          vacationPremiumPercentage: parsedInput.vacationPremiumPercentage,
+          pendingVacationDays: parsedInput.pendingVacationDays ?? 0,
+
+          // Toggles de activación
+          liquidacionActivada: parsedInput.liquidacionActivada,
+          complementoActivado: parsedInput.complementoActivado,
+
+          // Modificación del factor de días
+          daysFactorModified: parsedInput.daysFactorModified,
+          daysFactorModificationReason: parsedInput.daysFactorModificationReason ?? null,
+
+          // Versión (importante: 2 para nueva estructura)
+          version: 2,
+
+          // Campos calculados (factores, montos, ISR, totales, incluye daysFactor en metadata)
+          ...calculatedFields,
+        }
       });
       console.log('[createFiniquito] ✅ Finiquito guardado exitosamente:', finiquito.id);
 

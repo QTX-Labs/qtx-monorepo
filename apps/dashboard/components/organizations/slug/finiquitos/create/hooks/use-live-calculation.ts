@@ -1,0 +1,81 @@
+import { useEffect, useState } from 'react';
+
+import { calculateFiniquitoComplete } from '~/lib/finiquitos/calculate-finiquito-complete';
+import type { CalculateFiniquitoOutput } from '~/lib/finiquitos/types/calculate-finiquito-types';
+import type { Step1BaseConfig } from '~/lib/finiquitos/schemas/step1-base-config-schema';
+import type { Step2Factors } from '~/lib/finiquitos/schemas/step2-factors-schema';
+import type { Step3Deductions } from '~/lib/finiquitos/schemas/step3-deductions-schema';
+import { useDebounce } from '~/hooks/use-debounce';
+
+type UseLiveCalculationParams = {
+  step1Data: Step1BaseConfig | null;
+  step2Data?: Step2Factors | null;
+  step3Data?: Step3Deductions | null;
+};
+
+/**
+ * Hook para cálculo en vivo de finiquito
+ *
+ * Recalcula automáticamente cuando cambian los datos de entrada,
+ * con debouncing de 300ms para evitar cálculos excesivos.
+ *
+ * @param params - Datos de los pasos 1, 2 y 3
+ * @returns El resultado del cálculo actualizado
+ */
+export function useLiveCalculation({
+  step1Data,
+  step2Data,
+  step3Data,
+}: UseLiveCalculationParams): CalculateFiniquitoOutput | null {
+  const [calculation, setCalculation] = useState<CalculateFiniquitoOutput | null>(null);
+
+  // Debounce de factores y deducciones para evitar cálculos excesivos
+  const debouncedStep2Data = useDebounce(step2Data, 300);
+  const debouncedStep3Data = useDebounce(step3Data, 300);
+
+  useEffect(() => {
+    // Solo calcular si tenemos los datos base
+    if (!step1Data) {
+      setCalculation(null);
+      return;
+    }
+
+    try {
+      const result = calculateFiniquitoComplete({
+        employeeId: step1Data.employeeId,
+        hireDate: step1Data.hireDate,
+        terminationDate: step1Data.terminationDate,
+        fiscalDailySalary: step1Data.fiscalDailySalary,
+        integratedDailySalary: step1Data.integratedDailySalary,
+        borderZone: step1Data.borderZone,
+        salaryFrequency: step1Data.salaryFrequency,
+        aguinaldoDays: step1Data.aguinaldoDays,
+        vacationDays: step1Data.vacationDays,
+        vacationPremiumPercentage: step1Data.vacationPremiumPercentage,
+        pendingVacationDays: step1Data.pendingVacationDays,
+        pendingVacationPremium: step1Data.pendingVacationPremium,
+        complemento: step1Data.complementoActivado && step1Data.realHireDate && step1Data.realDailySalary ? {
+          enabled: true,
+          realHireDate: step1Data.realHireDate,
+          realDailySalary: step1Data.realDailySalary,
+          pendingVacationDays: step1Data.complementPendingVacationDays,
+          pendingVacationPremium: step1Data.complementPendingVacationPremium,
+        } : undefined,
+        liquidacion: step1Data.liquidacionActivada ? { enabled: true } : undefined,
+        deduccionesManuales: debouncedStep3Data?.deduccionesManuales || {
+          infonavit: 0,
+          fonacot: 0,
+          otras: 0,
+          subsidio: 0,
+        },
+      });
+
+      setCalculation(result);
+    } catch (error) {
+      console.error('[useLiveCalculation] Error calculating finiquito:', error);
+      setCalculation(null);
+    }
+  }, [step1Data, debouncedStep2Data, debouncedStep3Data]);
+
+  return calculation;
+}

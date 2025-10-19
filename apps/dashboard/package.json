@@ -22,6 +22,7 @@
     "@dnd-kit/utilities": "3.2.2",
     "@ebay/nice-modal-react": "1.2.13",
     "@hookform/resolvers": "5.1.0",
+    "@prisma/client": "^6.17.1",
     "@react-pdf/renderer": "^4.3.1",
     "@t3-oss/env-nextjs": "0.13.6",
     "@tanstack/react-table": "8.21.3",
@@ -66,6 +67,7 @@
   "devDependencies": {
     "@aws-sdk/client-s3": "3.826.0",
     "@next/bundle-analyzer": "15.3.3",
+    "@types/big.js": "^6.2.2",
     "@types/file-saver": "2.0.7",
     "@types/markdown-it": "14.1.2",
     "@types/node": "22.15.30",
@@ -78,7 +80,8 @@
     "@types/uuid": "10.0.0",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/prettier-config": "workspace:*",
-    "@workspace/typescript-config": "workspace:*"
+    "@workspace/typescript-config": "workspace:*",
+    "prisma": "^6.17.1"
   },
   "prettier": "@workspace/prettier-config"
 }

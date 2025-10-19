@@ -616,6 +616,7 @@ model Finiquito {
   realDailySalary             Decimal           @db.Decimal(12, 2)
   integratedDailySalary       Decimal           @db.Decimal(12, 2)
   pendingWorkDays             Int               @default(0)
+  realHireDate                DateTime?         @db.Date // Fecha de ingreso real para complemento
 
   // Prestaciones
   aguinaldoDays               Int               @default(15)
@@ -623,67 +624,137 @@ model Finiquito {
   vacationPremiumPercentage   Decimal           @db.Decimal(5, 2) @default(25)
   pendingVacationDays         Int               @default(0)
 
+  // Toggles de activación
+  liquidacionActivada         Boolean           @default(false)
+  complementoActivado         Boolean           @default(false)
+
+  // @deprecated - Usar factores/montos específicos en su lugar
   // Gratificación (bidireccional)
   gratificationType           GratificationType?
   gratificationDays           Decimal?          @db.Decimal(12, 4)
   gratificationPesos          Decimal?          @db.Decimal(12, 2)
 
+  // @deprecated - Usar factorIndemnizacion90Dias/montoIndemnizacion90Dias en su lugar
   // Indemnización (flexible)
   severanceMonths             Int               @default(0)
   severanceDaysPerYear        Int               @default(0)
-  severanceTotalFiscal        Decimal           @db.Decimal(12, 2) @default(0)
-  severanceTotalReal          Decimal           @db.Decimal(12, 2) @default(0)
+  severanceTotalFiscal        Decimal?          @db.Decimal(12, 2) @default(0)
+  severanceTotalReal          Decimal?          @db.Decimal(12, 2) @default(0)
 
+  // @deprecated - Usar factorPrimaAntiguedad/montoPrimaAntiguedad en su lugar
   // Prima de antigüedad
-  seniorityPremiumFiscal      Decimal           @db.Decimal(12, 2) @default(0)
-  seniorityPremiumReal        Decimal           @db.Decimal(12, 2) @default(0)
+  seniorityPremiumFiscal      Decimal?          @db.Decimal(12, 2) @default(0)
+  seniorityPremiumReal        Decimal?          @db.Decimal(12, 2) @default(0)
 
+  // @deprecated - Usar factores/montos de Finiquito/Complemento en su lugar
   // Cálculos - Columna FISCAL
-  fiscalAguinaldoFactor       Decimal           @db.Decimal(12, 4)
-  fiscalAguinaldoAmount       Decimal           @db.Decimal(12, 2)
-  fiscalVacationFactor        Decimal           @db.Decimal(12, 4)
-  fiscalVacationAmount        Decimal           @db.Decimal(12, 2)
-  fiscalVacationPremiumFactor Decimal           @db.Decimal(12, 4)
-  fiscalVacationPremiumAmount Decimal           @db.Decimal(12, 2)
-  fiscalPendingVacationAmount Decimal           @db.Decimal(12, 2) @default(0)
-  fiscalPendingPremiumAmount  Decimal           @db.Decimal(12, 2) @default(0)
-  fiscalWorkedDaysAmount      Decimal           @db.Decimal(12, 2) @default(0)
-  fiscalTotalPerceptions      Decimal           @db.Decimal(12, 2)
+  fiscalAguinaldoFactor       Decimal?          @db.Decimal(12, 4)
+  fiscalAguinaldoAmount       Decimal?          @db.Decimal(12, 2)
+  fiscalVacationFactor        Decimal?          @db.Decimal(12, 4)
+  fiscalVacationAmount        Decimal?          @db.Decimal(12, 2)
+  fiscalVacationPremiumFactor Decimal?          @db.Decimal(12, 4)
+  fiscalVacationPremiumAmount Decimal?          @db.Decimal(12, 2)
+  fiscalPendingVacationAmount Decimal?          @db.Decimal(12, 2) @default(0)
+  fiscalPendingPremiumAmount  Decimal?          @db.Decimal(12, 2) @default(0)
+  fiscalWorkedDaysAmount      Decimal?          @db.Decimal(12, 2) @default(0)
+  fiscalTotalPerceptions      Decimal?          @db.Decimal(12, 2)
 
+  // @deprecated - Usar factores/montos de Complemento en su lugar
   // Cálculos - Columna REAL
-  realAguinaldoFactor         Decimal           @db.Decimal(12, 4)
-  realAguinaldoAmount         Decimal           @db.Decimal(12, 2)
-  realVacationFactor          Decimal           @db.Decimal(12, 4)
-  realVacationAmount          Decimal           @db.Decimal(12, 2)
-  realVacationPremiumFactor   Decimal           @db.Decimal(12, 4)
-  realVacationPremiumAmount   Decimal           @db.Decimal(12, 2)
-  realPendingVacationAmount   Decimal           @db.Decimal(12, 2) @default(0)
-  realPendingPremiumAmount    Decimal           @db.Decimal(12, 2) @default(0)
-  realWorkedDaysAmount        Decimal           @db.Decimal(12, 2) @default(0)
-  realGratificationAmount     Decimal           @db.Decimal(12, 2) @default(0)
-  realTotalPerceptions        Decimal           @db.Decimal(12, 2)
+  realAguinaldoFactor         Decimal?          @db.Decimal(12, 4)
+  realAguinaldoAmount         Decimal?          @db.Decimal(12, 2)
+  realVacationFactor          Decimal?          @db.Decimal(12, 4)
+  realVacationAmount          Decimal?          @db.Decimal(12, 2)
+  realVacationPremiumFactor   Decimal?          @db.Decimal(12, 4)
+  realVacationPremiumAmount   Decimal?          @db.Decimal(12, 2)
+  realPendingVacationAmount   Decimal?          @db.Decimal(12, 2) @default(0)
+  realPendingPremiumAmount    Decimal?          @db.Decimal(12, 2) @default(0)
+  realWorkedDaysAmount        Decimal?          @db.Decimal(12, 2) @default(0)
+  realGratificationAmount     Decimal?          @db.Decimal(12, 2) @default(0)
+  realTotalPerceptions        Decimal?          @db.Decimal(12, 2)
 
+  // @deprecated - Usar campos ISR y deducciones manuales en su lugar
   // Deducciones
-  fiscalISRFiniquito          Decimal           @db.Decimal(12, 2) @default(0)
-  fiscalISRArt174             Decimal           @db.Decimal(12, 2) @default(0)
-  fiscalISRIndemnizacion      Decimal           @db.Decimal(12, 2) @default(0)
-  fiscalIMSS                  Decimal           @db.Decimal(12, 2) @default(0)
-  fiscalSubsidy               Decimal           @db.Decimal(12, 2) @default(0)
-  fiscalInfonavit             Decimal           @db.Decimal(12, 2) @default(0)
-  fiscalOtherDeductions       Decimal           @db.Decimal(12, 2) @default(0)
-  fiscalTotalDeductions       Decimal           @db.Decimal(12, 2) @default(0)
+  fiscalISRFiniquito          Decimal?          @db.Decimal(12, 2) @default(0)
+  fiscalISRArt174             Decimal?          @db.Decimal(12, 2) @default(0)
+  fiscalISRIndemnizacion      Decimal?          @db.Decimal(12, 2) @default(0)
+  fiscalIMSS                  Decimal?          @db.Decimal(12, 2) @default(0)
+  fiscalSubsidy               Decimal?          @db.Decimal(12, 2) @default(0)
+  fiscalInfonavit             Decimal?          @db.Decimal(12, 2) @default(0)
+  fiscalOtherDeductions       Decimal?          @db.Decimal(12, 2) @default(0)
+  fiscalTotalDeductions       Decimal?          @db.Decimal(12, 2) @default(0)
 
-  realISR                     Decimal           @db.Decimal(12, 2) @default(0)
-  realIMSS                    Decimal           @db.Decimal(12, 2) @default(0)
-  realSubsidy                 Decimal           @db.Decimal(12, 2) @default(0)
-  realInfonavit               Decimal           @db.Decimal(12, 2) @default(0)
-  realOtherDeductions         Decimal           @db.Decimal(12, 2) @default(0)
-  realTotalDeductions         Decimal           @db.Decimal(12, 2) @default(0)
+  realISR                     Decimal?          @db.Decimal(12, 2) @default(0)
+  realIMSS                    Decimal?          @db.Decimal(12, 2) @default(0)
+  realSubsidy                 Decimal?          @db.Decimal(12, 2) @default(0)
+  realInfonavit               Decimal?          @db.Decimal(12, 2) @default(0)
+  realOtherDeductions         Decimal?          @db.Decimal(12, 2) @default(0)
+  realTotalDeductions         Decimal?          @db.Decimal(12, 2) @default(0)
 
+  // @deprecated - Usar totales por sección en su lugar
   // Netos y total
-  fiscalNetAmount             Decimal           @db.Decimal(12, 2)
-  realNetAmount               Decimal           @db.Decimal(12, 2)
-  totalToPay                  Decimal           @db.Decimal(12, 2)
+  fiscalNetAmount             Decimal?          @db.Decimal(12, 2)
+  realNetAmount               Decimal?          @db.Decimal(12, 2)
+  totalToPay                  Decimal?          @db.Decimal(12, 2)
+
+  // ===== NUEVA ESTRUCTURA (v2) =====
+
+  // ISR (calculado)
+  isrFiniquito                Decimal?          @db.Decimal(12, 2)
+  isrArt174                   Decimal?          @db.Decimal(12, 2)
+  isrIndemnizacion            Decimal?          @db.Decimal(12, 2)
+
+  // Deducciones manuales
+  montoDeduccionInfonavit     Decimal?          @db.Decimal(12, 2)
+  montoDeduccionFonacot       Decimal?          @db.Decimal(12, 2)
+  montoDeduccionOtrasDeducciones Decimal?       @db.Decimal(12, 2)
+  montoDeduccionSubsidio      Decimal?          @db.Decimal(12, 2)
+
+  // Factores y Montos - FINIQUITO
+  factorDiasTrabajadosFiniquito    Decimal?     @db.Decimal(12, 4)
+  montoDiasTrabajadosFiniquito     Decimal?     @db.Decimal(12, 2)
+  factorSeptimoDiaFiniquito        Decimal?     @db.Decimal(12, 4)
+  montoSeptimoDiaFiniquito         Decimal?     @db.Decimal(12, 2)
+  factorVacacionesFiniquito        Decimal?     @db.Decimal(12, 4)
+  montoVacacionesFiniquito         Decimal?     @db.Decimal(12, 2)
+  factorPrimaVacacionalFiniquito   Decimal?     @db.Decimal(12, 4)
+  montoPrimaVacacionalFiniquito    Decimal?     @db.Decimal(12, 2)
+  factorAguinaldoFiniquito         Decimal?     @db.Decimal(12, 4)
+  montoAguinaldoFiniquito          Decimal?     @db.Decimal(12, 2)
+
+  // Factores y Montos - LIQUIDACIÓN
+  factorIndemnizacion90Dias        Decimal?     @db.Decimal(12, 4)
+  montoIndemnizacion90Dias         Decimal?     @db.Decimal(12, 2)
+  factorIndemnizacion20Dias        Decimal?     @db.Decimal(12, 4)
+  montoIndemnizacion20Dias         Decimal?     @db.Decimal(12, 2)
+  factorPrimaAntiguedad            Decimal?     @db.Decimal(12, 4)
+  montoPrimaAntiguedad             Decimal?     @db.Decimal(12, 2)
+
+  // Factores y Montos - COMPLEMENTO
+  factorDiasTrabajadosComplemento  Decimal?     @db.Decimal(12, 4)
+  montoDiasTrabajadosComplemento   Decimal?     @db.Decimal(12, 2)
+  factorSeptimoDiaComplemento      Decimal?     @db.Decimal(12, 4)
+  montoSeptimoDiaComplemento       Decimal?     @db.Decimal(12, 2)
+  factorVacacionesComplemento      Decimal?     @db.Decimal(12, 4)
+  montoVacacionesComplemento       Decimal?     @db.Decimal(12, 2)
+  factorPrimaVacacionalComplemento Decimal?     @db.Decimal(12, 4)
+  montoPrimaVacacionalComplemento  Decimal?     @db.Decimal(12, 2)
+  factorAguinaldoComplemento       Decimal?     @db.Decimal(12, 4)
+  montoAguinaldoComplemento        Decimal?     @db.Decimal(12, 2)
+
+  // Totales por sección
+  totalPercepcionesFiniquito       Decimal?     @db.Decimal(12, 2)
+  totalDeduccionesFiniquito        Decimal?     @db.Decimal(12, 2)
+  totalFiniquito                   Decimal?     @db.Decimal(12, 2)
+  totalPercepcionesLiquidacion     Decimal?     @db.Decimal(12, 2)
+  totalDeduccionesLiquidacion      Decimal?     @db.Decimal(12, 2)
+  totalLiquidacion                 Decimal?     @db.Decimal(12, 2)
+  totalPercepcionesComplemento     Decimal?     @db.Decimal(12, 2)
+  totalDeduccionesComplemento      Decimal?     @db.Decimal(12, 2)
+  totalComplemento                 Decimal?     @db.Decimal(12, 2)
+
+  // Total final a pagar
+  totalAPagar                      Decimal?     @db.Decimal(12, 2)
 
   // Metadata
   daysWorked                  Int
@@ -694,7 +765,7 @@ model Finiquito {
 
   // PDF y archivos
   pdfUrl                      String?           @db.VarChar(2048)
-  version                     Int               @default(1)
+  version                     Int               @default(2)
 
   // Timestamps
   createdAt                   DateTime          @default(now())
