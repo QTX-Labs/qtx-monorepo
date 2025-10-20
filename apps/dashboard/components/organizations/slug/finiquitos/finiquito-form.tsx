@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CalendarIcon, Loader2 } from 'lucide-react';
@@ -8,7 +8,6 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useAction } from 'next-safe-action/hooks';
 import { toast } from 'sonner';
-import numeral from 'numeral';
 
 import { SalaryFrequency, BorderZone, GratificationType } from '@workspace/database';
 import { Button } from '@workspace/ui/components/button';
@@ -53,9 +52,6 @@ import { CurrencyInput } from '~/components/ui/currency-input';
 import {
   getEmployeeVacationDays,
   formatMoney,
-  calculateSeniorityPremiumDays,
-  calculateDaysWorked,
-  calculateYearsWorked
 } from '~/lib/finiquitos/utils';
 import type { FiniquitoCalculationResult } from '~/lib/finiquitos/types';
 
@@ -134,7 +130,7 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
   });
 
   const { execute: executeCreate, status } = useAction(createFiniquito, {
-    onSuccess: ({ data }) => {
+    onSuccess: () => {
       toast.success('Finiquito creado exitosamente');
       form.reset();
       setCalculationResult(null);
@@ -240,14 +236,14 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
   }, [enableLiquidation, form]);
 
   // Auto-calcular Prima de Antigüedad cuando el toggle está activo y calculateSeniorityPremium es true
-  useEffect(() => {
-    if (includeSeniorityPremium && calculateSeniorityPremium && hireDate && terminationDate) {
-      const daysWorked = calculateDaysWorked(hireDate, terminationDate);
-      const yearsWorked = calculateYearsWorked(daysWorked);
-      const calculatedDays = calculateSeniorityPremiumDays(yearsWorked, borderZone);
-      form.setValue('seniorityPremiumDays', calculatedDays);
-    }
-  }, [includeSeniorityPremium, calculateSeniorityPremium, hireDate, terminationDate, borderZone, form]);
+  // useEffect(() => {
+  //   if (includeSeniorityPremium && calculateSeniorityPremium && hireDate && terminationDate) {
+  //     const daysWorked = calculateDaysWorked(hireDate, terminationDate);
+  //     const yearsWorked = calculateYearsWorked(daysWorked);
+  //     // const calculatedDays = calculateSeniorityPremiumDays(yearsWorked, borderZone);
+  //     form.setValue('seniorityPremiumDays', calculatedDays);
+  //   }
+  // }, [includeSeniorityPremium, calculateSeniorityPremium, hireDate, terminationDate, borderZone, form]);
 
   // Restablecer campos de Complemento a valores por defecto cuando se desactiva
   useEffect(() => {
