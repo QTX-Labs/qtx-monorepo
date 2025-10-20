@@ -174,18 +174,18 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
                 </Text>
 
                 {/* FIRMA DE RENUNCIA */}
-                <Text style={[styles.center, { marginTop: 70, marginBottom: 12, textAlign: 'center' }]}>
+                <Text style={[styles.center, { marginTop: 50, marginBottom: 8, textAlign: 'center' }]}>
                     ATENTAMENTE{'\n'}
                     {ubicacion} A {formatDateLong(finiquito.terminationDate)}.
                 </Text>
 
-                <View style={[styles.signature, { marginTop: 20 }]}>
+                <View style={[styles.signature, { marginTop: 12 }]}>
                     <View style={styles.underline} />
                     <Text>({finiquito.employeeName})</Text>
                 </View>
 
                 {/* RECIBO DE FINIQUITO */}
-                <Text style={[styles.center, { marginTop: 10, marginBottom: 12, textAlign: 'center' }]}>
+                <Text style={[styles.center, { marginTop: 8, marginBottom: 10, textAlign: 'center' }]}>
                     <Text style={styles.bold}>R E C I B O   F I N I Q U I T O</Text>
                 </Text>
 
@@ -258,7 +258,7 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
                 </Text>
 
                 {/* FIRMA FINAL */}
-                <Text style={[styles.center, { marginTop: 20, marginBottom: 12, textAlign: 'center' }]}>
+                <Text style={[styles.center, { marginTop: 16, marginBottom: 8, textAlign: 'center' }]}>
                   ATENTAMENTE{'\n'}
                   {ubicacion} A {formatDateLong(finiquito.terminationDate)}.
                 </Text>
