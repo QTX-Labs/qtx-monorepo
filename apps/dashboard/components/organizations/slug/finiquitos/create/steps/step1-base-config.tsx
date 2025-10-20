@@ -78,12 +78,9 @@ export function Step1BaseConfig() {
   const realDailySalary = form.watch('realDailySalary');
   const realHireDate = form.watch('realHireDate');
 
-  // AUTO-CÁLCULO 1: Salario Diario Fiscal según Zona Fronteriza
+  // AUTO-SUGERENCIA: Salario Diario Fiscal según Zona Fronteriza
   // NO_FRONTERIZA: 278.80 | FRONTERIZA: 419.88
-  useEffect(() => {
-    const fiscalSalary = borderZone === BorderZone.FRONTERIZA ? 419.88 : 278.80;
-    form.setValue('fiscalDailySalary', fiscalSalary);
-  }, [borderZone, form]);
+  // NOTA: Ya no se auto-calcula, solo se sugiere visualmente en el FormDescription
 
   // AUTO-CÁLCULO 2: Días de Vacaciones según Antigüedad (LFT 2023)
   // Usa getEmployeeVacationDays(hireDate, terminationDate)
@@ -97,21 +94,22 @@ export function Step1BaseConfig() {
   // AUTO-CÁLCULO 3: Salario Diario Integrado y Factor de Integración
   // SDI = Salario Fiscal × Factor de Integración
   // Factor de Integración considera: días aguinaldo, días vacaciones, prima vacacional
+  const fiscalDailySalary = form.watch('fiscalDailySalary');
+
   useEffect(() => {
-    if (hireDate && terminationDate) {
+    if (hireDate && terminationDate && fiscalDailySalary && fiscalDailySalary > 0) {
       const integrationFactor = getEmployeeIntegrationFactor(hireDate, {
         terminationDate,
         aguinaldo: aguinaldoDays,
         vacationBonus: vacationPremiumPercentage,
       });
 
-      const fiscalSalary = borderZone === BorderZone.FRONTERIZA ? 419.88 : 278.80;
-      const integratedSalary = parseFloat((fiscalSalary * integrationFactor).toFixed(2));
+      const integratedSalary = parseFloat((fiscalDailySalary * integrationFactor).toFixed(2));
 
       form.setValue('integrationFactor', integrationFactor);
       form.setValue('integratedDailySalary', integratedSalary);
     }
-  }, [hireDate, terminationDate, aguinaldoDays, vacationPremiumPercentage, borderZone, form]);
+  }, [hireDate, terminationDate, aguinaldoDays, vacationPremiumPercentage, fiscalDailySalary, form]);
 
   // AUTO-COMPLETADO: Fecha de Ingreso Real cuando se activa Complemento
   // Si el complemento se activa y la fecha real está vacía, usar la fecha fiscal como default
@@ -414,19 +412,17 @@ export function Step1BaseConfig() {
               name="fiscalDailySalary"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Salario Diario Fiscal</FormLabel>
+                  <FormLabel>Salario Diario Fiscal *</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       step="0.01"
-                      disabled
                       {...field}
                       onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                      className="bg-muted"
                     />
                   </FormControl>
                   <FormDescription>
-                    Auto-calculado según zona fronteriza
+                    Sugerido según zona: {borderZone === BorderZone.FRONTERIZA ? '419.88' : '278.80'}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
