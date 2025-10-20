@@ -247,9 +247,95 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Co-Authored-By: Happy <yesreply@happy.engineering>
 ```
 
+## Feature Modules
+
+### Finiquito (Severance Pay) Calculator
+
+The dashboard app includes a comprehensive finiquito calculator system for Mexican labor law compliance. The system is organized into calculation libraries and a multi-step wizard UI.
+
+#### Architecture Overview
+
+**Calculation Libraries** (`apps/dashboard/lib/finiquitos/`):
+- `calculadora-factores/` - Calculates proportional factors (vacation, aguinaldo, etc.)
+- `calculadora-finiquitos/` - Main finiquito calculation orchestration
+- `calculadora-isr/` - ISR (tax) calculations
+- `calculadora-infonavit/` - Infonavit credit calculations
+- `calculate-finiquito-complete.ts` - Entry point that orchestrates all calculators
+
+**Wizard UI** (`apps/dashboard/components/organizations/slug/finiquitos/create/`):
+- Four-step wizard: Base Config → Factors → Deductions → Review
+- Live calculation panel that updates as user edits data
+- Shared context for managing wizard state across steps
+
+#### Key Implementation Details
+
+**Step-to-Step Data Flow:**
+1. **Step 1 (Base Config)**: User enters employee info, dates, salaries
+   - On submit, calls `calculateFiniquitoComplete()` to compute initial factors
+   - Auto-populates Step 2 data via `updateStep2()` in wizard context
+   - Sets `diasTrabajados` and `septimoDia` to 0 (user must fill manually)
+   - Populates all other factors: vacaciones, primaVacacional, aguinaldo, liquidación, complemento
+   - Stores initial calculation in context via `updateLiveCalculation()`
+
+2. **Step 2 (Factors)**: User reviews and edits calculated factors
+   - Form pre-populated with factors from Step 1
+   - Live calculation updates as user edits (debounced 300ms)
+   - Supports fiscal + complement scenarios, liquidación + complement combinations
+   - Gratificación converts bidirectionally between días and pesos
+
+3. **Step 3 (Deductions)**: User enters manual deductions (Infonavit, Fonacot, etc.)
+   - Live calculation includes deductions in real-time
+
+4. **Step 4 (Review)**: Final review before submission
+
+**Live Calculation System** (`hooks/use-live-calculation.ts`):
+- Uses `form.watch()` to detect changes in form data
+- Debounces Step 2 and Step 3 data (300ms) to prevent excessive recalculation
+- Implements stable dependency comparison using `JSON.stringify()` + `useMemo()`
+- Avoids infinite loops by comparing serialized values instead of object references
+- Recalculates entire finiquito on each change, updating context
+
+**Calculation Orchestration** (`calculate-finiquito-complete.ts`):
+- Entry point: accepts `CalculateFiniquitoInput`, returns `CalculateFiniquitoOutput`
+- Flow:
+  1. Calls `DefaultTerminationProportionalImpl` (calculadora-factores) for base factors
+  2. Merges manual factors from Step 2 if provided (overrides calculated values)
+  3. Calls `ImplementationV1` (calculadora-finiquitos) for monetary calculations
+  4. Maps result to structured output with `factores`, `montos`, `isr`, `deducciones`, `totales`
+
+**Important Data Distinctions:**
+- **Prima Vacacional Factor vs Value**:
+  - In `Step2Factors.primaVacacional`: stored as percentage factor (e.g., 0.24 for 24%)
+  - In `ConceptosFiniquito.primaVacacional`: stored as vacation days (calculator applies percentage)
+  - This prevents double-application of percentage during calculations
+  - See `/home/n3m/projects/freelance/qtx-monorepo/apps/dashboard/lib/finiquitos/calculate-finiquito-complete.ts` lines 273-276
+
+**Wizard Context** (`wizard-context.tsx`):
+- Manages current step, data for all 4 steps, and live calculation result
+- Provides navigation methods: `goNext()`, `goPrevious()`, `goToStep()`
+- Update methods: `updateStep1()`, `updateStep2()`, `updateStep3()`, `updateLiveCalculation()`
+
+#### File Reference
+
+**Key Files:**
+- Entry point: `/apps/dashboard/lib/finiquitos/calculate-finiquito-complete.ts`
+- Live calc hook: `/apps/dashboard/components/organizations/slug/finiquitos/create/hooks/use-live-calculation.ts`
+- Wizard context: `/apps/dashboard/components/organizations/slug/finiquitos/create/wizard-context.tsx`
+- Step 1: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step1-base-config.tsx`
+- Step 2: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step2-factors.tsx`
+- Live panel: `/apps/dashboard/components/organizations/slug/finiquitos/shared/live-calculation-panel.tsx`
+
+**Schemas:**
+- Step 1: `/apps/dashboard/lib/finiquitos/schemas/step1-base-config-schema.ts`
+- Step 2: `/apps/dashboard/lib/finiquitos/schemas/step2-factors-schema.ts`
+- Step 3: `/apps/dashboard/lib/finiquitos/schemas/step3-deductions-schema.ts`
+- Types: `/apps/dashboard/lib/finiquitos/types/calculate-finiquito-types.ts`
+
 ## Troubleshooting
 
 - **Prisma types not loaded**: Restart TS server or VS Code, or run `pnpm --filter database generate`
 - **Can't login**: Ensure database is set up and migrations applied
 - **Use pnpm only**: npm/yarn are not supported in this monorepo
 - **Port conflicts**: Dashboard (3000), Marketing (3001), API (3002), Prisma Studio (3003)
+- **Finiquito live calculation not updating**: Check browser console for errors; ensure Step 1 data is complete
+- **Infinite re-renders in wizard**: Verify `useLiveCalculation` uses stable keys (JSON.stringify) not object references

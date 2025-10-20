@@ -4,11 +4,49 @@
  * Este servicio integra la calculadora de factores y la calculadora de finiquitos
  * para producir un resultado completo con factores, montos, ISR, deducciones y totales.
  *
- * Flujo:
- * 1. Llamar calculadora de factores (TerminationProportionalService)
- * 2. Calcular factores adicionales (diasTrabajados, septimoDia)
+ * FLUJO PRINCIPAL:
+ * 1. Llamar calculadora de factores (DefaultTerminationProportionalImpl)
+ *    - Calcula factores proporcionales: vacaciones, prima vacacional, aguinaldo
+ *    - Calcula liquidación si está habilitada: indemnización 90/20 días, prima antigüedad
+ *    - Calcula complemento si está habilitado (diferencia salario real vs fiscal)
+ * 2. Merge con factores manuales (del Step 2 del wizard, si existen)
+ *    - Los factores manuales sobrescriben los calculados
  * 3. Llamar calculadora de finiquitos (ImplementationV1)
+ *    - Convierte factores (días) a montos (pesos)
+ *    - Calcula ISR (impuestos)
+ *    - Aplica deducciones manuales
  * 4. Mapear resultado a output estructurado
+ *    - Organiza en: factores, montos, isr, deducciones, totales
+ *
+ * IMPORTANTE - PRIMA VACACIONAL (FACTOR vs VALUE):
+ * La prima vacacional requiere manejo especial para evitar doble aplicación del porcentaje:
+ *
+ * - En Step2Factors.primaVacacional:
+ *   Almacenado como FACTOR (ej: 0.24 para 24%)
+ *   Este es el valor que se muestra al usuario para edición
+ *
+ * - En ConceptosFiniquito.primaVacacional:
+ *   Almacenado como DÍAS DE VACACIONES (ej: 1.0 día)
+ *   La función calcularPrimaVacacional() aplica el porcentaje (25%)
+ *   Resultado: 1.0 × 25% = 0.25 días de prima vacacional
+ *
+ * - En Output.factores.primaVacacional:
+ *   Se regresa el FACTOR original (0.24) para visualización
+ *   Esto permite que el usuario vea el valor correcto en Step 2
+ *
+ * Ver líneas 273-276 y 344 para la implementación específica.
+ * Sin esta distinción, el porcentaje se aplicaría dos veces: una en la calculadora
+ * de factores y otra en calcularPrimaVacacional, resultando en valores incorrectos.
+ *
+ * CASOS DE USO:
+ * 1. Step 1 → Step 2: auto-población de factores iniciales
+ * 2. Live calculation: actualización en tiempo real al editar Step 2/3
+ * 3. Step 4: cálculo final antes de crear el finiquito en BD
+ *
+ * RELATED:
+ * - See /apps/dashboard/components/organizations/slug/finiquitos/create/steps/step1-base-config.tsx for initial call
+ * - See /apps/dashboard/components/organizations/slug/finiquitos/create/hooks/use-live-calculation.ts for live updates
+ * - See /apps/dashboard/lib/finiquitos/calculadora-finiquitos/implementation.ts for monetary calculation
  */
 
 import { BorderZone } from '@workspace/database';
@@ -26,7 +64,8 @@ import {
   FactoresCalculoFiniquitoLiquidacion,
   PayrollSettings,
   PayrollConstants,
-  ISRRates
+  ISRRates,
+  Perception
 } from './calculadora-finiquitos/models';
 import {
   CalculateFiniquitoInput,
@@ -261,7 +300,12 @@ export function calculateFiniquitoComplete(
   const diasTrabajados = input.manualFactors?.finiquito?.diasTrabajados ?? 0;
   const septimoDia = input.manualFactors?.finiquito?.septimoDia ?? 0;
   const vacaciones = input.manualFactors?.finiquito?.vacaciones ?? resultFactores.fiscal.proportionalSettlementConcepts.vacations;
+
+  // IMPORTANTE: primaVacacionalFactor es el porcentaje ya calculado (ej: 0.24 para 24%)
+  // Este valor se guardará en output.factores.primaVacacional para visualización en Step 2
+  // Pero NO se usa directamente en conceptosFiniquito (ver línea 314)
   const primaVacacionalFactor = input.manualFactors?.finiquito?.primaVacacional ?? resultFactores.fiscal.proportionalSettlementConcepts.vacationBonus;
+
   const aguinaldo = input.manualFactors?.finiquito?.aguinaldo ?? resultFactores.fiscal.proportionalSettlementConcepts.christmasBonus;
 
   // ===== PASO 3: PREPARAR INPUT PARA CALCULADORA DE FINIQUITOS =====
@@ -271,8 +315,10 @@ export function calculateFiniquitoComplete(
     septimoDia: septimoDia,
     vacaciones: vacaciones,
     vacacionesPendientes: resultFactores.fiscal.proportionalSettlementConcepts.pendingVacations || 0,
-    // NOTA: primaVacacional en ConceptosFiniquito debe ser días de vacaciones, no el factor ya calculado
-    // porque calcularPrimaVacacional aplica el porcentaje
+    // CRÍTICO: primaVacacional en ConceptosFiniquito debe ser DÍAS DE VACACIONES, NO el factor
+    // La función calcularPrimaVacacional() en ImplementationV1 aplicará el porcentaje (25%)
+    // Si pasamos el factor aquí, el porcentaje se aplicaría dos veces
+    // Ejemplo: vacaciones = 1.0 día → calcularPrimaVacacional aplica 25% → 0.25 días de prima
     primaVacacional: vacaciones,
     primaVacacionalPendiente: resultFactores.fiscal.proportionalSettlementConcepts.pendingVacationBonus || 0,
     aguinaldo: aguinaldo,
@@ -513,7 +559,7 @@ export function calculateFiniquitoComplete(
 /**
  * Helper para mapear Perception a PerceptionDetail
  */
-function mapPercept(p: any): PerceptionDetail {
+function mapPercept(p: Perception): PerceptionDetail {
   return {
     totalAmount: p.totalAmount || 0,
     totalTaxBase: p.totalTaxBase || 0,

@@ -1,3 +1,39 @@
+/**
+ * Step 2 Factors Schema - Editable Calculated Factors
+ *
+ * This schema validates the calculated factors (in days) that are presented
+ * to the user in Step 2 for review and editing before proceeding to Step 3.
+ *
+ * DATA FLOW:
+ * 1. Step 1 → calculateFiniquitoComplete() → returns initial factors
+ * 2. Step 1 calls updateStep2() with calculated factors
+ * 3. Step 2 form pre-populated with these values
+ * 4. User can edit any factor before continuing
+ * 5. Edited factors trigger live calculation via useLiveCalculation hook
+ *
+ * FACTOR SECTIONS:
+ * - factoresFiniquito: Always present (fiscal settlement)
+ * - factoresLiquidacion: Optional if liquidacionActivada = true
+ * - factoresComplemento: Optional if complementoActivado = true
+ * - factoresLiquidacionComplemento: Optional if both liquidación AND complemento enabled
+ * - configuracionAdicional: Optional extras (gratificación)
+ * - beneficiosFiscalesPendientes: Pending benefits (vacation days/premium)
+ * - beneficiosComplementoPendientes: Pending complement benefits
+ *
+ * IMPORTANT - PRIMA VACACIONAL:
+ * The primaVacacional field stores the FACTOR (percentage as decimal),
+ * not the vacation days. This is intentional to match the calculator output.
+ * Example: 0.24 means 24% has been applied to vacation days.
+ *
+ * When passing to ConceptosFiniquito for calculation, we use vacation days
+ * instead, so the percentage is applied by calcularPrimaVacacional().
+ * See calculate-finiquito-complete.ts lines 303-321 for implementation.
+ *
+ * RELATED:
+ * - See /apps/dashboard/components/organizations/slug/finiquitos/create/steps/step2-factors.tsx for UI
+ * - See /apps/dashboard/lib/finiquitos/calculate-finiquito-complete.ts for calculation
+ */
+
 import { z } from 'zod';
 
 /**

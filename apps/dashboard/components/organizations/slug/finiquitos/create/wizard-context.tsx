@@ -1,3 +1,42 @@
+/**
+ * Finiquito Wizard Context
+ *
+ * Manages shared state across the 4-step finiquito creation wizard.
+ * This context provides centralized state management for form data,
+ * wizard navigation, and live calculation results.
+ *
+ * WIZARD STEPS:
+ * 1. Base Config - Employee info, dates, salaries, toggles for liquidación/complemento
+ * 2. Factors - Editable calculated factors (days) for finiquito/liquidación/complemento
+ * 3. Deductions - Manual deductions (Infonavit, Fonacot, other)
+ * 4. Review - Final review and submission
+ *
+ * STATE MANAGEMENT:
+ * - currentStep: tracks active wizard step (1-4)
+ * - step1Data, step2Data, step3Data: form data for each step
+ * - liveCalculation: current calculation result (updated in real-time)
+ *
+ * STEP 1 → STEP 2 DATA FLOW:
+ * When user completes Step 1 and clicks "Siguiente":
+ * 1. Step1BaseConfig.onSubmit() calls calculateFiniquitoComplete()
+ * 2. Result is used to populate Step 2 factors via updateStep2()
+ * 3. diasTrabajados and septimoDia are set to 0 (user must fill manually)
+ * 4. All other factors are pre-populated from calculation
+ * 5. liveCalculation is stored via updateLiveCalculation()
+ * 6. Navigation advances to Step 2 via goNext()
+ *
+ * See step1-base-config.tsx lines 143-205 for implementation.
+ *
+ * LIVE CALCULATION UPDATES:
+ * Steps 2 and 3 use useLiveCalculation hook to recalculate in real-time
+ * as user edits factors/deductions. Hook updates context via
+ * updateLiveCalculation() on each change (debounced 300ms).
+ *
+ * RELATED:
+ * - See /apps/dashboard/components/organizations/slug/finiquitos/create/steps/step1-base-config.tsx for Step 1 → Step 2 flow
+ * - See /apps/dashboard/components/organizations/slug/finiquitos/create/hooks/use-live-calculation.ts for live updates
+ */
+
 'use client';
 
 import { createContext, useContext, useState, type ReactNode } from 'react';

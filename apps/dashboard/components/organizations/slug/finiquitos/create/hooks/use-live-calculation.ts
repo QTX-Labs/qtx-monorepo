@@ -1,3 +1,39 @@
+/**
+ * Live Calculation Hook for Finiquito Wizard
+ *
+ * This hook provides real-time finiquito calculation updates as the user
+ * edits form data across wizard steps. It implements several optimizations
+ * to prevent infinite loops and excessive recalculation.
+ *
+ * ARCHITECTURE:
+ * - Watches form data from Steps 1, 2, and 3 via wizard context
+ * - Debounces Step 2 (factors) and Step 3 (deductions) changes (300ms)
+ * - Uses stable dependency keys (JSON.stringify) to prevent infinite loops
+ * - Recalculates entire finiquito on each dependency change
+ * - Updates wizard context with new calculation result
+ *
+ * INFINITE LOOP PREVENTION:
+ * The hook uses useMemo with JSON.stringify to create stable keys from data.
+ * This prevents re-renders caused by object reference changes from form.watch().
+ * Without this, the useEffect would trigger infinitely because form.watch()
+ * returns new object references on every render.
+ *
+ * DEBOUNCING:
+ * Step 2 and Step 3 data are debounced (300ms) to prevent excessive
+ * recalculation while user is typing. Step 1 is not debounced because
+ * it only changes on form submit (navigation to Step 2).
+ *
+ * USAGE:
+ * Used in Step 2 (factors) and Step 3 (deductions) to show live calculation
+ * panel alongside form. Step 1 calls calculateFiniquitoComplete directly
+ * on submit to populate initial factors.
+ *
+ * RELATED:
+ * - See /apps/dashboard/lib/finiquitos/calculate-finiquito-complete.ts for calculation logic
+ * - See /apps/dashboard/components/organizations/slug/finiquitos/create/wizard-context.tsx for state management
+ * - See /apps/dashboard/components/organizations/slug/finiquitos/shared/live-calculation-panel.tsx for UI
+ */
+
 import { useEffect, useState, useMemo } from 'react';
 
 import { SalaryFrequency } from '@workspace/database';
