@@ -154,7 +154,7 @@ function ContactImage(contact: ContactDto): React.JSX.Element {
                 <TrashIcon className="size-4 shrink-0" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="right">Remove image</TooltipContent>
+            <TooltipContent side="right">Eliminar imagen</TooltipContent>
           </Tooltip>
         )}
       </div>
@@ -212,7 +212,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
         onSubmit={methods.handleSubmit(onSubmit)}
       >
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold tracking-tight">Properties</h3>
+          <h3 className="text-sm font-semibold tracking-tight">Propiedades</h3>
           {editMode ? (
             <div>
               <Button
@@ -222,7 +222,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
                 className="text-success hover:text-success min-w-fit"
                 onClick={handleCancel}
               >
-                Cancel
+                Cancelar
               </Button>
               <Button
                 type="button"
@@ -232,7 +232,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
                 disabled={!canSubmit}
                 onClick={methods.handleSubmit(onSubmit)}
               >
-                Save
+                Guardar
               </Button>
             </div>
           ) : (
@@ -244,14 +244,14 @@ function Properties(contact: ContactDto): React.JSX.Element {
               disabled={methods.formState.isSubmitting}
               onClick={handleEnableEditMode}
             >
-              Edit
+              Editar
             </Button>
           )}
         </div>
         <dl className="space-y-1 text-sm">
           <Property
             icon={<SquareDashedKanbanIcon className="size-3 shrink-0" />}
-            term="Record"
+            term="Registro"
             details={
               editMode ? (
                 <FormField
@@ -293,7 +293,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
           />
           <Property
             icon={<IdCardIcon className="size-3 shrink-0" />}
-            term="Name"
+            term="Nombre"
             details={
               editMode ? (
                 <FormField
@@ -353,7 +353,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
           />
           <Property
             icon={<PhoneIcon className="size-3 shrink-0" />}
-            term="Phone"
+            term="Teléfono"
             details={
               editMode ? (
                 <FormField
@@ -383,7 +383,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
           />
           <Property
             icon={<LayoutListIcon className="size-3 shrink-0" />}
-            term="Address"
+            term="Dirección"
             details={
               editMode ? (
                 <FormField
