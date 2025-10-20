@@ -284,3 +284,29 @@ export function getEmployeeVacationDays(
 
   return vacationDays;
 }
+
+/**
+ * Calcula los días de prima de antigüedad según años trabajados
+ * Fórmula: 12 días por año trabajado
+ * Tope: 2 veces el salario mínimo de la zona (se aplica al monto, no a los días)
+ *
+ * @param yearsWorked - Años trabajados con decimales
+ * @param borderZone - Zona fronteriza o no fronteriza
+ * @returns Días de prima de antigüedad
+ *
+ * @example
+ * calculateSeniorityPremiumDays(5.5, BorderZone.NO_FRONTERIZA) // 66 días (5.5 × 12)
+ * calculateSeniorityPremiumDays(10, BorderZone.FRONTERIZA) // 120 días (10 × 12)
+ */
+export function calculateSeniorityPremiumDays(
+  yearsWorked: number,
+  borderZone: BorderZone
+): number {
+  // 12 días por año trabajado
+  const days = yearsWorked * 12;
+
+  // El tope de 2 veces el salario mínimo se aplica al MONTO, no a los días
+  // Por ahora retornamos los días calculados
+  // El tope se aplicará al calcular el monto (días × salario diario)
+  return round(days, DECIMAL_PRECISION.DAYS);
+}

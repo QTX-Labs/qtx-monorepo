@@ -65,6 +65,10 @@ const finiquitoBaseSchema = z.object({
   severanceDays: z.coerce.number().nonnegative().default(0),
   seniorityPremiumDays: z.coerce.number().nonnegative().default(0),
 
+  // Prima de Antigüedad - Control de inclusión y cálculo automático
+  includeSeniorityPremium: z.boolean().default(false), // Toggle para incluir en finiquito
+  calculateSeniorityPremium: z.boolean().default(true), // Auto-calcular por default
+
   // Deducciones - ISR (calculados automáticamente, pero editables)
   isrFiniquitoAmount: z.coerce.number().nonnegative().default(0),
   isrArt174Amount: z.coerce.number().nonnegative().default(0),
