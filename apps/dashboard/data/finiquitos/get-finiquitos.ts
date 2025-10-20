@@ -26,6 +26,7 @@ export const getFiniquitos = cache(async () => {
       id: true,
       employeeName: true,
       employeePosition: true,
+      empresaName: true,
       hireDate: true,
       terminationDate: true,
       salary: true,

@@ -599,6 +599,8 @@ model Finiquito {
 
   // Datos básicos del empleado (snapshot)
   employeeName                String            @db.VarChar(255)
+  employeeRFC                 String            @db.VarChar(255)
+  employeeCURP                String            @db.VarChar(255)
   employeePosition            String?           @db.VarChar(255)
   empresaName                 String            @db.VarChar(255)
   empresaRFC                  String?           @db.VarChar(13)

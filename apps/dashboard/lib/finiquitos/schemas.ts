@@ -47,11 +47,11 @@ const finiquitoBaseSchema = z.object({
   vacationPremium: z.coerce.number().min(25, 'La prima vacacional no puede ser menor a 25%').max(100).default(25), // Ahora es porcentaje entero (25 = 25%)
 
   // Beneficios Fiscales
-  pendingVacationDays: z.coerce.number().nonnegative().default(0),
+  pendingVacationDays: z.coerce.number().default(0), // Permite negativos cuando el empleado debe días
   pendingVacationPremium: z.coerce.number().nonnegative().default(0),
 
   // Beneficios de Complemento
-  complementPendingVacationDays: z.coerce.number().nonnegative().default(0),
+  complementPendingVacationDays: z.coerce.number().default(0), // Permite negativos cuando el empleado debe días
   complementPendingVacationPremium: z.coerce.number().nonnegative().default(0),
 
   // Días trabajados en periodo
@@ -64,6 +64,10 @@ const finiquitoBaseSchema = z.object({
   gratificationPesos: z.coerce.number().nonnegative().optional(),
   severanceDays: z.coerce.number().nonnegative().default(0),
   seniorityPremiumDays: z.coerce.number().nonnegative().default(0),
+
+  // Prima de Antigüedad - Control de inclusión y cálculo automático
+  includeSeniorityPremium: z.boolean().default(false), // Toggle para incluir en finiquito
+  calculateSeniorityPremium: z.boolean().default(true), // Auto-calcular por default
 
   // Deducciones - ISR (calculados automáticamente, pero editables)
   isrFiniquitoAmount: z.coerce.number().nonnegative().default(0),

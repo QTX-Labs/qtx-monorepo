@@ -26,6 +26,9 @@ importers:
       '@turbo/gen':
         specifier: 2.5.4
         version: 2.5.4(@types/node@22.15.30)(typescript@5.8.3)
+      '@types/big.js':
+        specifier: ^6.2.2
+        version: 6.2.2
       cross-env:
         specifier: 7.0.3
         version: 7.0.3

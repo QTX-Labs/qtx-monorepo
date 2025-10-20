@@ -49,6 +49,7 @@ type FiniquitoListItem = Pick<
   Finiquito,
   | 'id'
   | 'employeeName'
+  | 'empresaName'
   | 'hireDate'
   | 'terminationDate'
   | 'salary'
@@ -150,6 +151,7 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
             <TableHeader>
               <TableRow>
                 <TableHead>Empleado</TableHead>
+                <TableHead>Empresa</TableHead>
                 <TableHead>Fecha de Baja</TableHead>
                 <TableHead>Total a Pagar</TableHead>
                 <TableHead>Creado Por</TableHead>
@@ -167,6 +169,7 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
                   <TableCell className="font-medium">
                     {finiquito.employeeName}
                   </TableCell>
+                  <TableCell>{finiquito.empresaName || '-'}</TableCell>
                   <TableCell>
                     {format(toLocalDate(finiquito.terminationDate), 'PPP', {
                       locale: es

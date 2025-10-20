@@ -13,6 +13,7 @@ type FiniquitoListItem = Pick<
   Finiquito,
   | 'id'
   | 'employeeName'
+  | 'empresaName'
   | 'hireDate'
   | 'terminationDate'
   | 'salary'

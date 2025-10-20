@@ -1,0 +1,256 @@
+✅ CHECKLIST FINIQUITOS - VERIFICACIÓN PARA EL LUNES
+
+Instrucciones: Marca cada ítem
+✅ = Ya funciona
+⚠️ = Necesita ajuste
+❌ = Falta implementar
+
+═══════════════════════════════════════
+
+🔴 SECCIÓN 1: CÁLCULOS (CRÍTICO)
+
+📊 1.1 AGUINALDO
+□ El cálculo proporcional es correcto (días_trabajados/365 × días_aguinaldo)
+□ Si configuro 20 días, usa 20 COMPLETOS (no suma 15+5)
+□ El mínimo de 15 días se respeta
+□ Los números coinciden EXACTAMENTE con el Excel del cliente
+
+*Prueba:*
+Salario: $10,000 mensual
+Aguinaldo: 20 días
+Tiempo: 1 año completo
+Resultado esperado: $6,578.95
+
+📊 1.2 PRIMA VACACIONAL
+□ El cálculo es correcto (días × prima% × salario_diario)
+□ Si es 0%, usa 25% por default (mínimo legal)
+□ Si es mayor a 25%, usa ese % SIN sumar nada
+□ No permite menos de 25%
+□ Los números coinciden con el Excel
+
+*Prueba:*
+Salario: $10,000 mensual
+Prima: 30%
+Días vac: 12
+Resultado esperado: $1,184.21
+
+📊 1.3 VACACIONES
+□ Los días se calculan automáticamente según antigüedad
+□ Existe campo SEPARADO para "días pendientes por pagar"
+□ Los días pendientes permiten NEGATIVOS (cuando debe días)
+□ Los pendientes se suman/restan correctamente
+
+*Debe verse así:*
+- Días proporcionales: [auto, no editable]
+- Días pendientes: [manual, permite +/-]
+
+📊 1.4 PRIMA DE ANTIGÜEDAD
+□ Se calcula automáticamente por DEFAULT
+□ Existe toggle "Incluir en finiquito" (OFF por default)
+□ Si toggle OFF, NO se incluye en cálculo
+□ Si toggle ON, calcula: 12 días × años × salario
+
+═══════════════════════════════════════
+
+🔴 SECCIÓN 2: DEDUCCIONES (CRÍTICO)
+
+💰 2.1 ISR
+□ Se calcula AUTOMÁTICAMENTE
+□ El campo está DESHABILITADO (gris, no editable)
+□ Se muestra en deducciones pero NO se puede editar
+
+💰 2.2 IMSS
+□ El campo manual de IMSS fue ELIMINADO
+□ IMSS NO aparece en deducciones
+
+💰 2.3 SUBSIDIO
+□ El campo de Subsidio fue ELIMINADO
+□ Subsidio NO aparece en deducciones
+
+💰 2.4 DEDUCCIONES MANUALES
+□ Solo hay 3 campos editables: Infonavit, Fonacot, Otras
+□ Todos aceptan valores positivos
+
+═══════════════════════════════════════
+
+🟡 SECCIÓN 3: VALIDACIONES
+
+📝 3.1 RFC
+□ RFC empleado es OBLIGATORIO
+□ Valida formato persona física (13 chars: AAAA123456XXX)
+□ RFC empresa es OBLIGATORIO
+□ Valida formato moral (12 chars) Y física (13 chars)
+
+📝 3.2 CURP
+□ CURP es obligatoria
+□ Valida formato (18 caracteres)
+
+📝 3.3 PRESTACIONES
+□ Aguinaldo: mínimo 15, con flechitas ↑↓
+□ Prima vacacional: mínimo 25%, con flechitas ↑↓
+□ Muestra error si son menores al mínimo
+
+📝 3.4 FECHAS
+□ Valida que baja NO sea antes de ingreso
+□ Muestra error claro
+□ Selector permite elegir mes/año directamente
+
+═══════════════════════════════════════
+
+🟡 SECCIÓN 4: FORMATO
+
+🎨 4.1 SEPARADORES DE MILES
+□ TODOS los campos de $ muestran comas (12,345.67)
+□ Los campos formatean mientras escribes
+□ El "Cálculo en Vivo" usa comas
+
+*Campos que deben tener comas:*
+- Salario real
+- Salario fiscal
+- Gratificación (pesos)
+- Indemnización
+- Prima antigüedad
+- Infonavit, Fonacot, Otras
+- Total a pagar
+
+🎨 4.2 CONTROLES NUMÉRICOS
+□ Días aguinaldo tiene flechitas ↑↓
+□ Prima vacacional (%) tiene flechitas ↑↓
+□ Incrementan/decrementan de 1 en 1
+□ Respetan mínimos (no bajan de 15 y 25%)
+
+═══════════════════════════════════════
+
+🟡 SECCIÓN 5: PDF
+
+📄 5.1 CAMPOS REQUERIDOS
+□ Muestra RFC del trabajador
+□ Muestra CURP del trabajador
+□ Muestra nombre COMPLETO (ambos apellidos)
+□ Muestra nombre de la empresa
+□ Muestra municipio y estado
+
+📄 5.2 FORMATO
+□ Todas las cantidades con comas ($12,345.67)
+□ Días redondeados a 2 decimales máximo
+□ Menos espacios en blanco (más compacto)
+□ Letra más pequeña para menos páginas
+
+═══════════════════════════════════════
+
+🟡 SECCIÓN 6: LISTADO
+
+📋 6.1 COLUMNAS
+□ Muestra: Empleado
+□ Muestra: Empresa (razón social)
+□ Muestra: Cliente
+□ Muestra: Fecha de Baja
+□ Muestra: Total a Pagar
+□ Muestra: Creado Por
+□ Muestra: Fecha de Creación
+
+📋 6.2 FORMATO
+□ Total con comas ($12,345.67)
+□ Fechas en español
+
+═══════════════════════════════════════
+
+🧪 SECCIÓN 7: TESTING CON EXCEL
+
+⚠️ IMPORTANTE: Crear finiquito con MISMOS datos del Excel
+
+□ Aguinaldo coincide EXACTAMENTE
+□ Prima vacacional coincide EXACTAMENTE
+□ Vacaciones coinciden
+□ Prima antigüedad coincide
+□ Indemnización coincide
+□ Gratificación coincide
+□ Total percepciones fiscales coincide
+□ Total percepciones reales coincide
+□ ISR coincide
+□ Total deducciones coincide
+□ TOTAL A PAGAR coincide EXACTAMENTE
+
+⚠️ Si hay diferencia de más de $0.50 = ERROR
+
+═══════════════════════════════════════
+
+📊 CASOS DE PRUEBA A VERIFICAR:
+
+*Caso 1: Prestaciones Mínimas*
+- Aguinaldo: 15 días
+- Prima: 25%
+- Comparar con Excel ✓
+
+*Caso 2: Prestaciones Superiores*
+- Aguinaldo: 20 días
+- Prima: 30%
+- Comparar con Excel ✓
+
+*Caso 3: Vacaciones Negativas*
+- Días proporcionales: 5
+- Días pendientes: -3
+- Total: 2 días ✓
+
+*Caso 4: Antigüedad Alta*
+- 15 años trabajados
+- Prima: 15 × 12 = 180 días ✓
+
+═══════════════════════════════════════
+
+🎯 PRIORIDADES PARA EL LUNES:
+
+🔴 CRÍTICO (Obligatorio):
+1. Cálculos coinciden con Excel
+2. Vacaciones permiten negativos
+3. Prima antigüedad automática + toggle
+4. ISR automático no editable
+5. IMSS y Subsidio eliminados
+
+🟡 IMPORTANTE (Necesario):
+6. RFC obligatorio validado
+7. Separadores miles todos campos
+8. PDF con RFC, CURP, empresa
+9. Listado con empresa y cliente
+
+🟢 DESEABLE (Si hay tiempo):
+10. Flechitas en campos numéricos
+11. Selector fechas mejorado
+12. PDF optimizado menos páginas
+
+═══════════════════════════════════════
+
+📝 FORMATO RESPUESTA:
+
+Por favor revisar cada sección y responder:
+
+SECCIÓN 1: CÁLCULOS
+1.1 Aguinaldo: ✅ / ⚠️ / ❌
+1.2 Prima Vacacional: ✅ / ⚠️ / ❌
+1.3 Vacaciones: ✅ / ⚠️ / ❌
+1.4 Prima Antigüedad: ✅ / ⚠️ / ❌
+
+SECCIÓN 2: DEDUCCIONES
+2.1 ISR: ✅ / ⚠️ / ❌
+2.2 IMSS: ✅ / ⚠️ / ❌
+2.3 Subsidio: ✅ / ⚠️ / ❌
+2.4 Manuales: ✅ / ⚠️ / ❌
+
+(continuar con todas las secciones)
+
+═══════════════════════════════════════
+
+🚨 RECORDATORIO IMPORTANTE:
+
+El sistema debe ser ESPEJO IDÉNTICO del Excel.
+
+Si un número no coincide = hay error.
+
+Prioridad #1: Que los cálculos sean exactos.
+
+═══════════════════════════════════════
+
+✅ Una vez completado, avisar para:
+- Hacer testing conjunto
+- Comparar con Excel lado a lado
+- Preparar demo para el lunes

@@ -174,24 +174,28 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
                 </Text>
 
                 {/* FIRMA DE RENUNCIA */}
-                <Text style={[styles.center, { marginTop: 70, marginBottom: 12, textAlign: 'center' }]}>
+                <Text style={[styles.center, { marginTop: 50, marginBottom: 8, textAlign: 'center' }]}>
                     ATENTAMENTE{'\n'}
                     {ubicacion} A {formatDateLong(finiquito.terminationDate)}.
                 </Text>
 
-                <View style={[styles.signature, { marginTop: 20 }]}>
+                <View style={[styles.signature, { marginTop: 12 }]}>
                     <View style={styles.underline} />
                     <Text>({finiquito.employeeName})</Text>
                 </View>
 
                 {/* RECIBO DE FINIQUITO */}
-                <Text style={[styles.center, { marginTop: 10, marginBottom: 12, textAlign: 'center' }]}>
+                <Text style={[styles.center, { marginTop: 8, marginBottom: 10, textAlign: 'center' }]}>
                     <Text style={styles.bold}>R E C I B O   F I N I Q U I T O</Text>
                 </Text>
 
                 <Text style={{ marginBottom: 12 }}>
-                  <Text style={styles.bold}>Nombre:</Text> {finiquito.employeeName}{'\n'}
+                  <Text style={styles.bold}>Nombre completo:</Text> {finiquito.employeeName}{'\n'}
+                  <Text style={styles.bold}>RFC:</Text> {finiquito.employeeRFC}{'\n'}
+                  <Text style={styles.bold}>CURP:</Text> {finiquito.employeeCURP}{'\n'}
+                  <Text style={styles.bold}>Empresa:</Text> {finiquito.empresaName}{'\n'}
                   <Text style={styles.bold}>Fecha de ingreso:</Text> {formatDateLong(finiquito.hireDate)}{'\n'}
+                  <Text style={styles.bold}>Fecha de baja:</Text> {formatDateLong(finiquito.terminationDate)}{'\n'}
                   <Text style={styles.bold}>Puesto:</Text> {puesto}{'\n'}
                   <Text style={styles.bold}>Salario diario:</Text> ${formatCurrency(finiquito.fiscalDailySalary)}{'\n'}
                   <Text style={styles.bold}>Cantidad con letra:</Text> {salarioLetra} 00/100 M.N.{'\n'}
@@ -256,7 +260,7 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
                 </Text>
 
                 {/* FIRMA FINAL */}
-                <Text style={[styles.center, { marginTop: 20, marginBottom: 12, textAlign: 'center' }]}>
+                <Text style={[styles.center, { marginTop: 16, marginBottom: 8, textAlign: 'center' }]}>
                   ATENTAMENTE{'\n'}
                   {ubicacion} A {formatDateLong(finiquito.terminationDate)}.
                 </Text>
