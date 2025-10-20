@@ -2,6 +2,7 @@ import { BigCalculatorImpl } from "../calculadora-finiquitos/calculadora";
 import { FilterByRangeValues, GetRangeValuesIndex } from "../calculadora-finiquitos/generics";
 import { ICalculator, ISRCalculator } from "../calculadora-finiquitos/interface";
 import { CalculationType, CalculoIMSS, CalculoISN, CalculoISR, Concepto, Frequency, InputISRArt154, InputISRArt174, InputISRFiniquito, ISRArt174Result, ISRDailyCalculationValues, ISRDetail, ISRRangeValues, ISRResult, ISRReversaResult, PerceptionsResult, SubsidyRangeValues } from "../calculadora-finiquitos/models";
+import { DEFAULT_DAYS_FACTOR } from "../constants";
 
 type FactoresCalculoInvertido = {
   sueldoBruto: number;
@@ -438,7 +439,7 @@ class ISRCalculatorImpl implements ISRCalculator {
     const reintegroISRRetenidoDeMas: ICalculator = new BigCalculatorImpl(0);
     const ajusteISRPeriodo: ICalculator = new BigCalculatorImpl(0);
     const ajusteSubsidioCausado: ICalculator = new BigCalculatorImpl(0);
-    const diasTrabajados = 30.4;
+    const diasTrabajados = DEFAULT_DAYS_FACTOR;
     const taxBase: ICalculator = new BigCalculatorImpl();
     const totalPercepciones: ICalculator = new BigCalculatorImpl();
     let subsidyRangeValue: SubsidyRangeValues | void = undefined;
@@ -613,15 +614,15 @@ class ISRCalculatorImpl implements ISRCalculator {
 
   calcularISRArt174(input: InputISRArt174): ISRArt174Result | void {
     const diasAnio = 365;
-    let diasMes = 30.4;
+    let diasMes = DEFAULT_DAYS_FACTOR;
 
     if (input.calculationType === CalculationType.AGUINALDO) {
       switch (input.frecuencia) {
         case Frequency.Semanal:
-          diasMes = 30.4;
+          diasMes = DEFAULT_DAYS_FACTOR;
           break;
         case Frequency.Mensual:
-          diasMes = 30.4;
+          diasMes = DEFAULT_DAYS_FACTOR;
           break;
         default:
           diasMes = 30;
@@ -637,7 +638,7 @@ class ISRCalculatorImpl implements ISRCalculator {
       gravadoAguinaldoPrimavacacional.result
     )
       .divide(diasAnio)
-      .multiply(30.4);
+      .multiply(DEFAULT_DAYS_FACTOR);
     const sueldoMesualOrdinario: ICalculator = new BigCalculatorImpl(
       input.sueldoDiario
     ).multiply(diasMes);
@@ -712,7 +713,7 @@ class ISRCalculatorImpl implements ISRCalculator {
       .add(input.primaAntiguedad.totalTaxBase);
     const sueldoMesualOrdinario: ICalculator = new BigCalculatorImpl(
       input.sueldoDiario
-    ).multiply(30.4);
+    ).multiply(DEFAULT_DAYS_FACTOR);
     if (montoGravado.value == 0) {
       return {
         detail: [],
@@ -803,7 +804,7 @@ class ISRCalculatorImpl implements ISRCalculator {
           rangesTemp[index - 1].upperLimit
         ).add(0.01);
         const cuotaFija: ICalculator = new BigCalculatorImpl(range.fixedFee)
-          .divide(30.4)
+          .divide(DEFAULT_DAYS_FACTOR)
           .multiply(diasTrabajados);
 
         limiteInferiorValue = limiteInferior.result;
@@ -814,7 +815,7 @@ class ISRCalculatorImpl implements ISRCalculator {
         const limiteSuperior: ICalculator = new BigCalculatorImpl(
           range.upperLimit
         )
-          .divide(30.4)
+          .divide(DEFAULT_DAYS_FACTOR)
           .multiply(diasTrabajados);
         limiteSuperiorValue = limiteSuperior.result;
       }
@@ -841,12 +842,12 @@ class ISRCalculatorImpl implements ISRCalculator {
       const limiteSuperior: ICalculator = new BigCalculatorImpl(
         range.upperLimit
       )
-        .divide(30.4)
+        .divide(DEFAULT_DAYS_FACTOR)
         .multiply(diasTrabajados);
       const subsidyAmount: ICalculator = new BigCalculatorImpl(
         range.subsidyAmount
       )
-        .divide(30.4)
+        .divide(DEFAULT_DAYS_FACTOR)
         .multiply(diasTrabajados);
 
       if (index > 0 && index != ranges.length - 1) {
