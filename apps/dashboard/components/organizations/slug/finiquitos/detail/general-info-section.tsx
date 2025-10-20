@@ -53,7 +53,11 @@ export function GeneralInfoSection({ finiquito }: GeneralInfoSectionProps) {
               )}
               <div>
                 <span className="text-sm text-muted-foreground">RFC:</span>
-                <p className="font-mono text-sm">{finiquito.employeeId || '-'}</p>
+                <p className="font-mono text-sm">{finiquito.employeeRFC || '-'}</p>
+              </div>
+              <div>
+                <span className="text-sm text-muted-foreground">CURP:</span>
+                <p className="font-mono text-sm">{finiquito.employeeCURP || '-'}</p>
               </div>
             </div>
           </div>
