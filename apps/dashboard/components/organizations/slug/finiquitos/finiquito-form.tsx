@@ -49,6 +49,7 @@ import { cn } from '@workspace/ui/lib/utils';
 import { createFiniquito } from '~/actions/finiquitos/create-finiquito';
 import { finiquitoFormSchema, type FiniquitoFormValues } from '~/lib/finiquitos/schemas';
 import { calculateFiniquito } from '~/lib/finiquitos/calculate-finiquito';
+import { CurrencyInput } from '~/components/ui/currency-input';
 import {
   getEmployeeVacationDays,
   formatMoney,
@@ -770,12 +771,10 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                         <FormItem>
                           <FormLabel>Salario Real {enableComplement && '*'}</FormLabel>
                           <FormControl>
-                            <Input
-                              type="number"
-                              step="0.01"
-                              placeholder="12999.90"
-                              {...field}
-                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                            <CurrencyInput
+                              value={field.value}
+                              onChange={field.onChange}
+                              placeholder="12,999.90"
                               disabled={!enableComplement}
                             />
                           </FormControl>
@@ -1171,13 +1170,10 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                           <FormItem>
                             <FormLabel>Pesos</FormLabel>
                             <FormControl>
-                              <Input
-                                type="number"
-                                step="0.01"
+                              <CurrencyInput
+                                value={field.value || 0}
+                                onChange={(value) => handleGratificationPesosChange(value.toString())}
                                 placeholder="0.00"
-                                {...field}
-                                value={field.value || ''}
-                                onChange={(e) => handleGratificationPesosChange(e.target.value)}
                                 disabled={!enableLiquidation}
                               />
                             </FormControl>
@@ -1400,12 +1396,10 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                         <FormItem>
                           <FormLabel>Infonavit</FormLabel>
                           <FormControl>
-                            <Input
-                              type="number"
-                              step="0.01"
+                            <CurrencyInput
+                              value={field.value}
+                              onChange={field.onChange}
                               placeholder="0.00"
-                              {...field}
-                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                             />
                           </FormControl>
                           <FormMessage />
@@ -1420,12 +1414,10 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                         <FormItem>
                           <FormLabel>Fonacot</FormLabel>
                           <FormControl>
-                            <Input
-                              type="number"
-                              step="0.01"
+                            <CurrencyInput
+                              value={field.value}
+                              onChange={field.onChange}
                               placeholder="0.00"
-                              {...field}
-                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                             />
                           </FormControl>
                           <FormMessage />
@@ -1440,12 +1432,10 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                         <FormItem>
                           <FormLabel>Otras Deducciones</FormLabel>
                           <FormControl>
-                            <Input
-                              type="number"
-                              step="0.01"
+                            <CurrencyInput
+                              value={field.value}
+                              onChange={field.onChange}
                               placeholder="0.00"
-                              {...field}
-                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                             />
                           </FormControl>
                           <FormMessage />
