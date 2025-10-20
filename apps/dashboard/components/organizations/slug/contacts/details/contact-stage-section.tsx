@@ -51,9 +51,9 @@ export function ContactStageSection({
   const onSubmit: SubmitHandler<UpdateContactStageSchema> = async (values) => {
     const result = await updateContactStage(values);
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Stage updated');
+      toast.success('Etapa actualizada');
     } else {
-      toast.error("Couldn't update stage");
+      toast.error("No se pudo actualizar la etapa");
     }
   };
   return (
@@ -61,7 +61,7 @@ export function ContactStageSection({
       <section {...others}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <div className="flex h-14 flex-row items-center p-6">
-            <h3 className="text-sm font-semibold tracking-tight">Stage</h3>
+            <h3 className="text-sm font-semibold tracking-tight">Etapa</h3>
           </div>
           <div className="p-6 pt-0">
             <FormField
