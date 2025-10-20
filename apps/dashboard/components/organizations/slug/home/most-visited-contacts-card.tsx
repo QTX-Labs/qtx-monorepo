@@ -24,13 +24,13 @@ export function MostVisitedContactsCard({
   return (
     <Card {...props}>
       <CardHeader className="gap-0">
-        <CardTitle className="text-sm">Most visited contacts</CardTitle>
+        <CardTitle className="text-sm">Contactos más visitados</CardTitle>
       </CardHeader>
       <CardContent>
         {hasContacts ? (
           <VisitedContactList contacts={contacts} />
         ) : (
-          <EmptyText>There's no data available for your selection.</EmptyText>
+          <EmptyText>No hay datos disponibles para tu selección.</EmptyText>
         )}
       </CardContent>
     </Card>
