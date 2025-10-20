@@ -14,7 +14,6 @@ type FiniquitoListItem = Pick<
   | 'id'
   | 'employeeName'
   | 'empresaName'
-  | 'clienteName'
   | 'hireDate'
   | 'terminationDate'
   | 'salary'
