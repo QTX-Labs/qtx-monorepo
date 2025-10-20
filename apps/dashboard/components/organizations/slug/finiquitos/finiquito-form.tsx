@@ -120,6 +120,8 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
       enableLiquidation: false,
       severanceDays: 0,
       seniorityPremiumDays: 0,
+      includeSeniorityPremium: false,
+      calculateSeniorityPremium: true,
       isrFiniquitoAmount: 0,
       isrArt174Amount: 0,
       isrIndemnizacionAmount: 0,
@@ -167,6 +169,8 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
   const gratificationPesos = form.watch('gratificationPesos');
   const severanceDays = form.watch('severanceDays');
   const seniorityPremiumDays = form.watch('seniorityPremiumDays');
+  const includeSeniorityPremium = form.watch('includeSeniorityPremium');
+  const calculateSeniorityPremium = form.watch('calculateSeniorityPremium');
   const isrFiniquitoAmount = form.watch('isrFiniquitoAmount');
   const isrArt174Amount = form.watch('isrArt174Amount');
   const isrIndemnizacionAmount = form.watch('isrIndemnizacionAmount');
@@ -233,6 +237,15 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
       form.setValue('seniorityPremiumDays', 0);
     }
   }, [enableLiquidation, form]);
+
+  // Auto-calcular Prima de Antigüedad cuando el toggle está activo y calculateSeniorityPremium es true
+  useEffect(() => {
+    if (includeSeniorityPremium && calculateSeniorityPremium && hireDate && terminationDate) {
+      const yearsWorked = calculateYearsWorked(hireDate, terminationDate);
+      const calculatedDays = calculateSeniorityPremiumDays(yearsWorked, borderZone);
+      form.setValue('seniorityPremiumDays', calculatedDays);
+    }
+  }, [includeSeniorityPremium, calculateSeniorityPremium, hireDate, terminationDate, borderZone, form]);
 
   // Restablecer campos de Complemento a valores por defecto cuando se desactiva
   useEffect(() => {
@@ -1177,8 +1190,9 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
 
                   <Separator />
 
-                  {/* Indemnización y Prima */}
-                  <div className="grid gap-6 md:grid-cols-2">
+                  {/* Indemnización */}
+                  <div>
+                    <h3 className="text-sm font-medium mb-3">Indemnización</h3>
                     <FormField
                       control={form.control}
                       name="severanceDays"
@@ -1199,27 +1213,85 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
                         </FormItem>
                       )}
                     />
+                  </div>
 
-                    <FormField
-                      control={form.control}
-                      name="seniorityPremiumDays"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Días de Prima de Antigüedad</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              step="0.01"
-                              placeholder="0"
-                              {...field}
-                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                              disabled={!enableLiquidation}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <Separator />
+
+                  {/* Prima de Antigüedad con Toggle */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-sm font-medium">Prima de Antigüedad</h3>
+                      <FormField
+                        control={form.control}
+                        name="includeSeniorityPremium"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center gap-2">
+                            <FormLabel className="!mt-0 text-xs">Incluir en Finiquito</FormLabel>
+                            <FormControl>
+                              <Switch
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                disabled={!enableLiquidation}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {includeSeniorityPremium && (
+                      <div className="space-y-4">
+                        <FormField
+                          control={form.control}
+                          name="calculateSeniorityPremium"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 bg-muted/30">
+                              <div className="space-y-0.5">
+                                <FormLabel className="text-sm">Auto-calcular</FormLabel>
+                                <FormDescription className="text-xs">
+                                  Calcular automáticamente 12 días por año trabajado
+                                </FormDescription>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                  disabled={!enableLiquidation}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="seniorityPremiumDays"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Días de Prima de Antigüedad</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  placeholder="0"
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                  disabled={!enableLiquidation || calculateSeniorityPremium}
+                                  className={calculateSeniorityPremium ? 'bg-muted cursor-not-allowed' : ''}
+                                />
+                              </FormControl>
+                              <FormDescription className="text-xs">
+                                {calculateSeniorityPremium
+                                  ? 'El valor se calcula automáticamente (12 días/año)'
+                                  : 'Introduce manualmente los días de prima de antigüedad'
+                                }
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
