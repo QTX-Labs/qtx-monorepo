@@ -191,6 +191,8 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
 
                 <Text style={{ marginBottom: 12 }}>
                   <Text style={styles.bold}>Nombre:</Text> {finiquito.employeeName}{'\n'}
+                  <Text style={styles.bold}>RFC:</Text> {finiquito.employeeRFC}{'\n'}
+                  <Text style={styles.bold}>CURP:</Text> {finiquito.employeeCURP}{'\n'}
                   <Text style={styles.bold}>Fecha de ingreso:</Text> {formatDateLong(finiquito.hireDate)}{'\n'}
                   <Text style={styles.bold}>Puesto:</Text> {puesto}{'\n'}
                   <Text style={styles.bold}>Salario diario:</Text> ${formatCurrency(finiquito.fiscalDailySalary)}{'\n'}
