@@ -185,89 +185,95 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
                 </View>
 
                 {/* RECIBO DE FINIQUITO */}
-                <Text style={[styles.center, { marginTop: 8, marginBottom: 10, textAlign: 'center' }]}>
-                    <Text style={styles.bold}>R E C I B O   F I N I Q U I T O</Text>
-                </Text>
+                <View break>
+                    <Text style={[styles.center, { marginBottom: 10, textAlign: 'center' }]}>
+                        <Text style={styles.bold}>R E C I B O   F I N I Q U I T O</Text>
+                    </Text>
 
-                <Text style={{ marginBottom: 12 }}>
-                  <Text style={styles.bold}>Nombre completo:</Text> {finiquito.employeeName}{'\n'}
-                  <Text style={styles.bold}>RFC:</Text> {finiquito.employeeRFC}{'\n'}
-                  <Text style={styles.bold}>CURP:</Text> {finiquito.employeeCURP}{'\n'}
-                  <Text style={styles.bold}>Empresa:</Text> {finiquito.empresaName}{'\n'}
-                  <Text style={styles.bold}>Fecha de ingreso:</Text> {formatDateLong(finiquito.hireDate)}{'\n'}
-                  <Text style={styles.bold}>Fecha de baja:</Text> {formatDateLong(finiquito.terminationDate)}{'\n'}
-                  <Text style={styles.bold}>Puesto:</Text> {puesto}{'\n'}
-                  <Text style={styles.bold}>Salario diario:</Text> ${formatCurrency(finiquito.fiscalDailySalary)}{'\n'}
-                  <Text style={styles.bold}>Cantidad con letra:</Text> {salarioLetra} 00/100 M.N.{'\n'}
-                  <Text style={styles.bold}>Recibí de {finiquito.empresaName} la cantidad de:</Text> ${formatCurrency(totalNeto)}{'\n'}
-                  <Text style={styles.bold}>CANTIDAD CON LETRA:</Text> <Text style={styles.textUnderline}>{numeroALetra(totalNeto)}</Text> 00 / 100 M.N.
-                </Text>
+                    <Text style={{ marginBottom: 12 }}>
+                      <Text style={styles.bold}>Nombre completo:</Text> {finiquito.employeeName}{'\n'}
+                      <Text style={styles.bold}>RFC:</Text> {finiquito.employeeRFC}{'\n'}
+                      <Text style={styles.bold}>CURP:</Text> {finiquito.employeeCURP}{'\n'}
+                      <Text style={styles.bold}>Empresa:</Text> {finiquito.empresaName}{'\n'}
+                      <Text style={styles.bold}>Fecha de ingreso:</Text> {formatDateLong(finiquito.hireDate)}{'\n'}
+                      <Text style={styles.bold}>Fecha de baja:</Text> {formatDateLong(finiquito.terminationDate)}{'\n'}
+                      <Text style={styles.bold}>Puesto:</Text> {puesto}{'\n'}
+                      <Text style={styles.bold}>Salario diario:</Text> ${formatCurrency(finiquito.fiscalDailySalary)}{'\n'}
+                      <Text style={styles.bold}>Cantidad con letra:</Text> {salarioLetra} 00/100 M.N.{'\n'}
+                      <Text style={styles.bold}>Recibí de {finiquito.empresaName} la cantidad de:</Text> ${formatCurrency(totalNeto)}{'\n'}
+                      <Text style={styles.bold}>CANTIDAD CON LETRA:</Text> <Text style={styles.textUnderline}>{numeroALetra(totalNeto)}</Text> 00 / 100 M.N.
+                    </Text>
 
-                <Text style={{ marginBottom: 12, textAlign: 'justify' }}>
-                    Por concepto de finiquito, al haber dado por terminado de manera unilateral el contrato individual de trabajo con{' '}
-                    <Text style={styles.bold}>{finiquito.empresaName}</Text>, manifestando que dicha cantidad la recibo a mi entera satisfacción,
-                    asimismo que durante la prestación de mis servicios a <Text style={styles.bold}>{finiquito.empresaName}</Text>, reconociendo
-                    expresamente que a últimas fechas le prestaba mis servicios personales y subordinados de manera exclusiva en las condiciones
-                    señaladas en el presente documento, gozando de lunes a sábado con sesenta minutos para descansar y/o tomar alimentos dentro o
-                    fuera de la fuente de trabajo y sin estar bajo la subordinación de mi único y exclusivo patrón{' '}
-                    <Text style={styles.bold}>{finiquito.empresaName}</Text>, teniendo como días de descansando los días domingos de cada semana,
-                    laborando única y exclusivamente dicha jornada. La cantidad anterior se desglosa en los siguientes conceptos:
-                </Text>
+                    <Text style={{ marginBottom: 12, textAlign: 'justify' }}>
+                        Por concepto de finiquito, al haber dado por terminado de manera unilateral el contrato individual de trabajo con{' '}
+                        <Text style={styles.bold}>{finiquito.empresaName}</Text>, manifestando que dicha cantidad la recibo a mi entera satisfacción,
+                        asimismo que durante la prestación de mis servicios a <Text style={styles.bold}>{finiquito.empresaName}</Text>, reconociendo
+                        expresamente que a últimas fechas le prestaba mis servicios personales y subordinados de manera exclusiva en las condiciones
+                        señaladas en el presente documento, gozando de lunes a sábado con sesenta minutos para descansar y/o tomar alimentos dentro o
+                        fuera de la fuente de trabajo y sin estar bajo la subordinación de mi único y exclusivo patrón{' '}
+                        <Text style={styles.bold}>{finiquito.empresaName}</Text>, teniendo como días de descansando los días domingos de cada semana,
+                        laborando única y exclusivamente dicha jornada. La cantidad anterior se desglosa en los siguientes conceptos:
+                    </Text>
 
-                <Text style={{ fontWeight: 'bold', marginBottom: 12 }}>
-                  RECIBÍ DE <Text>{finiquito.empresaName}</Text> LAS CANTIDADES SIGUIENTES:
-                </Text>
+                    <Text style={{ fontWeight: 'bold', marginBottom: 12 }}>
+                      RECIBÍ DE <Text>{finiquito.empresaName}</Text> LAS CANTIDADES SIGUIENTES:
+                    </Text>
 
-                {/* TABLA DE CONCEPTOS */}
-                <View style={styles.table}>
-                    <View style={styles.tableRow}>
-                        <Text style={styles.tableCell}>PARTE PROPORCIONAL DE VACACIONES 2024 – 2025</Text>
-                        <Text style={styles.tableCellRight}>${formatCurrency(vacaciones)}</Text>
+                    {/* TABLA DE CONCEPTOS */}
+                    <View style={styles.table}>
+                        <View style={styles.tableRow}>
+                            <Text style={styles.tableCell}>PARTE PROPORCIONAL DE VACACIONES 2024 – 2025</Text>
+                            <Text style={styles.tableCellRight}>${formatCurrency(vacaciones)}</Text>
+                        </View>
+                        <View style={styles.tableRow}>
+                            <Text style={styles.tableCell}>PARTE PROPORCIONAL DE PRIMA VACACIONAL</Text>
+                            <Text style={styles.tableCellRight}>${formatCurrency(primaVacacional)}</Text>
+                        </View>
+                        <View style={styles.tableRow}>
+                            <Text style={styles.tableCell}>AGUINALDO PROPORCIONAL DEL 2024</Text>
+                            <Text style={styles.tableCellRight}>${formatCurrency(aguinaldo)}</Text>
+                        </View>
+                        <View style={styles.tableRow}>
+                            <Text style={styles.tableCell}>SALARIOS DEVENGADOS</Text>
+                            <Text style={styles.tableCellRight}>${formatCurrency(salariosDevengados)}</Text>
+                        </View>
+                        <View style={[styles.tableRow, { marginTop: 12, marginBottom: 12 }]}>
+                            <Text style={styles.tableCellBold}>TOTAL NETO DE PERCEPCIONES:</Text>
+                            <Text style={styles.tableCellRightBold}>${formatCurrency(totalNeto)}</Text>
+                        </View>
                     </View>
-                    <View style={styles.tableRow}>
-                        <Text style={styles.tableCell}>PARTE PROPORCIONAL DE PRIMA VACACIONAL</Text>
-                        <Text style={styles.tableCellRight}>${formatCurrency(primaVacacional)}</Text>
-                    </View>
-                    <View style={styles.tableRow}>
-                        <Text style={styles.tableCell}>AGUINALDO PROPORCIONAL DEL 2024</Text>
-                        <Text style={styles.tableCellRight}>${formatCurrency(aguinaldo)}</Text>
-                    </View>
-                    <View style={styles.tableRow}>
-                        <Text style={styles.tableCell}>SALARIOS DEVENGADOS</Text>
-                        <Text style={styles.tableCellRight}>${formatCurrency(salariosDevengados)}</Text>
-                    </View>
-                    <View style={[styles.tableRow, { marginTop: 12, marginBottom: 12 }]}>
-                        <Text style={styles.tableCellBold}>TOTAL NETO DE PERCEPCIONES:</Text>
-                        <Text style={styles.tableCellRightBold}>${formatCurrency(totalNeto)}</Text>
-                    </View>
-                </View>
 
-                {/* BLOQUE FINAL */}
-                <Text style={{ marginBottom: 12, textAlign: 'justify' }}>
-                    Manifiesto así mismo que recibí el pago de todas las prestaciones a que tuve derecho conforme a la ley y a mi contrato
-                    individual de trabajo; tales como: salarios ordinarios, séptimos días, vacaciones, prima vacacional, aguinaldo y participación
-                    de las utilidades cuando las hubo y demás prestaciones a que tengo derecho de acuerdo con la Ley Federal del Trabajo, sin
-                    laborar días festivos.
-                </Text>
+                    {/* BLOQUE FINAL */}
+                    <Text style={{ marginBottom: 12, textAlign: 'justify' }}>
+                        Manifiesto así mismo que recibí el pago de todas las prestaciones a que tuve derecho conforme a la ley y a mi contrato
+                        individual de trabajo; tales como: salarios ordinarios, séptimos días, vacaciones, prima vacacional, aguinaldo y participación
+                        de las utilidades cuando las hubo y demás prestaciones a que tengo derecho de acuerdo con la Ley Federal del Trabajo, sin
+                        laborar días festivos.
+                    </Text>
 
-                <Text style={{ marginBottom: 12, textAlign: 'justify' }}>
-                    Por ser de equidad manifiesto, que durante la prestación de mis servicios los llevé a cabo física y emocionalmente en buen
-                    estado, y que durante el tiempo que preste mis servicios no sufrí riesgo de trabajo alguno o enfermedad profesional, por lo
-                    que a la fecha de la firma del presente se me ha cubierto en su totalidad toda cantidad por cualquier concepto, extiendo el
-                    finiquito más amplio que en derecho proceda a favor de mi único <Text style={styles.bold}>{finiquito.empresaName}</Text> ya
-                    que han sido cubiertas totalmente todas y cada una de las prestaciones y salarios a los que tengo derecho, firmando de
-                    conformidad el presente finiquito.
-                </Text>
+                    <Text style={{ marginBottom: 12, textAlign: 'justify' }}>
+                        Por ser de equidad manifiesto, que durante la prestación de mis servicios los llevé a cabo física y emocionalmente en buen
+                        estado, y que durante el tiempo que preste mis servicios no sufrí riesgo de trabajo alguno o enfermedad profesional, por lo
+                        que a la fecha de la firma del presente se me ha cubierto en su totalidad toda cantidad por cualquier concepto, extiendo el
+                        finiquito más amplio que en derecho proceda a favor de mi único <Text style={styles.bold}>{finiquito.empresaName}</Text> ya
+                        que han sido cubiertas totalmente todas y cada una de las prestaciones y salarios a los que tengo derecho, firmando de
+                        conformidad el presente finiquito.
+                    </Text>
 
-                {/* FIRMA FINAL */}
-                <Text style={[styles.center, { marginTop: 16, marginBottom: 8, textAlign: 'center' }]}>
-                  ATENTAMENTE{'\n'}
-                  {ubicacion} A {formatDateLong(finiquito.terminationDate)}.
-                </Text>
+                    {/* FIRMA FINAL */}
+                    <Text style={[styles.center, { marginTop: 10, marginBottom: 5, textAlign: 'center' }]}>
+                      ATENTAMENTE{'\n'}
+                      {ubicacion} A {formatDateLong(finiquito.terminationDate)}.
+                    </Text>
 
-                <View style={styles.signature}>
-                    <View style={styles.underline} />
-                    <Text>({finiquito.employeeName})</Text>
+                    <View style={{
+                        marginTop: 30,
+                        textAlign: 'center',
+                        alignItems: 'center'
+                    }}>
+                        <View style={styles.underline} />
+                        <Text>({finiquito.employeeName})</Text>
+                    </View>
                 </View>
             </Page>
         </Document>
