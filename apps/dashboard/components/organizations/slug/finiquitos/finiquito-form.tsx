@@ -242,7 +242,8 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
   // Auto-calcular Prima de Antigüedad cuando el toggle está activo y calculateSeniorityPremium es true
   useEffect(() => {
     if (includeSeniorityPremium && calculateSeniorityPremium && hireDate && terminationDate) {
-      const yearsWorked = calculateYearsWorked(hireDate, terminationDate);
+      const daysWorked = calculateDaysWorked(hireDate, terminationDate);
+      const yearsWorked = calculateYearsWorked(daysWorked);
       const calculatedDays = calculateSeniorityPremiumDays(yearsWorked, borderZone);
       form.setValue('seniorityPremiumDays', calculatedDays);
     }
