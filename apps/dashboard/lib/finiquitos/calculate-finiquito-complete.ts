@@ -394,13 +394,6 @@ export function calculateFiniquitoComplete(
     throw new Error('Error al calcular finiquito');
   }
 
-  console.log('[calculateFiniquitoComplete] resultCalculation.finiquito:', JSON.stringify({
-    totalPercepcionesFiscal: resultCalculation.finiquito.totalPercepcionesFiscal,
-    totalDeduccionesFiscal: resultCalculation.finiquito.totalDeduccionesFiscal,
-    neto: resultCalculation.finiquito.neto,
-    netoFiscal: resultCalculation.finiquito.netoFiscal,
-  }, null, 2));
-
   // ===== PASO 4: MAPEAR RESULTADO A OUTPUT =====
 
   const output: CalculateFiniquitoOutput = {

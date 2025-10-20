@@ -381,24 +381,13 @@ export class ImplementationV1 implements CalculadoraFiniquitoLiquidacion {
     umaValue: number,
     primaVacacionalPercent?: number
   ): Perception {
-    console.log('[calcularPrimaVacacional] INPUT:', {
-      salarioDiario,
-      vacationDays,
-      primaVacacionalPercent: primaVacacionalPercent ?? 25,
-    });
-
     const factor: ICalculator = new BigCalculatorImpl(vacationDays).percentage(
       primaVacacionalPercent ?? 25
     );
-
-    console.log('[calcularPrimaVacacional] factor.result:', factor.result);
-
     const primaVacacional: Perception = this.calcularConcepto(
       salarioDiario,
       factor.result
     );
-
-    console.log('[calcularPrimaVacacional] primaVacacional before exento:', primaVacacional);
     const totalExemptBase = acumuladoPercepciones.reduce(
       (acc: ICalculator, current) => {
         acc.add(current.primaVacacional?.totalExemptBase || 0);
@@ -425,13 +414,6 @@ export class ImplementationV1 implements CalculadoraFiniquitoLiquidacion {
       primaVacacional.totalTaxBase = gravado.result;
     }
 
-    console.log('[calcularPrimaVacacional] FINAL:', {
-      totalAmount: primaVacacional.totalAmount,
-      totalExemptBase: primaVacacional.totalExemptBase,
-      totalTaxBase: primaVacacional.totalTaxBase,
-      totalQuantity: primaVacacional.totalQuantity,
-    });
-
     return primaVacacional;
   }
 
@@ -441,12 +423,6 @@ export class ImplementationV1 implements CalculadoraFiniquitoLiquidacion {
     acumuladoPercepciones: Array<PerceptionsResult>,
     benefitConfig?: { primaVacacional?: number; aguinaldo?: number }
   ): PercepcionesFiniquito {
-    console.log('[calcularPercepcionesFiniquito] INPUT:', {
-      salarioDiario,
-      conceptosFiniquito,
-      benefitConfig,
-    });
-
     const result: PercepcionesFiniquito = {
       diasTrabajados: this.calcularConcepto(
         salarioDiario,

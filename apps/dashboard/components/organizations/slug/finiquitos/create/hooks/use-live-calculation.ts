@@ -41,8 +41,6 @@ export function useLiveCalculation({
   const step3Key = useMemo(() => JSON.stringify(debouncedStep3Data), [debouncedStep3Data]);
 
   useEffect(() => {
-    console.log('[useLiveCalculation] useEffect triggered');
-
     // Solo calcular si tenemos los datos base
     if (!step1Data) {
       setCalculation(null);
