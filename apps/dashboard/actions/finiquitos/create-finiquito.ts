@@ -67,6 +67,8 @@ export const createFiniquito = authOrganizationActionClient
         userId: ctx.session.user.id,
         employeeId: parsedInput.employeeId ?? null,
         employeeName: parsedInput.employeeName,
+        employeeRFC: '',
+        employeeCURP: '',
         employeePosition: parsedInput.employeePosition ?? null,
         empresaName: parsedInput.empresaName || ctx.organization.name,
         empresaRFC: parsedInput.empresaRFC ?? null,
