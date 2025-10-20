@@ -49,8 +49,8 @@ export const step1BaseConfigSchema = z.object({
   // Factor de Integración - Auto-calculado (solo para mostrar en UI)
   integrationFactor: z.coerce.number().optional(),
 
-  // Frecuencia de Pago - Solo usado en la sección de Complemento
-  salaryFrequency: z.nativeEnum(SalaryFrequency).optional(),
+  // Frecuencia de Pago - Usado en la sección de Complemento para calcular salario diario
+  salaryFrequency: z.nativeEnum(SalaryFrequency).default(SalaryFrequency.MONTHLY),
 
   borderZone: z.nativeEnum(BorderZone, {
     required_error: 'La zona fronteriza es requerida'
@@ -73,7 +73,13 @@ export const step1BaseConfigSchema = z.object({
   // ===== FACTORES DE COMPLEMENTO (OPCIONAL) =====
   complementoActivado: z.boolean().default(false),
   realHireDate: z.coerce.date().optional(),
+
+  // Salario Real (según frecuencia de pago) - El usuario ingresa este valor
+  realSalary: z.coerce.number().positive('El salario real debe ser mayor a 0').optional(),
+
+  // Salario Diario Real - Auto-calculado según realSalary y salaryFrequency
   realDailySalary: z.coerce.number().positive('El salario real debe ser mayor a 0').optional(),
+
   daysFactor: z.coerce.number()
     .positive('El factor de días debe ser mayor a 0')
     .default(30.4), // 365/12 = 30.4
@@ -115,15 +121,15 @@ export const step1BaseConfigSchema = z.object({
   )
   .refine(
     (data) => {
-      // Si complemento está activado, realDailySalary es requerido
-      if (data.complementoActivado && (!data.realDailySalary || data.realDailySalary <= 0)) {
+      // Si complemento está activado, realSalary es requerido
+      if (data.complementoActivado && (!data.realSalary || data.realSalary <= 0)) {
         return false;
       }
       return true;
     },
     {
-      message: 'El salario diario real es requerido cuando el complemento está activado',
-      path: ['realDailySalary']
+      message: 'El salario real es requerido cuando el complemento está activado',
+      path: ['realSalary']
     }
   )
   .refine(

@@ -56,6 +56,8 @@ export function Step1BaseConfig() {
       vacationDays: 12,
       vacationPremiumPercentage: 25,
       complementoActivado: false,
+      realSalary: 0,
+      realDailySalary: 0,
       daysFactor: 30.4,
       complementIntegratedDailySalary: 0,
       complementIntegrationFactor: 0,
@@ -71,6 +73,8 @@ export function Step1BaseConfig() {
   const aguinaldoDays = form.watch('aguinaldoDays');
   const vacationPremiumPercentage = form.watch('vacationPremiumPercentage');
   const complementoActivado = form.watch('complementoActivado');
+  const realSalary = form.watch('realSalary');
+  const salaryFrequency = form.watch('salaryFrequency');
   const realDailySalary = form.watch('realDailySalary');
   const realHireDate = form.watch('realHireDate');
 
@@ -121,6 +125,34 @@ export function Step1BaseConfig() {
       }
     }
   }, [complementoActivado, hireDate, form]);
+
+  // AUTO-CÁLCULO NUEVO: Salario Diario Real según Salario Real y Frecuencia de Pago
+  // Convierte el salario según la frecuencia seleccionada a salario diario
+  useEffect(() => {
+    if (complementoActivado && realSalary && realSalary > 0) {
+      const daysFactor = form.getValues('daysFactor');
+      let dailySalary = 0;
+
+      switch (salaryFrequency) {
+        case SalaryFrequency.DAILY:
+          dailySalary = realSalary;
+          break;
+        case SalaryFrequency.WEEKLY:
+          dailySalary = realSalary / 7;
+          break;
+        case SalaryFrequency.BIWEEKLY:
+          dailySalary = realSalary / 14;
+          break;
+        case SalaryFrequency.MONTHLY:
+          dailySalary = realSalary / daysFactor;
+          break;
+        default:
+          dailySalary = realSalary / daysFactor; // Default: MONTHLY
+      }
+
+      form.setValue('realDailySalary', parseFloat(dailySalary.toFixed(2)));
+    }
+  }, [complementoActivado, realSalary, salaryFrequency, form]);
 
   // AUTO-CÁLCULO 4: Salario Diario Integrado y Factor de Integración de Complemento
   // SDI Complemento = Salario Real × Factor de Integración Complemento
@@ -599,10 +631,34 @@ export function Step1BaseConfig() {
 
               <FormField
                 control={form.control}
-                name="realDailySalary"
+                name="salaryFrequency"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Salario Diario Real *</FormLabel>
+                    <FormLabel>Frecuencia de Pago *</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccionar frecuencia" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value={SalaryFrequency.DAILY}>Diario</SelectItem>
+                        <SelectItem value={SalaryFrequency.WEEKLY}>Semanal</SelectItem>
+                        <SelectItem value={SalaryFrequency.BIWEEKLY}>Quincenal</SelectItem>
+                        <SelectItem value={SalaryFrequency.MONTHLY}>Mensual</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="realSalary"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Salario Real *</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -611,6 +667,33 @@ export function Step1BaseConfig() {
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                       />
                     </FormControl>
+                    <FormDescription>
+                      Según frecuencia de pago seleccionada
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="realDailySalary"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Salario Diario Real</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        disabled
+                        className="bg-muted"
+                        {...field}
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Auto-calculado según salario y frecuencia
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
