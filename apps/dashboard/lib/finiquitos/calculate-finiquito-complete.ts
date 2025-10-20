@@ -412,7 +412,7 @@ export function calculateFiniquitoComplete(
         primaVacacional: factoresComplemento.conceptosFiniquito.primaVacacional,
         aguinaldo: factoresComplemento.conceptosFiniquito.aguinaldo,
       } : undefined,
-      liquidacionComplemento: factoresComplemento?.conceptosLiquidacion && (factoresComplemento.conceptosLiquidacion.indemnizacionVeinteDias > 0 || factoresComplemento.conceptosLiquidacion.indemnizacionNoventaDias > 0 || factoresComplemento.conceptosLiquidacion.primaAntiguedad > 0) ? {
+      liquidacionComplemento: factoresComplemento?.conceptosLiquidacion ? {
         indemnizacion90Dias: factoresComplemento.conceptosLiquidacion.indemnizacionNoventaDias,
         indemnizacion20Dias: factoresComplemento.conceptosLiquidacion.indemnizacionVeinteDias,
         primaAntiguedad: factoresComplemento.conceptosLiquidacion.primaAntiguedad,
@@ -425,7 +425,9 @@ export function calculateFiniquitoComplete(
         diasTrabajados: mapPercept(resultCalculation.percepcionesFiniquito.diasTrabajados),
         septimoDia: mapPercept(resultCalculation.percepcionesFiniquito.septimoDia),
         vacaciones: mapPercept(resultCalculation.percepcionesFiniquito.vacaciones),
+        vacacionesPendientes: mapPercept(resultCalculation.percepcionesFiniquito.vacacionesPendientes),
         primaVacacional: mapPercept(resultCalculation.percepcionesFiniquito.primaVacacional),
+        primaVacacionalPendiente: mapPercept(resultCalculation.percepcionesFiniquito.primaVacacionalPendiente),
         aguinaldo: mapPercept(resultCalculation.percepcionesFiniquito.aguinaldo),
       },
       liquidacion: conceptosLiquidacion ? {
@@ -437,7 +439,9 @@ export function calculateFiniquitoComplete(
         diasTrabajados: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.diasTrabajados),
         septimoDia: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.septimoDia),
         vacaciones: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.vacaciones),
+        vacacionesPendientes: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.vacacionesPendientes),
         primaVacacional: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.primaVacacional),
+        primaVacacionalPendiente: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.primaVacacionalPendiente),
         aguinaldo: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.aguinaldo),
       } : undefined,
       liquidacionComplemento: resultCalculation.percepcionesLiquidacionComplemento ? {
@@ -473,7 +477,12 @@ export function calculateFiniquitoComplete(
       liquidacion: conceptosLiquidacion ? {
         percepciones: resultCalculation.liquidacion.totalPercepcionesFiscal,
         deducciones: resultCalculation.liquidacion.totalDeduccionesFiscal,
-        neto: resultCalculation.liquidacion.neto,
+        neto: resultCalculation.liquidacion.netoFiscal,
+      } : undefined,
+      liquidacionComplemento: factoresComplemento?.conceptosLiquidacion ? {
+        percepciones: resultCalculation.liquidacion.totalPercepciones - resultCalculation.liquidacion.totalPercepcionesFiscal,
+        deducciones: resultCalculation.liquidacion.totalDeducciones - resultCalculation.liquidacion.totalDeduccionesFiscal,
+        neto: resultCalculation.liquidacion.netoComplemento,
       } : undefined,
       complemento: resultCalculation.percepcionesFiniquitoComplemento ? {
         percepciones: resultCalculation.totalPercepcionesComplemento || 0,
@@ -481,7 +490,8 @@ export function calculateFiniquitoComplete(
         neto: resultCalculation.complementoNeto || 0,
       } : undefined,
       totalAPagar: resultCalculation.finiquito.neto +
-        resultCalculation.liquidacion.neto +
+        resultCalculation.liquidacion.netoFiscal +
+        (resultCalculation.liquidacion.netoComplemento || 0) +
         (resultCalculation.complementoNeto || 0),
     },
 

@@ -16,7 +16,7 @@ import { BorderZone, SalaryFrequency } from '@workspace/database';
 export const step1BaseConfigSchema = z.object({
   // ===== DATOS BÁSICOS =====
   employeeName: z.string().min(1, 'El nombre del empleado es requerido'),
-  employeePosition: z.string().optional(),
+  employeePosition: z.string().min(1, 'El puesto del empleado es requerido'),
   employeeRFC: z.string()
     .min(1, 'El RFC del empleado es requerido')
     .regex(/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/, 'RFC inválido. Formato: AAAA123456XXX (12-13 caracteres)'),
@@ -70,14 +70,6 @@ export const step1BaseConfigSchema = z.object({
     .max(100, 'La prima vacacional no puede ser mayor a 100%')
     .default(25),
 
-  // ===== BENEFICIOS FISCALES =====
-  pendingVacationDays: z.coerce.number()
-    .nonnegative('Los días de vacaciones pendientes no pueden ser negativos')
-    .default(0),
-  pendingVacationPremium: z.coerce.number()
-    .nonnegative('La prima vacacional pendiente no puede ser negativa')
-    .default(0),
-
   // ===== FACTORES DE COMPLEMENTO (OPCIONAL) =====
   complementoActivado: z.boolean().default(false),
   realHireDate: z.coerce.date().optional(),
@@ -92,14 +84,6 @@ export const step1BaseConfigSchema = z.object({
 
   // Factor de Integración Complemento - Auto-calculado (solo para mostrar en UI)
   complementIntegrationFactor: z.coerce.number().optional(),
-
-  // ===== BENEFICIOS DE COMPLEMENTO =====
-  complementPendingVacationDays: z.coerce.number()
-    .nonnegative('Los días de vacaciones pendientes de complemento no pueden ser negativos')
-    .default(0),
-  complementPendingVacationPremium: z.coerce.number()
-    .nonnegative('La prima vacacional pendiente de complemento no puede ser negativa')
-    .default(0),
 
   // ===== LIQUIDACIÓN (OPCIONAL) =====
   liquidacionActivada: z.boolean().default(false),

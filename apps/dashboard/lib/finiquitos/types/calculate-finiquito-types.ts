@@ -105,7 +105,9 @@ export type MontosFiniquito = {
   diasTrabajados: PerceptionDetail;
   septimoDia: PerceptionDetail;
   vacaciones: PerceptionDetail;
+  vacacionesPendientes: PerceptionDetail;
   primaVacacional: PerceptionDetail;
+  primaVacacionalPendiente: PerceptionDetail;
   aguinaldo: PerceptionDetail;
 };
 
@@ -171,6 +173,7 @@ export type CalculateFiniquitoOutput = {
   totales: {
     finiquito: TotalesSeccion;
     liquidacion?: TotalesSeccion;
+    liquidacionComplemento?: TotalesSeccion;
     complemento?: TotalesSeccion;
     totalAPagar: number; // Suma de todos los netos
   };

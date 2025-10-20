@@ -55,14 +55,10 @@ export function Step1BaseConfig() {
       aguinaldoDays: 15,
       vacationDays: 12,
       vacationPremiumPercentage: 25,
-      pendingVacationDays: 0,
-      pendingVacationPremium: 0,
       complementoActivado: false,
       daysFactor: 30.4,
       complementIntegratedDailySalary: 0,
       complementIntegrationFactor: 0,
-      complementPendingVacationDays: 0,
-      complementPendingVacationPremium: 0,
       liquidacionActivada: false,
       daysFactorModified: false,
     },
@@ -160,14 +156,11 @@ export function Step1BaseConfig() {
       aguinaldoDays: data.aguinaldoDays,
       vacationDays: data.vacationDays,
       vacationPremiumPercentage: data.vacationPremiumPercentage,
-      pendingVacationDays: data.pendingVacationDays,
-      pendingVacationPremium: data.pendingVacationPremium,
       complemento: data.complementoActivado && data.realHireDate && data.realDailySalary ? {
         enabled: true,
         realHireDate: data.realHireDate,
         realDailySalary: data.realDailySalary,
-        pendingVacationDays: data.complementPendingVacationDays,
-        pendingVacationPremium: data.complementPendingVacationPremium,
+        complementIntegratedDailySalary: data.complementIntegratedDailySalary,
       } : undefined,
       liquidacion: data.liquidacionActivada ? { enabled: true } : undefined,
       deduccionesManuales: {
@@ -523,52 +516,6 @@ export function Step1BaseConfig() {
 
         <Separator />
 
-        {/* Beneficios Fiscales */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Beneficios Fiscales (Pendientes)</h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="pendingVacationDays"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Días de Vacaciones Pendientes</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="1"
-                      {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="pendingVacationPremium"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Prima Vacacional Pendiente ($)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-
-        <Separator />
 
         {/* Liquidación Toggle */}
         <FormField
@@ -702,44 +649,6 @@ export function Step1BaseConfig() {
                     <FormDescription>
                       Auto-calculado: Salario Real × Factor de Integración
                     </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="complementPendingVacationDays"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Días de Vacaciones Pendientes (Complemento)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="1"
-                        {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="complementPendingVacationPremium"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Prima Vacacional Pendiente ($) (Complemento)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                      />
-                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}

@@ -85,7 +85,9 @@ export function LiveCalculationPanel({
               <ConceptLine label="Días Pendientes de Sueldo" amount={calculation.montos.finiquito.diasTrabajados.totalAmount} />
               <ConceptLine label="Séptimo Día" amount={calculation.montos.finiquito.septimoDia.totalAmount} />
               <ConceptLine label="Vacaciones" amount={calculation.montos.finiquito.vacaciones.totalAmount} />
+              <ConceptLine label="Vacaciones Pendientes" amount={calculation.montos.finiquito.vacacionesPendientes.totalAmount} />
               <ConceptLine label="Prima Vacacional" amount={calculation.montos.finiquito.primaVacacional.totalAmount} />
+              <ConceptLine label="Prima Vacacional Pendiente" amount={calculation.montos.finiquito.primaVacacionalPendiente.totalAmount} />
               <ConceptLine label="Aguinaldo" amount={calculation.montos.finiquito.aguinaldo.totalAmount} />
               {((calculation.factores.configuracionAdicional?.gratificacionPesos ?? 0) > 0) && (
                 <ConceptLine label="Gratificación" amount={calculation.factores.configuracionAdicional?.gratificacionPesos ?? 0} />
@@ -185,6 +187,61 @@ export function LiveCalculationPanel({
           </>
         )}
 
+        {/* Liquidación Complemento (si existe) */}
+        {calculation.totales.liquidacionComplemento && (
+          <>
+            <Separator />
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="font-semibold text-sm">LIQUIDACIÓN COMPLEMENTO</h4>
+                <Badge variant="default">Indemnización Diferencia</Badge>
+              </div>
+              <div className="space-y-2">
+                {/* Percepciones Detalladas */}
+                <div className="space-y-1">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Percepciones</p>
+                  {calculation.montos.liquidacionComplemento && (
+                    <>
+                      <ConceptLine label="Indemnización 90 Días" amount={calculation.montos.liquidacionComplemento.indemnizacion90Dias.totalAmount} />
+                      <ConceptLine label="Indemnización 20 Días" amount={calculation.montos.liquidacionComplemento.indemnizacion20Dias.totalAmount} />
+                      <ConceptLine label="Prima de Antigüedad" amount={calculation.montos.liquidacionComplemento.primaAntiguedad.totalAmount} />
+                    </>
+                  )}
+                  <Separator className="my-1.5" />
+                  <div className="flex justify-between text-sm font-semibold">
+                    <span>Total Percepciones:</span>
+                    <span>{formatCurrency(calculation.totales.liquidacionComplemento.percepciones)}</span>
+                  </div>
+                </div>
+
+                {/* Deducciones Detalladas */}
+                {calculation.totales.liquidacionComplemento.deducciones > 0 && (
+                  <>
+                    <Separator className="my-2" />
+                    <div className="space-y-1">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Deducciones</p>
+                      <Separator className="my-1.5" />
+                      <div className="flex justify-between text-sm font-semibold">
+                        <span>Total Deducciones:</span>
+                        <span className="text-destructive">-{formatCurrency(calculation.totales.liquidacionComplemento.deducciones)}</span>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {/* Neto */}
+                <Separator className="my-2" />
+                <div className="flex justify-between font-bold text-base">
+                  <span>Neto Liquidación Complemento:</span>
+                  <span className="text-primary">
+                    {formatCurrency(calculation.totales.liquidacionComplemento.neto)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
         {/* Complemento (si existe) */}
         {calculation.totales.complemento && (
           <>
@@ -203,7 +260,9 @@ export function LiveCalculationPanel({
                       <ConceptLine label="Días Pendientes de Sueldo" amount={calculation.montos.complemento.diasTrabajados.totalAmount} />
                       <ConceptLine label="Séptimo Día" amount={calculation.montos.complemento.septimoDia.totalAmount} />
                       <ConceptLine label="Vacaciones" amount={calculation.montos.complemento.vacaciones.totalAmount} />
+                      <ConceptLine label="Vacaciones Pendientes" amount={calculation.montos.complemento.vacacionesPendientes.totalAmount} />
                       <ConceptLine label="Prima Vacacional" amount={calculation.montos.complemento.primaVacacional.totalAmount} />
+                      <ConceptLine label="Prima Vacacional Pendiente" amount={calculation.montos.complemento.primaVacacionalPendiente.totalAmount} />
                       <ConceptLine label="Aguinaldo" amount={calculation.montos.complemento.aguinaldo.totalAmount} />
                     </>
                   )}

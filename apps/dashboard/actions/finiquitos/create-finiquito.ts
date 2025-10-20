@@ -30,14 +30,15 @@ export const createFiniquito = authOrganizationActionClient
       aguinaldoDays: parsedInput.aguinaldoDays,
       vacationDays: parsedInput.vacationDays,
       vacationPremiumPercentage: parsedInput.vacationPremiumPercentage,
-      pendingVacationDays: parsedInput.pendingVacationDays,
-      pendingVacationPremium: parsedInput.pendingVacationPremium,
+      pendingVacationDays: parsedInput.beneficiosFiscalesPendientes?.pendingVacationDays ?? 0,
+      pendingVacationPremium: parsedInput.beneficiosFiscalesPendientes?.pendingVacationPremium ?? 0,
       complemento: parsedInput.complementoActivado && parsedInput.realHireDate && parsedInput.realDailySalary ? {
         enabled: true,
         realHireDate: parsedInput.realHireDate,
         realDailySalary: parsedInput.realDailySalary,
-        pendingVacationDays: parsedInput.complementPendingVacationDays,
-        pendingVacationPremium: parsedInput.complementPendingVacationPremium,
+        complementIntegratedDailySalary: parsedInput.complementIntegratedDailySalary,
+        pendingVacationDays: parsedInput.beneficiosComplementoPendientes?.complementPendingVacationDays ?? 0,
+        pendingVacationPremium: parsedInput.beneficiosComplementoPendientes?.complementPendingVacationPremium ?? 0,
       } : undefined,
       liquidacion: parsedInput.liquidacionActivada ? { enabled: true } : undefined,
       deduccionesManuales: parsedInput.deduccionesManuales,
@@ -86,7 +87,7 @@ export const createFiniquito = authOrganizationActionClient
           aguinaldoDays: parsedInput.aguinaldoDays,
           vacationDays: parsedInput.vacationDays,
           vacationPremiumPercentage: parsedInput.vacationPremiumPercentage,
-          pendingVacationDays: parsedInput.pendingVacationDays ?? 0,
+          pendingVacationDays: parsedInput.beneficiosFiscalesPendientes?.pendingVacationDays ?? 0,
 
           // Toggles de activación
           liquidacionActivada: parsedInput.liquidacionActivada,

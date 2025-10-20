@@ -70,12 +70,30 @@ const configuracionAdicionalSchema = z.object({
     .optional(),
 }).optional();
 
+// Beneficios Fiscales Pendientes
+const beneficiosFiscalesPendientesSchema = z.object({
+  pendingVacationDays: z.coerce.number()
+    .nonnegative('Los días de vacaciones pendientes no pueden ser negativos'),
+  pendingVacationPremium: z.coerce.number()
+    .nonnegative('La prima vacacional pendiente no puede ser negativa'),
+}).optional();
+
+// Beneficios de Complemento Pendientes (opcionales)
+const beneficiosComplementoPendientesSchema = z.object({
+  complementPendingVacationDays: z.coerce.number()
+    .nonnegative('Los días de vacaciones pendientes de complemento no pueden ser negativos'),
+  complementPendingVacationPremium: z.coerce.number()
+    .nonnegative('La prima vacacional pendiente de complemento no puede ser negativa'),
+}).optional();
+
 export const step2FactorsSchema = z.object({
   factoresFiniquito: factoresFiniquitoSchema,
   factoresLiquidacion: factoresLiquidacionSchema,
   factoresComplemento: factoresComplementoSchema,
   factoresLiquidacionComplemento: factoresLiquidacionComplementoSchema,
   configuracionAdicional: configuracionAdicionalSchema,
+  beneficiosFiscalesPendientes: beneficiosFiscalesPendientesSchema,
+  beneficiosComplementoPendientes: beneficiosComplementoPendientesSchema,
 });
 
 export type Step2Factors = z.infer<typeof step2FactorsSchema>;
@@ -84,3 +102,5 @@ export type FactoresLiquidacion = z.infer<typeof factoresLiquidacionSchema>;
 export type FactoresComplemento = z.infer<typeof factoresComplementoSchema>;
 export type FactoresLiquidacionComplemento = z.infer<typeof factoresLiquidacionComplementoSchema>;
 export type ConfiguracionAdicional = z.infer<typeof configuracionAdicionalSchema>;
+export type BeneficiosFiscalesPendientes = z.infer<typeof beneficiosFiscalesPendientesSchema>;
+export type BeneficiosComplementoPendientes = z.infer<typeof beneficiosComplementoPendientesSchema>;

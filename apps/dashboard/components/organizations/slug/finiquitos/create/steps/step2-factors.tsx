@@ -57,6 +57,14 @@ export function Step2Factors() {
         gratificacionDias: 0,
         gratificacionPesos: 0,
       },
+      beneficiosFiscalesPendientes: {
+        pendingVacationDays: 0,
+        pendingVacationPremium: 0,
+      },
+      beneficiosComplementoPendientes: {
+        complementPendingVacationDays: 0,
+        complementPendingVacationPremium: 0,
+      },
     },
   });
 
@@ -79,6 +87,56 @@ export function Step2Factors() {
       updateLiveCalculation(liveCalculation);
     }
   }, [liveCalculation, updateLiveCalculation]);
+
+  // AUTO-POBLAR factores calculados en primera visita al paso 2
+  useEffect(() => {
+    // Solo poblar si NO hay datos previos en step2 y SÍ hay cálculo
+    if (!step2Data && liveCalculation) {
+      const { factores } = liveCalculation;
+
+      // Poblar factores de finiquito
+      if (factores.finiquito) {
+        form.setValue('factoresFiniquito.diasTrabajados', factores.finiquito.diasTrabajados, { shouldValidate: false });
+        form.setValue('factoresFiniquito.septimoDia', factores.finiquito.septimoDia, { shouldValidate: false });
+        form.setValue('factoresFiniquito.vacaciones', factores.finiquito.vacaciones, { shouldValidate: false });
+        form.setValue('factoresFiniquito.primaVacacional', factores.finiquito.primaVacacional, { shouldValidate: false });
+        form.setValue('factoresFiniquito.aguinaldo', factores.finiquito.aguinaldo, { shouldValidate: false });
+      }
+
+      // Poblar factores de liquidación si está activada
+      if (liquidacionActivada && factores.liquidacion) {
+        form.setValue('factoresLiquidacion.indemnizacion90Dias', factores.liquidacion.indemnizacion90Dias, { shouldValidate: false });
+        form.setValue('factoresLiquidacion.indemnizacion20Dias', factores.liquidacion.indemnizacion20Dias, { shouldValidate: false });
+        form.setValue('factoresLiquidacion.primaAntiguedad', factores.liquidacion.primaAntiguedad, { shouldValidate: false });
+      }
+
+      // Poblar factores de complemento si está activado
+      if (complementoActivado && factores.complemento) {
+        form.setValue('factoresComplemento.diasTrabajados', factores.complemento.diasTrabajados, { shouldValidate: false });
+        form.setValue('factoresComplemento.septimoDia', factores.complemento.septimoDia, { shouldValidate: false });
+        form.setValue('factoresComplemento.vacaciones', factores.complemento.vacaciones, { shouldValidate: false });
+        form.setValue('factoresComplemento.primaVacacional', factores.complemento.primaVacacional, { shouldValidate: false });
+        form.setValue('factoresComplemento.aguinaldo', factores.complemento.aguinaldo, { shouldValidate: false });
+      }
+
+      // Poblar factores de liquidación complemento si están ambos activados
+      if (liquidacionActivada && complementoActivado && factores.liquidacionComplemento) {
+        form.setValue('factoresLiquidacionComplemento.indemnizacion90Dias', factores.liquidacionComplemento.indemnizacion90Dias, { shouldValidate: false });
+        form.setValue('factoresLiquidacionComplemento.indemnizacion20Dias', factores.liquidacionComplemento.indemnizacion20Dias, { shouldValidate: false });
+        form.setValue('factoresLiquidacionComplemento.primaAntiguedad', factores.liquidacionComplemento.primaAntiguedad, { shouldValidate: false });
+      }
+
+      // Poblar configuración adicional si existe
+      if (factores.configuracionAdicional) {
+        if (factores.configuracionAdicional.gratificacionDias !== undefined) {
+          form.setValue('configuracionAdicional.gratificacionDias', factores.configuracionAdicional.gratificacionDias, { shouldValidate: false });
+        }
+        if (factores.configuracionAdicional.gratificacionPesos !== undefined) {
+          form.setValue('configuracionAdicional.gratificacionPesos', factores.configuracionAdicional.gratificacionPesos, { shouldValidate: false });
+        }
+      }
+    }
+  }, [step2Data, liveCalculation, liquidacionActivada, complementoActivado, form]);
 
   // Watch gratificación fields para conversión bidireccional
   const gratificacionDias = form.watch('configuracionAdicional.gratificacionDias');
@@ -130,7 +188,7 @@ export function Step2Factors() {
                 Los siguientes factores han sido calculados automáticamente. Puede editarlos si es necesario.
               </p>
 
-              <Accordion type="multiple" defaultValue={['finiquito', 'liquidacion', 'complemento', 'liquidacion-complemento', 'configuracion']} className="space-y-4">
+              <Accordion type="multiple" defaultValue={['finiquito', 'liquidacion', 'complemento', 'liquidacion-complemento', 'configuracion', 'beneficios-fiscales-pendientes', 'beneficios-complemento-pendientes']} className="space-y-4">
                 {/* Factores de Finiquito */}
                 <AccordionItem value="finiquito" className="border rounded-lg px-4">
                   <AccordionTrigger className="hover:no-underline">
@@ -550,6 +608,112 @@ export function Step2Factors() {
                     </div>
                   </AccordionContent>
                 </AccordionItem>
+
+                {/* Beneficios Fiscales Pendientes */}
+                <AccordionItem value="beneficios-fiscales-pendientes" className="border rounded-lg px-4">
+                  <AccordionTrigger className="hover:no-underline">
+                    <span className="font-semibold">Beneficios Fiscales Pendientes</span>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-4 pt-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="beneficiosFiscalesPendientes.pendingVacationDays"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Días de Vacaciones Pendientes</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  step="0.0001"
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormDescription>Días de vacaciones no tomadas</FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="beneficiosFiscalesPendientes.pendingVacationPremium"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Prima Vacacional Pendiente</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormDescription>Monto en pesos de prima vacacional pendiente</FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                {/* Beneficios de Complemento Pendientes (solo si complemento activado) */}
+                {complementoActivado && (
+                  <AccordionItem value="beneficios-complemento-pendientes" className="border rounded-lg px-4">
+                    <AccordionTrigger className="hover:no-underline">
+                      <span className="font-semibold">Beneficios de Complemento Pendientes</span>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-4 pt-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="beneficiosComplementoPendientes.complementPendingVacationDays"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Días de Vacaciones Pendientes de Complemento</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    step="0.0001"
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                  />
+                                </FormControl>
+                                <FormDescription>Días de vacaciones pendientes del complemento</FormDescription>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name="beneficiosComplementoPendientes.complementPendingVacationPremium"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Prima Vacacional Pendiente de Complemento</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    step="0.01"
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                  />
+                                </FormControl>
+                                <FormDescription>Monto en pesos de prima vacacional pendiente del complemento</FormDescription>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                )}
               </Accordion>
             </div>
 

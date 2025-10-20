@@ -48,8 +48,8 @@ export const updateFiniquito = authOrganizationActionClient
       updates.aguinaldoDays ||
       updates.vacationDays ||
       updates.vacationPremiumPercentage ||
-      updates.pendingVacationDays ||
-      updates.pendingVacationPremium ||
+      updates.beneficiosFiscalesPendientes ||
+      updates.beneficiosComplementoPendientes ||
       updates.complementoActivado ||
       updates.realHireDate ||
       updates.realDailySalary ||
@@ -75,14 +75,14 @@ export const updateFiniquito = authOrganizationActionClient
         aguinaldoDays: updates.aguinaldoDays ?? existing.aguinaldoDays,
         vacationDays: updates.vacationDays ?? existing.vacationDays,
         vacationPremiumPercentage: updates.vacationPremiumPercentage ?? Number(existing.vacationPremiumPercentage),
-        pendingVacationDays: updates.pendingVacationDays ?? existing.pendingVacationDays,
-        pendingVacationPremium: updates.pendingVacationPremium ?? 0,
+        pendingVacationDays: updates.beneficiosFiscalesPendientes?.pendingVacationDays ?? existing.pendingVacationDays,
+        pendingVacationPremium: updates.beneficiosFiscalesPendientes?.pendingVacationPremium ?? 0,
         complemento: (updates.complementoActivado ?? existing.complementoActivado) ? {
           enabled: true,
           realHireDate: (updates.realHireDate ?? existing.realHireDate)!,
           realDailySalary: (updates.realDailySalary ?? Number(existing.realDailySalary)),
-          pendingVacationDays: 0,
-          pendingVacationPremium: 0,
+          pendingVacationDays: updates.beneficiosComplementoPendientes?.complementPendingVacationDays ?? 0,
+          pendingVacationPremium: updates.beneficiosComplementoPendientes?.complementPendingVacationPremium ?? 0,
         } : undefined,
         liquidacion: (updates.liquidacionActivada ?? existing.liquidacionActivada) ? { enabled: true } : undefined,
         deduccionesManuales: updates.deduccionesManuales ?? {
@@ -128,7 +128,9 @@ export const updateFiniquito = authOrganizationActionClient
         ...(updates.aguinaldoDays && { aguinaldoDays: updates.aguinaldoDays }),
         ...(updates.vacationDays && { vacationDays: updates.vacationDays }),
         ...(updates.vacationPremiumPercentage && { vacationPremiumPercentage: updates.vacationPremiumPercentage }),
-        ...(updates.pendingVacationDays !== undefined && { pendingVacationDays: updates.pendingVacationDays }),
+        ...(updates.beneficiosFiscalesPendientes?.pendingVacationDays !== undefined && {
+          pendingVacationDays: updates.beneficiosFiscalesPendientes.pendingVacationDays
+        }),
 
         // Toggles
         ...(updates.liquidacionActivada !== undefined && { liquidacionActivada: updates.liquidacionActivada }),
