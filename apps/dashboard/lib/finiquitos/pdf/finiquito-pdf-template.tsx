@@ -99,6 +99,27 @@ interface FiniquitoPDFProps {
     };
 }
 
+/**
+ * Plantilla PDF para finiquitos (versión 2)
+ *
+ * IMPORTANTE: Esta plantilla usa campos de versión 2 del modelo Finiquito.
+ * Campos de montos v2 (vigentes):
+ * - montoVacacionesFiniquito
+ * - montoPrimaVacacionalFiniquito
+ * - montoAguinaldoFiniquito
+ * - montoDiasTrabajadosFiniquito
+ * - totalAPagar
+ *
+ * NO usar campos v1 (deprecated):
+ * - realVacationAmount, realVacationPremiumAmount, realAguinaldoAmount
+ * - realWorkedDaysAmount, totalToPay
+ *
+ * Datos requeridos del empleado:
+ * - employeeRFC: Registro Federal de Contribuyentes
+ * - employeeCURP: Clave Única de Registro de Población
+ *
+ * @see /apps/dashboard/actions/finiquitos/helpers/map-calculation.ts - Mapeo de cálculos a campos Prisma
+ */
 export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
     const toNumber = (value: number | null | { toNumber?: () => number }): number => {
         if (value === null) return 0;

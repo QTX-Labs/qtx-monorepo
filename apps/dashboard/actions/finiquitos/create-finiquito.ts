@@ -63,6 +63,7 @@ export const createFiniquito = authOrganizationActionClient
           employeeId: parsedInput.employeeId ?? null,
 
           // Datos básicos del empleado (snapshot)
+          // IMPORTANTE: employeeRFC y employeeCURP son requeridos para PDF y vista de detalle
           employeeName: parsedInput.employeeName,
           employeeRFC: parsedInput.employeeRFC,
           employeeCURP: parsedInput.employeeCURP,

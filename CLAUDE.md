@@ -315,10 +315,33 @@ The dashboard app includes a comprehensive finiquito calculator system for Mexic
 - Provides navigation methods: `goNext()`, `goPrevious()`, `goToStep()`
 - Update methods: `updateStep1()`, `updateStep2()`, `updateStep3()`, `updateLiveCalculation()`
 
+#### Database Field Structure (Version 2)
+
+**IMPORTANT**: The finiquito system uses version 2 field names. All new finiquitos are created with `version = 2`. When working with finiquito data, always use v2 field names:
+
+**V2 Field Names (CURRENT - USE THESE):**
+- Finiquito amounts: `montoDiasTrabajadosFiniquito`, `montoVacacionesFiniquito`, `montoPrimaVacacionalFiniquito`, `montoAguinaldoFiniquito`
+- Finiquito factors: `factorDiasTrabajadosFiniquito`, `factorVacacionesFiniquito`, `factorPrimaVacacionalFiniquito`, `factorAguinaldoFiniquito`
+- Liquidacion amounts: `montoIndemnizacion90Dias`, `montoIndemnizacion20Dias`, `montoPrimaAntiguedad`
+- Complemento amounts: `montoDiasTrabajadosComplemento`, `montoVacacionesComplemento`, etc.
+- Total to pay: `totalAPagar`
+- Employee identification: `employeeRFC`, `employeeCURP` (both required)
+
+**V1 Field Names (DEPRECATED - DO NOT USE):**
+- Legacy amounts: `realWorkedDaysAmount`, `realVacationAmount`, `realVacationPremiumAmount`, `realAguinaldoAmount`
+- Legacy total: `totalToPay`
+- These fields are NULL for all version 2 finiquitos
+
+**Field Mapping Reference:**
+See `/apps/dashboard/actions/finiquitos/helpers/map-calculation.ts` for the complete mapping from calculation results to Prisma fields.
+
 #### File Reference
 
 **Key Files:**
 - Entry point: `/apps/dashboard/lib/finiquitos/calculate-finiquito-complete.ts`
+- Field mapping: `/apps/dashboard/actions/finiquitos/helpers/map-calculation.ts`
+- PDF template: `/apps/dashboard/lib/finiquitos/pdf/finiquito-pdf-template.tsx`
+- Detail view: `/apps/dashboard/components/organizations/slug/finiquitos/detail/general-info-section.tsx`
 - Live calc hook: `/apps/dashboard/components/organizations/slug/finiquitos/create/hooks/use-live-calculation.ts`
 - Wizard context: `/apps/dashboard/components/organizations/slug/finiquitos/create/wizard-context.tsx`
 - Step 1: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step1-base-config.tsx`
@@ -339,3 +362,5 @@ The dashboard app includes a comprehensive finiquito calculator system for Mexic
 - **Port conflicts**: Dashboard (3000), Marketing (3001), API (3002), Prisma Studio (3003)
 - **Finiquito live calculation not updating**: Check browser console for errors; ensure Step 1 data is complete
 - **Infinite re-renders in wizard**: Verify `useLiveCalculation` uses stable keys (JSON.stringify) not object references
+- **Finiquito PDF showing zeros**: Ensure PDF template uses v2 field names (e.g., `montoVacacionesFiniquito` not `realVacationAmount`)
+- **Missing RFC/CURP in finiquito**: Ensure `create-finiquito.ts` saves `employeeRFC` and `employeeCURP` to database (lines 67-68)

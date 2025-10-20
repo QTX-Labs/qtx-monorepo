@@ -2,10 +2,31 @@ import { Decimal } from '@prisma/client/runtime/library';
 import type { CalculateFiniquitoOutput } from '~/lib/finiquitos/types/calculate-finiquito-types';
 
 /**
- * Mapea el resultado de calculateFiniquitoComplete a campos de Prisma
+ * Mapea el resultado de calculateFiniquitoComplete a campos de Prisma (versión 2)
  *
- * Convierte los valores numéricos del cálculo a Decimals de Prisma
- * y estructura los datos para insertarlos en la base de datos.
+ * IMPORTANTE: Este mapeo usa campos de versión 2 del modelo Finiquito.
+ * Todos los finiquitos nuevos se crean con version = 2.
+ *
+ * Estructura de campos v2:
+ * - Finiquito: factorXXXFiniquito, montoXXXFiniquito
+ * - Liquidación: factorXXX, montoXXX (sin sufijo)
+ * - Complemento: factorXXXComplemento, montoXXXComplemento
+ * - Total final: totalAPagar (NO totalToPay)
+ *
+ * Campos v1 deprecated (no se usan):
+ * - realVacationAmount, realVacationPremiumAmount, realAguinaldoAmount
+ * - realWorkedDaysAmount, totalToPay
+ *
+ * Conversiones:
+ * - Números a Decimal de Prisma para precisión monetaria
+ * - Factores y montos separados por tipo (finiquito/liquidación/complemento)
+ * - ISR y deducciones manuales
+ * - Totales agregados por sección y total final
+ *
+ * @param calculation - Resultado del cálculo completo de finiquito
+ * @returns Objeto con campos compatibles con Prisma.finiquito.create()
+ * @see /apps/dashboard/lib/finiquitos/calculate-finiquito-complete.ts
+ * @see /apps/dashboard/lib/finiquitos/pdf/finiquito-pdf-template.tsx - Usa estos mismos campos
  */
 export function mapCalculationToPrisma(calculation: CalculateFiniquitoOutput) {
   return {
