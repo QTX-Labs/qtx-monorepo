@@ -64,6 +64,8 @@ export const createFiniquito = authOrganizationActionClient
 
           // Datos básicos del empleado (snapshot)
           employeeName: parsedInput.employeeName,
+          employeeRFC: parsedInput.employeeRFC,
+          employeeCURP: parsedInput.employeeCURP,
           employeePosition: parsedInput.employeePosition ?? null,
           empresaName: parsedInput.empresaName,
           empresaRFC: parsedInput.empresaRFC || null,

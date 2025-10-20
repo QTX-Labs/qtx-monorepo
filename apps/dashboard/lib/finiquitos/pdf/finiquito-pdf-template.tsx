@@ -119,11 +119,11 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
     const ubicacion = estado ? `${municipio}, ${estado}` : municipio;
     const puesto = finiquito.employeePosition || 'EMPLEADO';
 
-    const vacaciones = toNumber(finiquito.realVacationAmount);
-    const primaVacacional = toNumber(finiquito.realVacationPremiumAmount);
-    const aguinaldo = toNumber(finiquito.realAguinaldoAmount);
-    const salariosDevengados = toNumber(finiquito.realWorkedDaysAmount);
-    const totalNeto = toNumber(finiquito.totalToPay);
+    const vacaciones = toNumber(finiquito.montoVacacionesFiniquito);
+    const primaVacacional = toNumber(finiquito.montoPrimaVacacionalFiniquito);
+    const aguinaldo = toNumber(finiquito.montoAguinaldoFiniquito);
+    const salariosDevengados = toNumber(finiquito.montoDiasTrabajadosFiniquito);
+    const totalNeto = toNumber(finiquito.totalAPagar);
 
     return (
         <Document>
