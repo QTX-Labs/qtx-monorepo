@@ -57,6 +57,8 @@ type FiniquitoListItem = Pick<
   | 'salaryFrequency'
   | 'borderZone'
   | 'totalToPay'
+  | 'totalAPagar'
+  | 'version'
   | 'createdAt'
 > & {
   user: Pick<User, 'name' | 'email'>;
@@ -178,7 +180,9 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
                       locale: es
                     })}
                   </TableCell>
-                  <TableCell>${numeral(Number(finiquito.totalToPay)).format('0,0.00')}</TableCell>
+                  <TableCell>
+                    ${numeral(Number(finiquito.version === 2 ? finiquito.totalAPagar : finiquito.totalToPay)).format('0,0.00')}
+                  </TableCell>
                   <TableCell>{finiquito.user.name}</TableCell>
                   <TableCell>
                     {format(toLocalDate(finiquito.createdAt), 'PPP', {
