@@ -13,7 +13,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@prisma/client": "6.9.0",
+    "@prisma/client": "^6.17.1",
     "@t3-oss/env-nextjs": "0.13.6",
     "zod": "3.25.56"
   },

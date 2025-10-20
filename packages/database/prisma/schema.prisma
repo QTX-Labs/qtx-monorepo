@@ -598,6 +598,8 @@ model Finiquito {
   userId                      String            @db.Uuid
 
   // Datos básicos del empleado (snapshot)
+  // IMPORTANTE: employeeRFC y employeeCURP son requeridos (no nullable)
+  // Se usan en PDF y vista de detalle
   employeeName                String            @db.VarChar(255)
   employeeRFC                 String            @db.VarChar(255)
   employeeCURP                String            @db.VarChar(255)
@@ -697,9 +699,13 @@ model Finiquito {
   // Netos y total
   fiscalNetAmount             Decimal?          @db.Decimal(12, 2)
   realNetAmount               Decimal?          @db.Decimal(12, 2)
-  totalToPay                  Decimal?          @db.Decimal(12, 2)
+  totalToPay                  Decimal?          @db.Decimal(12, 2) // @deprecated - Usar totalAPagar (v2)
 
   // ===== NUEVA ESTRUCTURA (v2) =====
+  // IMPORTANTE: Todos los finiquitos nuevos usan version = 2 con estos campos.
+  // Los campos v1 (arriba) están deprecated y son NULL para version = 2.
+  // Ver: /apps/dashboard/actions/finiquitos/helpers/map-calculation.ts para el mapeo completo
+  // Ver: /apps/dashboard/lib/finiquitos/pdf/finiquito-pdf-template.tsx para uso en PDF
 
   // ISR (calculado)
   isrFiniquito                Decimal?          @db.Decimal(12, 2)
