@@ -191,8 +191,6 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
 
                 <Text style={{ marginBottom: 12 }}>
                   <Text style={styles.bold}>Nombre completo:</Text> {finiquito.employeeName}{'\n'}
-                  <Text style={styles.bold}>RFC:</Text> {finiquito.employeeRFC || 'No proporcionado'}{'\n'}
-                  <Text style={styles.bold}>CURP:</Text> {finiquito.employeeCURP || 'No proporcionada'}{'\n'}
                   <Text style={styles.bold}>Empresa:</Text> {finiquito.empresaName}{'\n'}
                   <Text style={styles.bold}>Fecha de ingreso:</Text> {formatDateLong(finiquito.hireDate)}{'\n'}
                   <Text style={styles.bold}>Fecha de baja:</Text> {formatDateLong(finiquito.terminationDate)}{'\n'}
