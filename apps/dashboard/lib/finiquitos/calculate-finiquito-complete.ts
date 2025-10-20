@@ -261,7 +261,7 @@ export function calculateFiniquitoComplete(
   const diasTrabajados = input.manualFactors?.finiquito?.diasTrabajados ?? 0;
   const septimoDia = input.manualFactors?.finiquito?.septimoDia ?? 0;
   const vacaciones = input.manualFactors?.finiquito?.vacaciones ?? resultFactores.fiscal.proportionalSettlementConcepts.vacations;
-  const primaVacacional = input.manualFactors?.finiquito?.primaVacacional ?? resultFactores.fiscal.proportionalSettlementConcepts.vacationBonus;
+  const primaVacacionalFactor = input.manualFactors?.finiquito?.primaVacacional ?? resultFactores.fiscal.proportionalSettlementConcepts.vacationBonus;
   const aguinaldo = input.manualFactors?.finiquito?.aguinaldo ?? resultFactores.fiscal.proportionalSettlementConcepts.christmasBonus;
 
   // ===== PASO 3: PREPARAR INPUT PARA CALCULADORA DE FINIQUITOS =====
@@ -271,7 +271,9 @@ export function calculateFiniquitoComplete(
     septimoDia: septimoDia,
     vacaciones: vacaciones,
     vacacionesPendientes: resultFactores.fiscal.proportionalSettlementConcepts.pendingVacations || 0,
-    primaVacacional: primaVacacional,
+    // NOTA: primaVacacional en ConceptosFiniquito debe ser días de vacaciones, no el factor ya calculado
+    // porque calcularPrimaVacacional aplica el porcentaje
+    primaVacacional: vacaciones,
     primaVacacionalPendiente: resultFactores.fiscal.proportionalSettlementConcepts.pendingVacationBonus || 0,
     aguinaldo: aguinaldo,
     diasRetroactivosSueldo: 0, // No lo usamos
@@ -331,13 +333,15 @@ export function calculateFiniquitoComplete(
 
   // Factores de complemento si está activado
   let factoresComplemento: FactoresCalculoFiniquitoLiquidacion | undefined;
+  let primaVacacionalComplementoFactor = 0;
+
   if (input.complemento?.enabled && resultFactores.complement) {
 
     // Sobrescribir con factores manuales si existen (del Step 2)
     const diasTrabajadosComplemento = input.manualFactors?.complemento?.diasTrabajados ?? 0;
     const septimoDiaComplemento = input.manualFactors?.complemento?.septimoDia ?? 0;
     const vacacionesComplemento = input.manualFactors?.complemento?.vacaciones ?? resultFactores.complement.proportionalSettlementConcepts.vacations;
-    const primaVacacionalComplemento = input.manualFactors?.complemento?.primaVacacional ?? resultFactores.complement.proportionalSettlementConcepts.vacationBonus;
+    primaVacacionalComplementoFactor = input.manualFactors?.complemento?.primaVacacional ?? resultFactores.complement.proportionalSettlementConcepts.vacationBonus;
     const aguinaldoComplemento = input.manualFactors?.complemento?.aguinaldo ?? resultFactores.complement.proportionalSettlementConcepts.christmasBonus;
 
     const conceptosFiniquitoComplemento: ConceptosFiniquito = {
@@ -345,7 +349,8 @@ export function calculateFiniquitoComplete(
       septimoDia: septimoDiaComplemento,
       vacaciones: vacacionesComplemento,
       vacacionesPendientes: resultFactores.complement.proportionalSettlementConcepts.pendingVacations || 0,
-      primaVacacional: primaVacacionalComplemento,
+      // NOTA: primaVacacional en ConceptosFiniquito debe ser días de vacaciones, no el factor ya calculado
+      primaVacacional: vacacionesComplemento,
       primaVacacionalPendiente: resultFactores.complement.proportionalSettlementConcepts.pendingVacationBonus || 0,
       aguinaldo: aguinaldoComplemento,
       diasRetroactivosSueldo: 0,
@@ -389,6 +394,13 @@ export function calculateFiniquitoComplete(
     throw new Error('Error al calcular finiquito');
   }
 
+  console.log('[calculateFiniquitoComplete] resultCalculation.finiquito:', JSON.stringify({
+    totalPercepcionesFiscal: resultCalculation.finiquito.totalPercepcionesFiscal,
+    totalDeduccionesFiscal: resultCalculation.finiquito.totalDeduccionesFiscal,
+    neto: resultCalculation.finiquito.neto,
+    netoFiscal: resultCalculation.finiquito.netoFiscal,
+  }, null, 2));
+
   // ===== PASO 4: MAPEAR RESULTADO A OUTPUT =====
 
   const output: CalculateFiniquitoOutput = {
@@ -397,7 +409,7 @@ export function calculateFiniquitoComplete(
         diasTrabajados: conceptosFiniquito.diasTrabajados,
         septimoDia: conceptosFiniquito.septimoDia,
         vacaciones: conceptosFiniquito.vacaciones,
-        primaVacacional: conceptosFiniquito.primaVacacional,
+        primaVacacional: primaVacacionalFactor,
         aguinaldo: conceptosFiniquito.aguinaldo,
       },
       liquidacion: conceptosLiquidacion ? {
@@ -409,7 +421,7 @@ export function calculateFiniquitoComplete(
         diasTrabajados: factoresComplemento.conceptosFiniquito.diasTrabajados,
         septimoDia: factoresComplemento.conceptosFiniquito.septimoDia,
         vacaciones: factoresComplemento.conceptosFiniquito.vacaciones,
-        primaVacacional: factoresComplemento.conceptosFiniquito.primaVacacional,
+        primaVacacional: primaVacacionalComplementoFactor,
         aguinaldo: factoresComplemento.conceptosFiniquito.aguinaldo,
       } : undefined,
       liquidacionComplemento: factoresComplemento?.conceptosLiquidacion ? {
@@ -472,7 +484,7 @@ export function calculateFiniquitoComplete(
       finiquito: {
         percepciones: resultCalculation.finiquito.totalPercepcionesFiscal,
         deducciones: resultCalculation.finiquito.totalDeduccionesFiscal,
-        neto: resultCalculation.finiquito.neto,
+        neto: resultCalculation.finiquito.netoFiscal,
       },
       liquidacion: conceptosLiquidacion ? {
         percepciones: resultCalculation.liquidacion.totalPercepcionesFiscal,
@@ -489,7 +501,7 @@ export function calculateFiniquitoComplete(
         deducciones: resultCalculation.totalDeduccionesComplemento || 0,
         neto: resultCalculation.complementoNeto || 0,
       } : undefined,
-      totalAPagar: resultCalculation.finiquito.neto +
+      totalAPagar: resultCalculation.finiquito.netoFiscal +
         resultCalculation.liquidacion.netoFiscal +
         (resultCalculation.liquidacion.netoComplemento || 0) +
         (resultCalculation.complementoNeto || 0),

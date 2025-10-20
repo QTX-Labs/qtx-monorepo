@@ -187,8 +187,8 @@ export function LiveCalculationPanel({
           </>
         )}
 
-        {/* Liquidación Complemento (si existe) */}
-        {calculation.totales.liquidacionComplemento && (
+        {/* Liquidación Complemento (solo si liquidación Y complemento están activos) */}
+        {calculation.totales.liquidacionComplemento && calculation.totales.liquidacion && (
           <>
             <Separator />
             <div>

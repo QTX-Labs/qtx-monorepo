@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 import { SalaryFrequency } from '@workspace/database';
 
@@ -35,7 +35,14 @@ export function useLiveCalculation({
   const debouncedStep2Data = useDebounce(step2Data, 300);
   const debouncedStep3Data = useDebounce(step3Data, 300);
 
+  // Crear una clave estable basada en los valores, no en las referencias de objeto
+  const step1Key = useMemo(() => JSON.stringify(step1Data), [step1Data]);
+  const step2Key = useMemo(() => JSON.stringify(debouncedStep2Data), [debouncedStep2Data]);
+  const step3Key = useMemo(() => JSON.stringify(debouncedStep3Data), [debouncedStep3Data]);
+
   useEffect(() => {
+    console.log('[useLiveCalculation] useEffect triggered');
+
     // Solo calcular si tenemos los datos base
     if (!step1Data) {
       setCalculation(null);
@@ -43,7 +50,7 @@ export function useLiveCalculation({
     }
 
     try {
-      const result = calculateFiniquitoComplete({
+      const calculationInput = {
         employeeId: step1Data.employeeId,
         hireDate: step1Data.hireDate,
         terminationDate: step1Data.terminationDate,
@@ -79,14 +86,21 @@ export function useLiveCalculation({
           liquidacionComplemento: debouncedStep2Data.factoresLiquidacionComplemento,
           configuracionAdicional: debouncedStep2Data.configuracionAdicional,
         } : undefined,
-      });
+      };
+
+      console.log('[useLiveCalculation] INPUT:', JSON.stringify(calculationInput, null, 2));
+
+      const result = calculateFiniquitoComplete(calculationInput);
+
+      console.log('[useLiveCalculation] OUTPUT:', JSON.stringify(result, null, 2));
 
       setCalculation(result);
     } catch (error) {
       console.error('[useLiveCalculation] Error calculating finiquito:', error);
       setCalculation(null);
     }
-  }, [step1Data, debouncedStep2Data, debouncedStep3Data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step1Key, step2Key, step3Key]);
 
   return calculation;
 }
