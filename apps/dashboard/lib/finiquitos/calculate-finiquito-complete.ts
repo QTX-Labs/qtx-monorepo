@@ -256,12 +256,10 @@ export function calculateFiniquitoComplete(
 
   // ===== PASO 2: CALCULAR FACTORES ADICIONALES =====
 
-  const diasTrabajadosCalculado = calculateDaysWorked(input.hireDate, input.terminationDate);
-  const septimoDiaCalculado = round(diasTrabajadosCalculado / 7, DECIMAL_PRECISION.FACTOR);
 
   // Sobrescribir con factores manuales si existen (del Step 2)
-  const diasTrabajados = input.manualFactors?.finiquito?.diasTrabajados ?? diasTrabajadosCalculado;
-  const septimoDia = input.manualFactors?.finiquito?.septimoDia ?? septimoDiaCalculado;
+  const diasTrabajados = input.manualFactors?.finiquito?.diasTrabajados ?? 0;
+  const septimoDia = input.manualFactors?.finiquito?.septimoDia ?? 0;
   const vacaciones = input.manualFactors?.finiquito?.vacaciones ?? resultFactores.fiscal.proportionalSettlementConcepts.vacations;
   const primaVacacional = input.manualFactors?.finiquito?.primaVacacional ?? resultFactores.fiscal.proportionalSettlementConcepts.vacationBonus;
   const aguinaldo = input.manualFactors?.finiquito?.aguinaldo ?? resultFactores.fiscal.proportionalSettlementConcepts.christmasBonus;
@@ -295,7 +293,14 @@ export function calculateFiniquitoComplete(
     },
     conceptosFiniquito,
     conceptosLiquidacion: conceptosLiquidacion || { indemnizacionVeinteDias: 0, indemnizacionNoventaDias: 0, primaAntiguedad: 0 },
-    otrasPercepciones: [],
+    otrasPercepciones: [
+      ...(input.manualFactors?.configuracionAdicional?.gratificacionPesos ? [{
+        id: 'gratificacion',
+        conceptoVisual: 'Gratificación',
+        conceptoFacturacion: 'Gratificación',
+        monto: input.manualFactors.configuracionAdicional.gratificacionPesos,
+      }] : []),
+    ],
     otrasDeducciones: [
       ...(input.deduccionesManuales?.infonavit ? [{
         id: 'infonavit',
@@ -327,12 +332,10 @@ export function calculateFiniquitoComplete(
   // Factores de complemento si está activado
   let factoresComplemento: FactoresCalculoFiniquitoLiquidacion | undefined;
   if (input.complemento?.enabled && resultFactores.complement) {
-    const diasTrabajadosComplementoCalculado = calculateDaysWorked(input.complemento.realHireDate, input.terminationDate);
-    const septimoDiaComplementoCalculado = round(diasTrabajadosComplementoCalculado / 7, DECIMAL_PRECISION.FACTOR);
 
     // Sobrescribir con factores manuales si existen (del Step 2)
-    const diasTrabajadosComplemento = input.manualFactors?.complemento?.diasTrabajados ?? diasTrabajadosComplementoCalculado;
-    const septimoDiaComplemento = input.manualFactors?.complemento?.septimoDia ?? septimoDiaComplementoCalculado;
+    const diasTrabajadosComplemento = input.manualFactors?.complemento?.diasTrabajados ?? 0;
+    const septimoDiaComplemento = input.manualFactors?.complemento?.septimoDia ?? 0;
     const vacacionesComplemento = input.manualFactors?.complemento?.vacaciones ?? resultFactores.complement.proportionalSettlementConcepts.vacations;
     const primaVacacionalComplemento = input.manualFactors?.complemento?.primaVacacional ?? resultFactores.complement.proportionalSettlementConcepts.vacationBonus;
     const aguinaldoComplemento = input.manualFactors?.complemento?.aguinaldo ?? resultFactores.complement.proportionalSettlementConcepts.christmasBonus;
@@ -349,14 +352,14 @@ export function calculateFiniquitoComplete(
     };
 
     const conceptosLiquidacionComplemento: ConceptosLiquidacion | undefined = input.liquidacion?.enabled && resultFactores.complement.proportionalSeveranceConcepts ? {
-      indemnizacionVeinteDias: resultFactores.complement.proportionalSeveranceConcepts.twentyDaysSeverance,
-      indemnizacionNoventaDias: resultFactores.complement.proportionalSeveranceConcepts.ninetyDaysSeverance,
-      primaAntiguedad: resultFactores.complement.proportionalSeveranceConcepts.seniorityBonus,
+      indemnizacionVeinteDias: input.manualFactors?.liquidacionComplemento?.indemnizacion20Dias ?? resultFactores.complement.proportionalSeveranceConcepts.twentyDaysSeverance,
+      indemnizacionNoventaDias: input.manualFactors?.liquidacionComplemento?.indemnizacion90Dias ?? resultFactores.complement.proportionalSeveranceConcepts.ninetyDaysSeverance,
+      primaAntiguedad: input.manualFactors?.liquidacionComplemento?.primaAntiguedad ?? resultFactores.complement.proportionalSeveranceConcepts.seniorityBonus,
     } : undefined;
 
     factoresComplemento = {
       salarioDiario: input.complemento.realDailySalary,
-      salarioDiarioIntegrado: input.integratedDailySalary, // Usar el mismo SDI
+      salarioDiarioIntegrado: input.complemento.complementIntegratedDailySalary || input.integratedDailySalary,
       antiguedad: {
         anios: resultFactores.complement.seniority.years,
         dias: resultFactores.complement.seniority.days,
@@ -409,6 +412,12 @@ export function calculateFiniquitoComplete(
         primaVacacional: factoresComplemento.conceptosFiniquito.primaVacacional,
         aguinaldo: factoresComplemento.conceptosFiniquito.aguinaldo,
       } : undefined,
+      liquidacionComplemento: factoresComplemento?.conceptosLiquidacion && (factoresComplemento.conceptosLiquidacion.indemnizacionVeinteDias > 0 || factoresComplemento.conceptosLiquidacion.indemnizacionNoventaDias > 0 || factoresComplemento.conceptosLiquidacion.primaAntiguedad > 0) ? {
+        indemnizacion90Dias: factoresComplemento.conceptosLiquidacion.indemnizacionNoventaDias,
+        indemnizacion20Dias: factoresComplemento.conceptosLiquidacion.indemnizacionVeinteDias,
+        primaAntiguedad: factoresComplemento.conceptosLiquidacion.primaAntiguedad,
+      } : undefined,
+      configuracionAdicional: input.manualFactors?.configuracionAdicional,
     },
 
     montos: {
@@ -430,6 +439,11 @@ export function calculateFiniquitoComplete(
         vacaciones: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.vacaciones),
         primaVacacional: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.primaVacacional),
         aguinaldo: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.aguinaldo),
+      } : undefined,
+      liquidacionComplemento: resultCalculation.percepcionesLiquidacionComplemento ? {
+        indemnizacion90Dias: mapPercept(resultCalculation.percepcionesLiquidacionComplemento.indemnizacionNoventaDias),
+        indemnizacion20Dias: mapPercept(resultCalculation.percepcionesLiquidacionComplemento.indemnizacionVeinteDias),
+        primaAntiguedad: mapPercept(resultCalculation.percepcionesLiquidacionComplemento.primaAntiguedad),
       } : undefined,
     },
 

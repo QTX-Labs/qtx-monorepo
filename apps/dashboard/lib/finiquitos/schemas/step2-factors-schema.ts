@@ -50,13 +50,37 @@ const factoresComplementoSchema = z.object({
     .nonnegative('El aguinaldo no puede ser negativo'),
 }).optional();
 
+// Factores de Liquidación de Complemento (opcionales, misma estructura que Liquidación Fiscal)
+const factoresLiquidacionComplementoSchema = z.object({
+  indemnizacion90Dias: z.coerce.number()
+    .nonnegative('La indemnización 90 días no puede ser negativa'),
+  indemnizacion20Dias: z.coerce.number()
+    .nonnegative('La indemnización 20 días no puede ser negativa'),
+  primaAntiguedad: z.coerce.number()
+    .nonnegative('La prima de antigüedad no puede ser negativa'),
+}).optional();
+
+// Configuración Adicional (opcional)
+const configuracionAdicionalSchema = z.object({
+  gratificacionDias: z.coerce.number()
+    .nonnegative('Los días de gratificación no pueden ser negativos')
+    .optional(),
+  gratificacionPesos: z.coerce.number()
+    .nonnegative('La gratificación en pesos no puede ser negativa')
+    .optional(),
+}).optional();
+
 export const step2FactorsSchema = z.object({
   factoresFiniquito: factoresFiniquitoSchema,
   factoresLiquidacion: factoresLiquidacionSchema,
   factoresComplemento: factoresComplementoSchema,
+  factoresLiquidacionComplemento: factoresLiquidacionComplementoSchema,
+  configuracionAdicional: configuracionAdicionalSchema,
 });
 
 export type Step2Factors = z.infer<typeof step2FactorsSchema>;
 export type FactoresFiniquito = z.infer<typeof factoresFiniquitoSchema>;
 export type FactoresLiquidacion = z.infer<typeof factoresLiquidacionSchema>;
 export type FactoresComplemento = z.infer<typeof factoresComplementoSchema>;
+export type FactoresLiquidacionComplemento = z.infer<typeof factoresLiquidacionComplementoSchema>;
+export type ConfiguracionAdicional = z.infer<typeof configuracionAdicionalSchema>;

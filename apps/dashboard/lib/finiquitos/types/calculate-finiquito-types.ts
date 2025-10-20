@@ -31,6 +31,7 @@ export type CalculateFiniquitoInput = {
     enabled: boolean;
     realHireDate: Date;
     realDailySalary: number;
+    complementIntegratedDailySalary?: number;
     pendingVacationDays?: number;
     pendingVacationPremium?: number;
   };
@@ -54,6 +55,8 @@ export type CalculateFiniquitoInput = {
     finiquito?: Partial<FactoresFiniquito>;
     liquidacion?: Partial<FactoresLiquidacion>;
     complemento?: Partial<FactoresFiniquito>;
+    liquidacionComplemento?: Partial<FactoresLiquidacion>;
+    configuracionAdicional?: ConfiguracionAdicional;
   };
 };
 
@@ -85,6 +88,14 @@ export type FactoresLiquidacion = {
   indemnizacion90Dias: number;
   indemnizacion20Dias: number;
   primaAntiguedad: number;
+};
+
+/**
+ * Configuración adicional (gratificación)
+ */
+export type ConfiguracionAdicional = {
+  gratificacionDias?: number;
+  gratificacionPesos?: number;
 };
 
 /**
@@ -127,6 +138,8 @@ export type CalculateFiniquitoOutput = {
     finiquito: FactoresFiniquito;
     liquidacion?: FactoresLiquidacion;
     complemento?: FactoresFiniquito;
+    liquidacionComplemento?: FactoresLiquidacion;
+    configuracionAdicional?: ConfiguracionAdicional;
   };
 
   // ===== MONTOS (con bases gravables/exentas) =====
@@ -134,6 +147,7 @@ export type CalculateFiniquitoOutput = {
     finiquito: MontosFiniquito;
     liquidacion?: MontosLiquidacion;
     complemento?: MontosFiniquito;
+    liquidacionComplemento?: MontosLiquidacion;
   };
 
   // ===== ISR =====

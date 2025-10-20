@@ -59,6 +59,8 @@ export function Step1BaseConfig() {
       pendingVacationPremium: 0,
       complementoActivado: false,
       daysFactor: 30.4,
+      complementIntegratedDailySalary: 0,
+      complementIntegrationFactor: 0,
       complementPendingVacationDays: 0,
       complementPendingVacationPremium: 0,
       liquidacionActivada: false,
@@ -73,6 +75,8 @@ export function Step1BaseConfig() {
   const aguinaldoDays = form.watch('aguinaldoDays');
   const vacationPremiumPercentage = form.watch('vacationPremiumPercentage');
   const complementoActivado = form.watch('complementoActivado');
+  const realDailySalary = form.watch('realDailySalary');
+  const realHireDate = form.watch('realHireDate');
 
   // AUTO-CÁLCULO 1: Salario Diario Fiscal según Zona Fronteriza
   // NO_FRONTERIZA: 278.80 | FRONTERIZA: 419.88
@@ -108,6 +112,37 @@ export function Step1BaseConfig() {
       form.setValue('integratedDailySalary', integratedSalary);
     }
   }, [hireDate, terminationDate, aguinaldoDays, vacationPremiumPercentage, borderZone, form]);
+
+  // AUTO-COMPLETADO: Fecha de Ingreso Real cuando se activa Complemento
+  // Si el complemento se activa y la fecha real está vacía, usar la fecha fiscal como default
+  useEffect(() => {
+    if (complementoActivado && hireDate) {
+      const currentRealHireDate = form.getValues('realHireDate');
+
+      // Solo setear si está vacío/undefined
+      if (!currentRealHireDate) {
+        form.setValue('realHireDate', hireDate);
+      }
+    }
+  }, [complementoActivado, hireDate, form]);
+
+  // AUTO-CÁLCULO 4: Salario Diario Integrado y Factor de Integración de Complemento
+  // SDI Complemento = Salario Real × Factor de Integración Complemento
+  // Factor de Integración considera: días aguinaldo, días vacaciones, prima vacacional
+  useEffect(() => {
+    if (complementoActivado && realHireDate && terminationDate && realDailySalary) {
+      const complementIntegrationFactor = getEmployeeIntegrationFactor(realHireDate, {
+        terminationDate,
+        aguinaldo: aguinaldoDays,
+        vacationBonus: vacationPremiumPercentage,
+      });
+
+      const complementIntegratedSalary = parseFloat((realDailySalary * complementIntegrationFactor).toFixed(2));
+
+      form.setValue('complementIntegrationFactor', complementIntegrationFactor);
+      form.setValue('complementIntegratedDailySalary', complementIntegratedSalary);
+    }
+  }, [complementoActivado, realHireDate, terminationDate, realDailySalary, aguinaldoDays, vacationPremiumPercentage, form]);
 
   const onSubmit = (data: Step1BaseConfigType) => {
     // Guardar datos del paso 1
@@ -619,6 +654,54 @@ export function Step1BaseConfig() {
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="complementIntegrationFactor"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Factor de Integración (Complemento)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.0001"
+                        disabled
+                        {...field}
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        className="bg-muted"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Auto-calculado según antigüedad y prestaciones
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="complementIntegratedDailySalary"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Salario Diario Integrado (Complemento)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        disabled
+                        {...field}
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        className="bg-muted"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Auto-calculado: Salario Real × Factor de Integración
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

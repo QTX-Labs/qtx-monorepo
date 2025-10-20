@@ -22,6 +22,7 @@ import {
 } from '@workspace/ui/components/accordion';
 
 import { step2FactorsSchema, type Step2Factors as Step2FactorsType } from '~/lib/finiquitos/schemas/step2-factors-schema';
+import { gratificationDaysToPesos, gratificationPesosToDays } from '~/lib/finiquitos/utils';
 import { useWizard } from '../wizard-context';
 import { WizardNavigation } from '../wizard-navigation';
 import { LiveCalculationPanel } from '../../shared/live-calculation-panel';
@@ -32,7 +33,16 @@ export function Step2Factors() {
 
   const form = useForm<Step2FactorsType>({
     resolver: zodResolver(step2FactorsSchema),
-    defaultValues: step2Data || {
+    defaultValues: step2Data ? {
+      ...step2Data,
+      configuracionAdicional: step2Data.configuracionAdicional ? {
+        gratificacionDias: step2Data.configuracionAdicional.gratificacionDias ?? 0,
+        gratificacionPesos: step2Data.configuracionAdicional.gratificacionPesos ?? 0,
+      } : {
+        gratificacionDias: 0,
+        gratificacionPesos: 0,
+      },
+    } : {
       factoresFiniquito: {
         diasTrabajados: 0,
         septimoDia: 0,
@@ -42,10 +52,19 @@ export function Step2Factors() {
       },
       factoresLiquidacion: undefined,
       factoresComplemento: undefined,
+      factoresLiquidacionComplemento: undefined,
+      configuracionAdicional: {
+        gratificacionDias: 0,
+        gratificacionPesos: 0,
+      },
     },
   });
 
   const watchedData = form.watch();
+
+  // Determinar si liquidación y complemento están activados (ANTES de useEffects)
+  const liquidacionActivada = step1Data?.liquidacionActivada;
+  const complementoActivado = step1Data?.complementoActivado;
 
   // Cálculo en vivo
   const liveCalculation = useLiveCalculation({
@@ -61,13 +80,43 @@ export function Step2Factors() {
     }
   }, [liveCalculation, updateLiveCalculation]);
 
+  // Watch gratificación fields para conversión bidireccional
+  const gratificacionDias = form.watch('configuracionAdicional.gratificacionDias');
+  const gratificacionPesos = form.watch('configuracionAdicional.gratificacionPesos');
+
+  // Determinar el salario a usar (real si hay complemento, fiscal si no)
+  const dailySalary = step1Data?.realDailySalary || step1Data?.fiscalDailySalary || 0;
+
+  // AUTO-CONVERSIÓN: Días → Pesos
+  useEffect(() => {
+    if (gratificacionDias !== undefined && dailySalary > 0) {
+      const calculatedPesos = gratificationDaysToPesos(gratificacionDias, dailySalary);
+      const currentPesos = form.getValues('configuracionAdicional.gratificacionPesos');
+
+      // Solo actualizar si hay diferencia significativa (evitar loops)
+      if (Math.abs((currentPesos || 0) - calculatedPesos) > 0.01) {
+        form.setValue('configuracionAdicional.gratificacionPesos', calculatedPesos, { shouldValidate: false });
+      }
+    }
+  }, [gratificacionDias, dailySalary, form]);
+
+  // AUTO-CONVERSIÓN: Pesos → Días
+  useEffect(() => {
+    if (gratificacionPesos !== undefined && dailySalary > 0) {
+      const calculatedDias = gratificationPesosToDays(gratificacionPesos, dailySalary);
+      const currentDias = form.getValues('configuracionAdicional.gratificacionDias');
+
+      // Solo actualizar si hay diferencia significativa (evitar loops)
+      if (Math.abs((currentDias || 0) - calculatedDias) > 0.0001) {
+        form.setValue('configuracionAdicional.gratificacionDias', calculatedDias, { shouldValidate: false });
+      }
+    }
+  }, [gratificacionPesos, dailySalary, form]);
+
   const onSubmit = (data: Step2FactorsType) => {
     updateStep2(data);
     goNext();
   };
-
-  const liquidacionActivada = step1Data?.liquidacionActivada;
-  const complementoActivado = step1Data?.complementoActivado;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -81,7 +130,7 @@ export function Step2Factors() {
                 Los siguientes factores han sido calculados automáticamente. Puede editarlos si es necesario.
               </p>
 
-              <Accordion type="multiple" defaultValue={['finiquito', 'liquidacion', 'complemento']} className="space-y-4">
+              <Accordion type="multiple" defaultValue={['finiquito', 'liquidacion', 'complemento', 'liquidacion-complemento', 'configuracion']} className="space-y-4">
                 {/* Factores de Finiquito */}
                 <AccordionItem value="finiquito" className="border rounded-lg px-4">
                   <AccordionTrigger className="hover:no-underline">
@@ -95,7 +144,7 @@ export function Step2Factors() {
                           name="factoresFiniquito.diasTrabajados"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Días Trabajados</FormLabel>
+                              <FormLabel>Días Pendientes de Sueldo</FormLabel>
                               <FormControl>
                                 <Input
                                   type="number"
@@ -104,7 +153,6 @@ export function Step2Factors() {
                                   onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                                 />
                               </FormControl>
-                              <FormDescription>Días laborados en el periodo</FormDescription>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -282,7 +330,7 @@ export function Step2Factors() {
                             name="factoresComplemento.diasTrabajados"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Días Trabajados</FormLabel>
+                                <FormLabel>Días Pendientes de Sueldo</FormLabel>
                                 <FormControl>
                                   <Input
                                     type="number"
@@ -376,6 +424,132 @@ export function Step2Factors() {
                     </AccordionContent>
                   </AccordionItem>
                 )}
+
+                {/* Factores de Liquidación de Complemento (si ambos activados) */}
+                {liquidacionActivada && complementoActivado && (
+                  <AccordionItem value="liquidacion-complemento" className="border rounded-lg px-4">
+                    <AccordionTrigger className="hover:no-underline">
+                      <span className="font-semibold">Factores de Liquidación de Complemento</span>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-4 pt-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="factoresLiquidacionComplemento.indemnizacion90Dias"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Indemnización 90 Días</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    step="0.0001"
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                  />
+                                </FormControl>
+                                <FormDescription>3 meses de salario</FormDescription>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name="factoresLiquidacionComplemento.indemnizacion20Dias"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Indemnización 20 Días por Año</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    step="0.0001"
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                  />
+                                </FormControl>
+                                <FormDescription>20 días por año trabajado</FormDescription>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name="factoresLiquidacionComplemento.primaAntiguedad"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Prima de Antigüedad</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    step="0.0001"
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                  />
+                                </FormControl>
+                                <FormDescription>12 días por año (topado)</FormDescription>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                )}
+
+                {/* Configuración Adicional */}
+                <AccordionItem value="configuracion" className="border rounded-lg px-4">
+                  <AccordionTrigger className="hover:no-underline">
+                    <span className="font-semibold">Configuración Adicional</span>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-4 pt-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="configuracionAdicional.gratificacionDias"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Gratificación (Días)</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  step="0.0001"
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormDescription>Días de gratificación adicional</FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="configuracionAdicional.gratificacionPesos"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Gratificación (Pesos)</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormDescription>Monto en pesos de gratificación</FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
               </Accordion>
             </div>
 

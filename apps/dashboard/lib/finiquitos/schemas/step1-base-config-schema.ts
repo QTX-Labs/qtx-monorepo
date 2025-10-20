@@ -86,6 +86,13 @@ export const step1BaseConfigSchema = z.object({
     .positive('El factor de días debe ser mayor a 0')
     .default(30.4), // 365/12 = 30.4
 
+  // Salario Diario Integrado Complemento - Auto-calculado usando factor de integración
+  // SDI Complemento = Salario Real × Factor de Integración Complemento
+  complementIntegratedDailySalary: z.coerce.number().optional(),
+
+  // Factor de Integración Complemento - Auto-calculado (solo para mostrar en UI)
+  complementIntegrationFactor: z.coerce.number().optional(),
+
   // ===== BENEFICIOS DE COMPLEMENTO =====
   complementPendingVacationDays: z.coerce.number()
     .nonnegative('Los días de vacaciones pendientes de complemento no pueden ser negativos')

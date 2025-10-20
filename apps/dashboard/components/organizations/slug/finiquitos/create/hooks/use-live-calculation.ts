@@ -60,6 +60,7 @@ export function useLiveCalculation({
           enabled: true,
           realHireDate: step1Data.realHireDate,
           realDailySalary: step1Data.realDailySalary,
+          complementIntegratedDailySalary: step1Data.complementIntegratedDailySalary,
           pendingVacationDays: step1Data.complementPendingVacationDays,
           pendingVacationPremium: step1Data.complementPendingVacationPremium,
         } : undefined,
@@ -75,6 +76,8 @@ export function useLiveCalculation({
           finiquito: debouncedStep2Data.factoresFiniquito,
           liquidacion: debouncedStep2Data.factoresLiquidacion,
           complemento: debouncedStep2Data.factoresComplemento,
+          liquidacionComplemento: debouncedStep2Data.factoresLiquidacionComplemento,
+          configuracionAdicional: debouncedStep2Data.configuracionAdicional,
         } : undefined,
       });
 
