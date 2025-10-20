@@ -185,6 +185,16 @@ export function Step1BaseConfig() {
         diasTrabajados: 0,
         septimoDia: 0,
       } : undefined,
+      factoresLiquidacionComplemento: calculation.factores.liquidacionComplemento,
+      configuracionAdicional: calculation.factores.configuracionAdicional,
+      beneficiosFiscalesPendientes: {
+        pendingVacationDays: 0,
+        pendingVacationPremium: 0,
+      },
+      beneficiosComplementoPendientes: {
+        complementPendingVacationDays: 0,
+        complementPendingVacationPremium: 0,
+      },
     });
 
     // Guardar cálculo en context

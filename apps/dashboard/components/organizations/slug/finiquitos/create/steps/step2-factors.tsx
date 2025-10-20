@@ -88,56 +88,6 @@ export function Step2Factors() {
     }
   }, [liveCalculation, updateLiveCalculation]);
 
-  // AUTO-POBLAR factores calculados en primera visita al paso 2
-  useEffect(() => {
-    // Solo poblar si NO hay datos previos en step2 y SÍ hay cálculo
-    if (!step2Data && liveCalculation) {
-      const { factores } = liveCalculation;
-
-      // Poblar factores de finiquito
-      if (factores.finiquito) {
-        form.setValue('factoresFiniquito.diasTrabajados', factores.finiquito.diasTrabajados, { shouldValidate: false });
-        form.setValue('factoresFiniquito.septimoDia', factores.finiquito.septimoDia, { shouldValidate: false });
-        form.setValue('factoresFiniquito.vacaciones', factores.finiquito.vacaciones, { shouldValidate: false });
-        form.setValue('factoresFiniquito.primaVacacional', factores.finiquito.primaVacacional, { shouldValidate: false });
-        form.setValue('factoresFiniquito.aguinaldo', factores.finiquito.aguinaldo, { shouldValidate: false });
-      }
-
-      // Poblar factores de liquidación si está activada
-      if (liquidacionActivada && factores.liquidacion) {
-        form.setValue('factoresLiquidacion.indemnizacion90Dias', factores.liquidacion.indemnizacion90Dias, { shouldValidate: false });
-        form.setValue('factoresLiquidacion.indemnizacion20Dias', factores.liquidacion.indemnizacion20Dias, { shouldValidate: false });
-        form.setValue('factoresLiquidacion.primaAntiguedad', factores.liquidacion.primaAntiguedad, { shouldValidate: false });
-      }
-
-      // Poblar factores de complemento si está activado
-      if (complementoActivado && factores.complemento) {
-        form.setValue('factoresComplemento.diasTrabajados', factores.complemento.diasTrabajados, { shouldValidate: false });
-        form.setValue('factoresComplemento.septimoDia', factores.complemento.septimoDia, { shouldValidate: false });
-        form.setValue('factoresComplemento.vacaciones', factores.complemento.vacaciones, { shouldValidate: false });
-        form.setValue('factoresComplemento.primaVacacional', factores.complemento.primaVacacional, { shouldValidate: false });
-        form.setValue('factoresComplemento.aguinaldo', factores.complemento.aguinaldo, { shouldValidate: false });
-      }
-
-      // Poblar factores de liquidación complemento si están ambos activados
-      if (liquidacionActivada && complementoActivado && factores.liquidacionComplemento) {
-        form.setValue('factoresLiquidacionComplemento.indemnizacion90Dias', factores.liquidacionComplemento.indemnizacion90Dias, { shouldValidate: false });
-        form.setValue('factoresLiquidacionComplemento.indemnizacion20Dias', factores.liquidacionComplemento.indemnizacion20Dias, { shouldValidate: false });
-        form.setValue('factoresLiquidacionComplemento.primaAntiguedad', factores.liquidacionComplemento.primaAntiguedad, { shouldValidate: false });
-      }
-
-      // Poblar configuración adicional si existe
-      if (factores.configuracionAdicional) {
-        if (factores.configuracionAdicional.gratificacionDias !== undefined) {
-          form.setValue('configuracionAdicional.gratificacionDias', factores.configuracionAdicional.gratificacionDias, { shouldValidate: false });
-        }
-        if (factores.configuracionAdicional.gratificacionPesos !== undefined) {
-          form.setValue('configuracionAdicional.gratificacionPesos', factores.configuracionAdicional.gratificacionPesos, { shouldValidate: false });
-        }
-      }
-    }
-  }, [step2Data, liveCalculation, liquidacionActivada, complementoActivado, form]);
-
   // Watch gratificación fields para conversión bidireccional
   const gratificacionDias = form.watch('configuracionAdicional.gratificacionDias');
   const gratificacionPesos = form.watch('configuracionAdicional.gratificacionPesos');
