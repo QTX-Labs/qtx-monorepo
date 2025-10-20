@@ -26,6 +26,9 @@ importers:
       '@turbo/gen':
         specifier: 2.5.4
         version: 2.5.4(@types/node@22.15.30)(typescript@5.8.3)
+      '@types/big.js':
+        specifier: ^6.2.2
+        version: 6.2.2
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -3937,6 +3940,9 @@ packages:
   '@turbo/workspaces@2.5.4':
     resolution: {integrity: sha512-LLmImNOyDOZ8XNsNolefa7wQdrzAss0CoedPADCZFB+iIDXW+8w4YkgOvKaLKBLcm9kb7gWCP4L0o0EiZLXBUA==}
     hasBin: true
+
+  '@types/big.js@6.2.2':
+    resolution: {integrity: sha512-e2cOW9YlVzFY2iScnGBBkplKsrn2CsObHQ2Hiw4V1sSyiGbgWL8IyqE3zFi1Pt5o1pdAtYkDAIsF3KKUPjdzaA==}
 
   '@types/connect@3.4.38':
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
@@ -12522,6 +12528,8 @@ snapshots:
       picocolors: 1.0.1
       semver: 7.6.2
       update-check: 1.5.4
+
+  '@types/big.js@6.2.2': {}
 
   '@types/connect@3.4.38':
     dependencies:
