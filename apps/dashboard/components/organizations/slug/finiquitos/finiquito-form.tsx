@@ -49,7 +49,13 @@ import { cn } from '@workspace/ui/lib/utils';
 import { createFiniquito } from '~/actions/finiquitos/create-finiquito';
 import { finiquitoFormSchema, type FiniquitoFormValues } from '~/lib/finiquitos/schemas';
 import { calculateFiniquito } from '~/lib/finiquitos/calculate-finiquito';
-import { getEmployeeVacationDays, formatMoney } from '~/lib/finiquitos/utils';
+import {
+  getEmployeeVacationDays,
+  formatMoney,
+  calculateSeniorityPremiumDays,
+  calculateDaysWorked,
+  calculateYearsWorked
+} from '~/lib/finiquitos/utils';
 import type { FiniquitoCalculationResult } from '~/lib/finiquitos/types';
 
 interface FiniquitoFormProps {
