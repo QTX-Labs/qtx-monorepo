@@ -7,7 +7,6 @@ import { z } from 'zod';
  * - Infonavit
  * - Fonacot
  * - Otras Deducciones
- * - Subsidio
  *
  * Todas las deducciones son opcionales y deben ser mayores o iguales a 0.
  * El ISR se calcula automáticamente, no se ingresa aquí.
@@ -25,15 +24,10 @@ export const step3DeductionsSchema = z.object({
     otras: z.coerce.number()
       .nonnegative('El monto de otras deducciones no puede ser negativo')
       .default(0),
-
-    subsidio: z.coerce.number()
-      .nonnegative('El monto de subsidio no puede ser negativo')
-      .default(0),
   }).default({
     infonavit: 0,
     fonacot: 0,
     otras: 0,
-    subsidio: 0,
   }),
 });
 

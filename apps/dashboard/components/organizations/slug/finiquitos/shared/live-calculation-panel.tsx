@@ -110,7 +110,6 @@ export function LiveCalculationPanel({
                   <ConceptLine label="Infonavit" amount={calculation.deducciones.infonavit} isNegative />
                   <ConceptLine label="Fonacot" amount={calculation.deducciones.fonacot} isNegative />
                   <ConceptLine label="Otras Deducciones" amount={calculation.deducciones.otras} isNegative />
-                  <ConceptLine label="Subsidio" amount={calculation.deducciones.subsidio} isNegative />
                   <Separator className="my-1.5" />
                   <div className="flex justify-between text-sm font-semibold">
                     <span>Total Deducciones:</span>

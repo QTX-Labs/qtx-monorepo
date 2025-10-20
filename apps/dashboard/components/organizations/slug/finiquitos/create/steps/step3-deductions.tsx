@@ -39,7 +39,6 @@ export function Step3Deductions() {
         infonavit: 0,
         fonacot: 0,
         otras: 0,
-        subsidio: 0,
       },
     },
   });
@@ -85,7 +84,7 @@ export function Step3Deductions() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <FormField
                       control={form.control}
                       name="deduccionesManuales.infonavit"
@@ -148,27 +147,6 @@ export function Step3Deductions() {
                         </FormItem>
                       )}
                     />
-
-                    <FormField
-                      control={form.control}
-                      name="deduccionesManuales.subsidio"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Subsidio</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              step="0.01"
-                              placeholder="0.00"
-                              {...field}
-                              onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                            />
-                          </FormControl>
-                          <FormDescription>Subsidio al empleo u otros</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                   </div>
                 </CardContent>
               </Card>
@@ -210,10 +188,6 @@ export function Step3Deductions() {
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Otras:</span>
                         <span className="font-mono">{formatCurrency(liveCalculation.deducciones.otras)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Subsidio:</span>
-                        <span className="font-mono">{formatCurrency(liveCalculation.deducciones.subsidio)}</span>
                       </div>
                       <Separator className="my-2" />
                       <div className="flex justify-between font-bold text-base">
