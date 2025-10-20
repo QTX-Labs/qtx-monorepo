@@ -544,7 +544,7 @@ export function Step2Factors() {
                               <FormControl>
                                 <Input
                                   type="number"
-                                  step="0.01"
+                                  step="1"
                                   {...field}
                                   onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                                 />
@@ -596,7 +596,7 @@ export function Step2Factors() {
                               <FormControl>
                                 <Input
                                   type="number"
-                                  step="0.01"
+                                  step="1"
                                   {...field}
                                   onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                                 />
@@ -649,7 +649,7 @@ export function Step2Factors() {
                                 <FormControl>
                                   <Input
                                     type="number"
-                                    step="0.01"
+                                    step="1"
                                     {...field}
                                     onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                                   />
