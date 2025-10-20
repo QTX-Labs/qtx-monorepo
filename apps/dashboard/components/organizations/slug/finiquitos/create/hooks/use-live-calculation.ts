@@ -86,11 +86,7 @@ export function useLiveCalculation({
         } : undefined,
       };
 
-      console.log('[useLiveCalculation] INPUT:', JSON.stringify(calculationInput, null, 2));
-
       const result = calculateFiniquitoComplete(calculationInput);
-
-      console.log('[useLiveCalculation] OUTPUT:', JSON.stringify(result, null, 2));
 
       setCalculation(result);
     } catch (error) {
