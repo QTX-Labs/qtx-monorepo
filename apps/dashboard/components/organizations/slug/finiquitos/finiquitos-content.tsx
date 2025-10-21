@@ -21,6 +21,8 @@ type FiniquitoListItem = Pick<
   | 'salaryFrequency'
   | 'borderZone'
   | 'totalToPay'
+  | 'totalAPagar'
+  | 'version'
   | 'createdAt'
 > & {
   user: Pick<User, 'name' | 'email'>;

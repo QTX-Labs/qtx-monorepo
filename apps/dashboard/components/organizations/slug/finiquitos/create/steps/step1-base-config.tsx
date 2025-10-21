@@ -27,7 +27,7 @@ import { Separator } from '@workspace/ui/components/separator';
 
 import { step1BaseConfigSchema, type Step1BaseConfig as Step1BaseConfigType } from '~/lib/finiquitos/schemas/step1-base-config-schema';
 import { calculateFiniquitoComplete } from '~/lib/finiquitos/calculate-finiquito-complete';
-import { getEmployeeVacationDays, getEmployeeIntegrationFactor } from '~/lib/finiquitos/utils';
+import { getEmployeeVacationDays, getEmployeeIntegrationFactor, applyUMALimit } from '~/lib/finiquitos/utils';
 import { useWizard } from '../wizard-context';
 
 export function Step1BaseConfig() {
@@ -70,6 +70,7 @@ export function Step1BaseConfig() {
   const borderZone = form.watch('borderZone');
   const hireDate = form.watch('hireDate');
   const terminationDate = form.watch('terminationDate');
+  const fiscalDailySalary = form.watch('fiscalDailySalary');
   const aguinaldoDays = form.watch('aguinaldoDays');
   const vacationPremiumPercentage = form.watch('vacationPremiumPercentage');
   const complementoActivado = form.watch('complementoActivado');
@@ -78,8 +79,9 @@ export function Step1BaseConfig() {
   const realDailySalary = form.watch('realDailySalary');
   const realHireDate = form.watch('realHireDate');
 
-  // AUTO-CÁLCULO 1: Salario Diario Fiscal según Zona Fronteriza
+  // AUTO-CÁLCULO 1: Salario Diario Fiscal según Zona Fronteriza (Default Value)
   // NO_FRONTERIZA: 278.80 | FRONTERIZA: 419.88
+  // Se actualiza cuando cambia la zona fronteriza para sugerir el mínimo
   useEffect(() => {
     const fiscalSalary = borderZone === BorderZone.FRONTERIZA ? 419.88 : 278.80;
     form.setValue('fiscalDailySalary', fiscalSalary);
@@ -95,23 +97,23 @@ export function Step1BaseConfig() {
   }, [hireDate, terminationDate, form]);
 
   // AUTO-CÁLCULO 3: Salario Diario Integrado y Factor de Integración
-  // SDI = Salario Fiscal × Factor de Integración
+  // SDI = Salario Fiscal × Factor de Integración (topado a 25 UMAs)
   // Factor de Integración considera: días aguinaldo, días vacaciones, prima vacacional
   useEffect(() => {
-    if (hireDate && terminationDate) {
+    if (hireDate && terminationDate && fiscalDailySalary) {
       const integrationFactor = getEmployeeIntegrationFactor(hireDate, {
         terminationDate,
         aguinaldo: aguinaldoDays,
         vacationBonus: vacationPremiumPercentage,
       });
 
-      const fiscalSalary = borderZone === BorderZone.FRONTERIZA ? 419.88 : 278.80;
-      const integratedSalary = parseFloat((fiscalSalary * integrationFactor).toFixed(2));
+      const calculatedSDI = fiscalDailySalary * integrationFactor;
+      const integratedSalary = parseFloat(applyUMALimit(calculatedSDI).toFixed(2));
 
       form.setValue('integrationFactor', integrationFactor);
       form.setValue('integratedDailySalary', integratedSalary);
     }
-  }, [hireDate, terminationDate, aguinaldoDays, vacationPremiumPercentage, borderZone, form]);
+  }, [hireDate, terminationDate, fiscalDailySalary, aguinaldoDays, vacationPremiumPercentage, form]);
 
   // AUTO-COMPLETADO: Fecha de Ingreso Real cuando se activa Complemento
   // Si el complemento se activa y la fecha real está vacía, usar la fecha fiscal como default
@@ -155,7 +157,7 @@ export function Step1BaseConfig() {
   }, [complementoActivado, realSalary, salaryFrequency, form]);
 
   // AUTO-CÁLCULO 4: Salario Diario Integrado y Factor de Integración de Complemento
-  // SDI Complemento = Salario Real × Factor de Integración Complemento
+  // SDI Complemento = Salario Real × Factor de Integración Complemento (topado a 25 UMAs)
   // Factor de Integración considera: días aguinaldo, días vacaciones, prima vacacional
   useEffect(() => {
     if (complementoActivado && realHireDate && terminationDate && realDailySalary) {
@@ -165,7 +167,8 @@ export function Step1BaseConfig() {
         vacationBonus: vacationPremiumPercentage,
       });
 
-      const complementIntegratedSalary = parseFloat((realDailySalary * complementIntegrationFactor).toFixed(2));
+      const calculatedComplementSDI = realDailySalary * complementIntegrationFactor;
+      const complementIntegratedSalary = parseFloat(applyUMALimit(calculatedComplementSDI).toFixed(2));
 
       form.setValue('complementIntegrationFactor', complementIntegrationFactor);
       form.setValue('complementIntegratedDailySalary', complementIntegratedSalary);
@@ -419,14 +422,12 @@ export function Step1BaseConfig() {
                     <Input
                       type="number"
                       step="0.01"
-                      disabled
                       {...field}
                       onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                      className="bg-muted"
                     />
                   </FormControl>
                   <FormDescription>
-                    Auto-calculado según zona fronteriza
+                    Mínimo según zona: ${borderZone === BorderZone.FRONTERIZA ? '419.88' : '278.80'}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

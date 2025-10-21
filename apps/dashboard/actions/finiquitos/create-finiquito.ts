@@ -100,6 +100,11 @@ export const createFiniquito = authOrganizationActionClient
           daysFactorModified: parsedInput.daysFactorModified,
           daysFactorModificationReason: parsedInput.daysFactorModificationReason ?? null,
 
+          // Gratificación (configuración adicional)
+          gratificationDays: parsedInput.configuracionAdicional?.gratificacionDias ?? null,
+          gratificationPesos: parsedInput.configuracionAdicional?.gratificacionPesos ?? null,
+          realGratificationAmount: parsedInput.configuracionAdicional?.gratificacionPesos ?? 0,
+
           // Versión (importante: 2 para nueva estructura)
           version: 2,
 
