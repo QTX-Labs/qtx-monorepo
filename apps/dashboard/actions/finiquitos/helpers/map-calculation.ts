@@ -91,6 +91,20 @@ export function mapCalculationToPrisma(calculation: CalculateFiniquitoOutput) {
       montoAguinaldoComplemento: new Decimal(calculation.montos.complemento.aguinaldo.totalAmount),
     }),
 
+    // ===== LIQUIDACIÓN COMPLEMENTO - FACTORES (opcional) =====
+    ...(calculation.factores.liquidacionComplemento && {
+      factorIndemnizacion90DiasComplemento: new Decimal(calculation.factores.liquidacionComplemento.indemnizacion90Dias),
+      factorIndemnizacion20DiasComplemento: new Decimal(calculation.factores.liquidacionComplemento.indemnizacion20Dias),
+      factorPrimaAntiguedadComplemento: new Decimal(calculation.factores.liquidacionComplemento.primaAntiguedad),
+    }),
+
+    // ===== LIQUIDACIÓN COMPLEMENTO - MONTOS (opcional) =====
+    ...(calculation.montos.liquidacionComplemento && {
+      montoIndemnizacion90DiasComplemento: new Decimal(calculation.montos.liquidacionComplemento.indemnizacion90Dias.totalAmount),
+      montoIndemnizacion20DiasComplemento: new Decimal(calculation.montos.liquidacionComplemento.indemnizacion20Dias.totalAmount),
+      montoPrimaAntiguedadComplemento: new Decimal(calculation.montos.liquidacionComplemento.primaAntiguedad.totalAmount),
+    }),
+
     // ===== TOTALES - FINIQUITO =====
     totalPercepcionesFiniquito: new Decimal(calculation.totales.finiquito.percepciones),
     totalDeduccionesFiniquito: new Decimal(calculation.totales.finiquito.deducciones),
@@ -108,6 +122,13 @@ export function mapCalculationToPrisma(calculation: CalculateFiniquitoOutput) {
       totalPercepcionesComplemento: new Decimal(calculation.totales.complemento.percepciones),
       totalDeduccionesComplemento: new Decimal(calculation.totales.complemento.deducciones),
       totalComplemento: new Decimal(calculation.totales.complemento.neto),
+    }),
+
+    // ===== TOTALES - LIQUIDACIÓN COMPLEMENTO (opcional) =====
+    ...(calculation.totales.liquidacionComplemento && {
+      totalPercepcionesLiquidacionComplemento: new Decimal(calculation.totales.liquidacionComplemento.percepciones),
+      totalDeduccionesLiquidacionComplemento: new Decimal(calculation.totales.liquidacionComplemento.deducciones),
+      totalLiquidacionComplemento: new Decimal(calculation.totales.liquidacionComplemento.neto),
     }),
 
     // ===== TOTAL FINAL =====
