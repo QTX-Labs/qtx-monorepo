@@ -13,7 +13,7 @@ type FiniquitoSectionProps = {
 
 export function FiniquitoSection({ finiquito }: FiniquitoSectionProps) {
   // Mapear factores y montos de finiquito
-  const factoresMontos: FactorMonto[] = [
+  const allFactoresMontos: FactorMonto[] = [
     {
       concepto: 'Días Trabajados',
       factor: finiquito.factorDiasTrabajadosFiniquito,
@@ -35,11 +35,32 @@ export function FiniquitoSection({ finiquito }: FiniquitoSectionProps) {
       monto: finiquito.montoPrimaVacacionalFiniquito,
     },
     {
+      concepto: 'Vacaciones Pendientes',
+      factor: null,
+      monto: finiquito.fiscalPendingVacationAmount,
+    },
+    {
+      concepto: 'Prima Vacacional Pendiente',
+      factor: null,
+      monto: finiquito.fiscalPendingPremiumAmount,
+    },
+    {
       concepto: 'Aguinaldo',
       factor: finiquito.factorAguinaldoFiniquito,
       monto: finiquito.montoAguinaldoFiniquito,
     },
+    {
+      concepto: 'Gratificación',
+      factor: null,
+      monto: finiquito.realGratificationAmount,
+    },
   ];
+
+  // Filtrar solo conceptos con monto > 0
+  const factoresMontos = allFactoresMontos.filter(item => {
+    const amount = item.monto ? (typeof item.monto === 'number' ? item.monto : Number(item.monto)) : 0;
+    return amount > 0;
+  });
 
   return (
     <Card>

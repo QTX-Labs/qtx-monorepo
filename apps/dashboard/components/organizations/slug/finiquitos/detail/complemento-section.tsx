@@ -17,7 +17,7 @@ export function ComplementoSection({ finiquito }: ComplementoSectionProps) {
   }
 
   // Mapear factores y montos de complemento
-  const factoresMontos: FactorMonto[] = [
+  const allFactoresMontos: FactorMonto[] = [
     {
       concepto: 'Días Trabajados',
       factor: finiquito.factorDiasTrabajadosComplemento,
@@ -39,11 +39,27 @@ export function ComplementoSection({ finiquito }: ComplementoSectionProps) {
       monto: finiquito.montoPrimaVacacionalComplemento,
     },
     {
+      concepto: 'Vacaciones Pendientes',
+      factor: null,
+      monto: finiquito.realPendingVacationAmount,
+    },
+    {
+      concepto: 'Prima Vacacional Pendiente',
+      factor: null,
+      monto: finiquito.realPendingPremiumAmount,
+    },
+    {
       concepto: 'Aguinaldo',
       factor: finiquito.factorAguinaldoComplemento,
       monto: finiquito.montoAguinaldoComplemento,
     },
   ];
+
+  // Filtrar solo conceptos con monto > 0
+  const factoresMontos = allFactoresMontos.filter(item => {
+    const amount = item.monto ? (typeof item.monto === 'number' ? item.monto : Number(item.monto)) : 0;
+    return amount > 0;
+  });
 
   return (
     <Card>
