@@ -83,14 +83,71 @@ export function Step1BaseConfig() {
   // Refs para trackear si campos fueron editados manualmente
   const vacationDaysManuallyEdited = useRef(false);
   const lastCalculatedVacationDays = useRef<number | null>(null);
+  const fiscalDailySalaryManuallyEdited = useRef(false);
+  const lastCalculatedFiscalDailySalary = useRef<number | null>(null);
+  const previousBorderZone = useRef<BorderZone | null>(null);
+
+  // Inicializar refs desde step1Data cuando el componente se monta
+  // Esto previene sobrescribir valores cuando el usuario regresa del Paso 2
+  useEffect(() => {
+    if (step1Data) {
+      // Si hay datos previos, marcar como "ya calculado" para evitar sobrescribir
+      if (step1Data.fiscalDailySalary !== undefined) {
+        lastCalculatedFiscalDailySalary.current = step1Data.fiscalDailySalary;
+        // Marcar como editado manualmente si el valor difiere del mínimo de la zona
+        const defaultSalary = step1Data.borderZone === BorderZone.FRONTERIZA ? 419.88 : 278.80;
+        if (step1Data.fiscalDailySalary !== defaultSalary) {
+          fiscalDailySalaryManuallyEdited.current = true;
+        }
+      }
+      if (step1Data.vacationDays !== undefined) {
+        lastCalculatedVacationDays.current = step1Data.vacationDays;
+      }
+      // Guardar la zona fronteriza inicial
+      previousBorderZone.current = step1Data.borderZone;
+    }
+  }, []); // Solo ejecutar una vez al montar
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 
   // AUTO-CÁLCULO 1: Salario Diario Fiscal según Zona Fronteriza (Default Value)
   // NO_FRONTERIZA: 278.80 | FRONTERIZA: 419.88
   // Se actualiza cuando cambia la zona fronteriza para sugerir el mínimo
+  // Solo recalcula si NO fue editado manualmente O si borderZone cambió REALMENTE
   useEffect(() => {
     const fiscalSalary = borderZone === BorderZone.FRONTERIZA ? 419.88 : 278.80;
-    form.setValue('fiscalDailySalary', fiscalSalary);
+
+    // Detectar si borderZone cambió realmente (no es el montaje inicial)
+    const borderZoneChanged = previousBorderZone.current !== null &&
+                              previousBorderZone.current !== borderZone;
+
+    // Si el usuario no ha editado manualmente, actualizar automáticamente
+    if (!fiscalDailySalaryManuallyEdited.current) {
+      // Solo actualizar si es el montaje inicial O si cambió la zona
+      if (lastCalculatedFiscalDailySalary.current === null || borderZoneChanged) {
+        form.setValue('fiscalDailySalary', fiscalSalary);
+        lastCalculatedFiscalDailySalary.current = fiscalSalary;
+      }
+    } else if (borderZoneChanged) {
+      // Si borderZone cambió después de una edición manual, resetear el flag
+      // y actualizar al nuevo mínimo (comportamiento esperado al cambiar zona)
+      fiscalDailySalaryManuallyEdited.current = false;
+      form.setValue('fiscalDailySalary', fiscalSalary);
+      lastCalculatedFiscalDailySalary.current = fiscalSalary;
+    }
+
+    // Actualizar previousBorderZone para la próxima ejecución
+    previousBorderZone.current = borderZone;
   }, [borderZone, form]);
+
+  // Detectar edición manual de salario diario fiscal
+  useEffect(() => {
+    if (fiscalDailySalary !== undefined && lastCalculatedFiscalDailySalary.current !== null) {
+      // Si el valor actual difiere del último calculado, fue editado manualmente
+      if (fiscalDailySalary !== lastCalculatedFiscalDailySalary.current) {
+        fiscalDailySalaryManuallyEdited.current = true;
+      }
+    }
+  }, [fiscalDailySalary]);
 
   // AUTO-CÁLCULO 2: Días de Vacaciones según Antigüedad (LFT 2023)
   // Usa getEmployeeVacationDays(hireDate, terminationDate)
