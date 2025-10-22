@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { MoreHorizontal, Download, Trash2, Loader2 } from 'lucide-react';
+import { MoreHorizontal, Download, Trash2, Loader2, Search } from 'lucide-react';
+import { useDebounce } from '@workspace/ui/hooks/use-debounce';
 import { type Finiquito, type User } from '@workspace/database';
 import { useAction } from 'next-safe-action/hooks';
 import { toast } from 'sonner';
@@ -11,13 +12,8 @@ import { useRouter, useParams } from 'next/navigation';
 import numeral from 'numeral';
 
 import { Button } from '@workspace/ui/components/button';
+import { Input } from '@workspace/ui/components/input';
 import { toLocalDate } from '~/lib/finiquitos/utils';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle
-} from '@workspace/ui/components/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -76,6 +72,30 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Default date range: 15 days before and 15 days after today
+  const getDefaultDateFrom = () => {
+    const date = new Date();
+    date.setDate(date.getDate() - 15);
+    return format(date, 'yyyy-MM-dd');
+  };
+
+  const getDefaultDateTo = () => {
+    const date = new Date();
+    date.setDate(date.getDate() + 15);
+    return format(date, 'yyyy-MM-dd');
+  };
+
+  const [dateFrom, setDateFrom] = useState(getDefaultDateFrom());
+  const [dateTo, setDateTo] = useState(getDefaultDateTo());
+
+  // Debounced filter values
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const debouncedDateFrom = useDebounce(dateFrom, 300);
+  const debouncedDateTo = useDebounce(dateTo, 300);
+
   const { execute: executeDelete, status: deleteStatus } = useAction(deleteFiniquito, {
     onSuccess: () => {
       toast.success('Finiquito eliminado exitosamente');
@@ -130,66 +150,131 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
     router.push(`/organizations/${params.slug}/finiquitos/${id}`);
   };
 
-  if (finiquitos.length === 0) {
-    return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center py-12">
-          <p className="text-muted-foreground">
-            No hay finiquitos registrados aún
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
+  // Filter finiquitos using debounced values and memoization
+  const filteredFiniquitos = useMemo(() => {
+    return finiquitos.filter((finiquito) => {
+      // Combined search filter (employee name OR empresa name)
+      if (debouncedSearchQuery) {
+        const query = debouncedSearchQuery.toLowerCase();
+        const matchesEmployee = finiquito.employeeName.toLowerCase().includes(query);
+        const matchesEmpresa = finiquito.empresaName?.toLowerCase().includes(query);
+
+        if (!matchesEmployee && !matchesEmpresa) {
+          return false;
+        }
+      }
+
+      // Date range filter (based on createdAt)
+      if (debouncedDateFrom) {
+        const finiquitoDate = format(new Date(finiquito.createdAt), 'yyyy-MM-dd');
+        if (finiquitoDate < debouncedDateFrom) {
+          return false;
+        }
+      }
+
+      if (debouncedDateTo) {
+        const finiquitoDate = format(new Date(finiquito.createdAt), 'yyyy-MM-dd');
+        if (finiquitoDate > debouncedDateTo) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [finiquitos, debouncedSearchQuery, debouncedDateFrom, debouncedDateTo]);
 
   const isLoading = isDownloading || deleteStatus === 'executing';
 
+  if (finiquitos.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <p className="text-muted-foreground">
+          No hay finiquitos registrados aún
+        </p>
+      </div>
+    );
+  }
+
   return (
     <>
-      <Card>
-        <CardHeader>
-          <CardTitle>Historial de Finiquitos</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="space-y-4">
+        {/* Filters Section */}
+        <div className="px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar por empleado o empresa..."
+                className="pl-9"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <div className="flex gap-2 sm:ml-auto">
+              <Input
+                type="date"
+                className="w-[150px]"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+              />
+              <Input
+                type="date"
+                className="w-[150px]"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Table Section */}
+        <div className="px-4 sm:px-6 lg:px-8">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Empleado</TableHead>
+                <TableHead className="w-[180px]">Fecha de Creación</TableHead>
+                <TableHead className="w-[200px]">Empleado</TableHead>
+                <TableHead className="w-[140px]">Total a Pagar</TableHead>
                 <TableHead>Empresa</TableHead>
                 <TableHead>Cliente</TableHead>
                 <TableHead>Fecha de Baja</TableHead>
                 <TableHead>Días de Gratificación</TableHead>
-                <TableHead>Total a Pagar</TableHead>
-                <TableHead>Creado Por</TableHead>
-                <TableHead>Fecha de Creación</TableHead>
                 <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {finiquitos.map((finiquito) => (
+              {filteredFiniquitos.map((finiquito) => (
                 <TableRow
                   key={finiquito.id}
                   className="cursor-pointer hover:bg-muted/50"
                   onClick={() => handleRowClick(finiquito.id)}
                 >
-                  <TableCell className="font-medium">
+                  <TableCell className="font-semibold">
+                    <div className="flex flex-col">
+                      <span className="text-sm">
+                        {format(new Date(finiquito.createdAt), 'yyyy-MM-dd')}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {format(new Date(finiquito.createdAt), 'hh:mm a')}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="font-semibold text-base">
                     {finiquito.employeeName}
                   </TableCell>
-                  <TableCell>{finiquito.empresaName || '-'}</TableCell>
-                  <TableCell>{finiquito.clientName || '-'}</TableCell>
-                  <TableCell>
+                  <TableCell className="font-bold text-lg text-primary">
+                    ${numeral(Number(finiquito.totalAPagar ?? finiquito.totalToPay)).format('0,0.00')}
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{finiquito.empresaName || '-'}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{finiquito.clientName || '-'}</TableCell>
+                  <TableCell className="text-sm">
                     {format(toLocalDate(finiquito.terminationDate), 'yyyy-MM-dd')}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-sm text-center">
                     {finiquito.gratificationDays
                       ? numeral(Number(finiquito.gratificationDays)).format('0,0.00')
                       : '-'
                     }
-                  </TableCell>
-                  <TableCell>${numeral(Number(finiquito.totalAPagar ?? finiquito.totalToPay)).format('0,0.00')}</TableCell>
-                  <TableCell>{finiquito.user.name}</TableCell>
-                  <TableCell>
-                    {format(new Date(finiquito.createdAt), 'yyyy-MM-dd hh:mm a')}
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
@@ -235,8 +320,8 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
