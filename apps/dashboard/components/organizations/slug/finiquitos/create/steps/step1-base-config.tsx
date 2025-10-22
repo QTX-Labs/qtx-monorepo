@@ -215,6 +215,13 @@ export function Step1BaseConfig() {
   }, [complementoActivado, realDailySalary, aguinaldoDays, vacationDays, vacationPremiumPercentage, form]);
 
   const onSubmit = (data: Step1BaseConfigType) => {
+    console.log('✅ Step 1 Form Validation PASSED');
+    console.log('📋 Step 1 Data:', data);
+    console.log('🔍 Complemento Activado:', data.complementoActivado);
+    console.log('🔍 Real Salary:', data.realSalary);
+    console.log('🔍 Real Daily Salary:', data.realDailySalary);
+    console.log('🔍 Real Hire Date:', data.realHireDate);
+
     // Guardar datos del paso 1
     updateStep1(data);
 
@@ -278,9 +285,19 @@ export function Step1BaseConfig() {
     goNext();
   };
 
+  const onError = (errors: any) => {
+    console.error('❌ Step 1 Form Validation FAILED');
+    console.error('🔴 Validation Errors:', errors);
+    console.log('📋 Current Form Values:', form.getValues());
+    console.log('🔍 Complemento Activado:', form.getValues('complementoActivado'));
+    console.log('🔍 Real Salary:', form.getValues('realSalary'));
+    console.log('🔍 Real Daily Salary:', form.getValues('realDailySalary'));
+    console.log('🔍 Real Hire Date:', form.getValues('realHireDate'));
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit, onError)} className="space-y-8">
         {/* Datos Básicos */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Datos Básicos</h3>

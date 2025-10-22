@@ -41,14 +41,14 @@ export const step1BaseConfigSchema = z.object({
 
   // Salario Diario Fiscal - Auto-calculado según zona fronteriza
   // NO_FRONTERIZA: 278.80 | FRONTERIZA: 419.88
-  fiscalDailySalary: z.coerce.number(),
+  fiscalDailySalary: z.coerce.number().min(0, 'El salario diario fiscal no puede ser negativo'),
 
   // Salario Diario Integrado - Auto-calculado usando factor de integración
   // SDI = Salario Fiscal × Factor de Integración
-  integratedDailySalary: z.coerce.number(),
+  integratedDailySalary: z.coerce.number().min(0, 'El salario diario integrado no puede ser negativo'),
 
   // Factor de Integración - Auto-calculado (solo para mostrar en UI)
-  integrationFactor: z.coerce.number().optional(),
+  integrationFactor: z.coerce.number().min(0, 'El factor de integración no puede ser negativo').optional(),
 
   // Frecuencia de Pago - Usado en la sección de Complemento para calcular salario diario
   salaryFrequency: z.nativeEnum(SalaryFrequency).default(SalaryFrequency.MONTHLY),
@@ -76,10 +76,10 @@ export const step1BaseConfigSchema = z.object({
   realHireDate: z.coerce.date().optional(),
 
   // Salario Real (según frecuencia de pago) - El usuario ingresa este valor
-  realSalary: z.coerce.number().positive('El salario real debe ser mayor a 0').optional(),
+  realSalary: z.coerce.number().min(0, 'El salario real no puede ser negativo').optional(),
 
   // Salario Diario Real - Auto-calculado según realSalary y salaryFrequency
-  realDailySalary: z.coerce.number().positive('El salario real debe ser mayor a 0').optional(),
+  realDailySalary: z.coerce.number().min(0, 'El salario diario real no puede ser negativo').optional(),
 
   daysFactor: z.coerce.number()
     .positive('El factor de días debe ser mayor a 0')
@@ -87,10 +87,10 @@ export const step1BaseConfigSchema = z.object({
 
   // Salario Diario Integrado Complemento - Auto-calculado usando factor de integración
   // SDI Complemento = Salario Real × Factor de Integración Complemento
-  complementIntegratedDailySalary: z.coerce.number().optional(),
+  complementIntegratedDailySalary: z.coerce.number().min(0, 'El salario diario integrado complemento no puede ser negativo').optional(),
 
   // Factor de Integración Complemento - Auto-calculado (solo para mostrar en UI)
-  complementIntegrationFactor: z.coerce.number().optional(),
+  complementIntegrationFactor: z.coerce.number().min(0, 'El factor de integración complemento no puede ser negativo').optional(),
 
   // ===== LIQUIDACIÓN (OPCIONAL) =====
   liquidacionActivada: z.boolean().default(false),
@@ -122,7 +122,8 @@ export const step1BaseConfigSchema = z.object({
   )
   .refine(
     (data) => {
-      // Si complemento está activado, realSalary es requerido
+      // Si complemento está activado, realSalary es requerido y debe ser mayor a 0
+      // Si complemento NO está activado, ignorar validación (permitir 0 o undefined)
       if (data.complementoActivado && (!data.realSalary || data.realSalary <= 0)) {
         return false;
       }
@@ -131,6 +132,20 @@ export const step1BaseConfigSchema = z.object({
     {
       message: 'El salario real es requerido cuando el complemento está activado',
       path: ['realSalary']
+    }
+  )
+  .refine(
+    (data) => {
+      // Si complemento está activado, realDailySalary debe ser mayor a 0
+      // Si complemento NO está activado, ignorar validación (permitir 0 o undefined)
+      if (data.complementoActivado && (!data.realDailySalary || data.realDailySalary <= 0)) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: 'El salario diario real debe ser mayor a 0 cuando el complemento está activado',
+      path: ['realDailySalary']
     }
   )
   .refine(
