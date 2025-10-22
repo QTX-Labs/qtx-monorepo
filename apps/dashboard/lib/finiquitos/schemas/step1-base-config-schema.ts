@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { BorderZone, SalaryFrequency } from '@workspace/database';
+import { MINIMUM_SALARIES } from '../constants';
 
 /**
  * Schema para Paso 1: Configuración Base
@@ -144,6 +145,17 @@ export const step1BaseConfigSchema = z.object({
       message: 'La razón de modificación es requerida cuando se modifica el factor de días',
       path: ['daysFactorModificationReason']
     }
+  )
+  .refine(
+    (data) => {
+      // El salario diario fiscal debe ser al menos el mínimo según zona fronteriza
+      const minimum = MINIMUM_SALARIES[data.borderZone];
+      return data.fiscalDailySalary >= minimum;
+    },
+    (data) => ({
+      message: `El salario diario fiscal no puede ser menor a $${MINIMUM_SALARIES[data.borderZone].toFixed(2)} (mínimo para zona ${data.borderZone === BorderZone.FRONTERIZA ? 'fronteriza' : 'no fronteriza'})`,
+      path: ['fiscalDailySalary']
+    })
   );
 
 export type Step1BaseConfig = z.infer<typeof step1BaseConfigSchema>;

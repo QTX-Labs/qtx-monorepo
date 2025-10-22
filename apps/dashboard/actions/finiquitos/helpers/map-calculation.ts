@@ -52,7 +52,9 @@ export function mapCalculationToPrisma(calculation: CalculateFiniquitoOutput) {
     montoDiasTrabajadosFiniquito: new Decimal(calculation.montos.finiquito.diasTrabajados.totalAmount),
     montoSeptimoDiaFiniquito: new Decimal(calculation.montos.finiquito.septimoDia.totalAmount),
     montoVacacionesFiniquito: new Decimal(calculation.montos.finiquito.vacaciones.totalAmount),
+    fiscalPendingVacationAmount: new Decimal(calculation.montos.finiquito.vacacionesPendientes.totalAmount),
     montoPrimaVacacionalFiniquito: new Decimal(calculation.montos.finiquito.primaVacacional.totalAmount),
+    fiscalPendingPremiumAmount: new Decimal(calculation.montos.finiquito.primaVacacionalPendiente.totalAmount),
     montoAguinaldoFiniquito: new Decimal(calculation.montos.finiquito.aguinaldo.totalAmount),
 
     // ===== LIQUIDACIÓN - FACTORES (opcional) =====
@@ -83,8 +85,24 @@ export function mapCalculationToPrisma(calculation: CalculateFiniquitoOutput) {
       montoDiasTrabajadosComplemento: new Decimal(calculation.montos.complemento.diasTrabajados.totalAmount),
       montoSeptimoDiaComplemento: new Decimal(calculation.montos.complemento.septimoDia.totalAmount),
       montoVacacionesComplemento: new Decimal(calculation.montos.complemento.vacaciones.totalAmount),
+      realPendingVacationAmount: new Decimal(calculation.montos.complemento.vacacionesPendientes.totalAmount),
       montoPrimaVacacionalComplemento: new Decimal(calculation.montos.complemento.primaVacacional.totalAmount),
+      realPendingPremiumAmount: new Decimal(calculation.montos.complemento.primaVacacionalPendiente.totalAmount),
       montoAguinaldoComplemento: new Decimal(calculation.montos.complemento.aguinaldo.totalAmount),
+    }),
+
+    // ===== LIQUIDACIÓN COMPLEMENTO - FACTORES (opcional) =====
+    ...(calculation.factores.liquidacionComplemento && {
+      factorIndemnizacion90DiasComplemento: new Decimal(calculation.factores.liquidacionComplemento.indemnizacion90Dias),
+      factorIndemnizacion20DiasComplemento: new Decimal(calculation.factores.liquidacionComplemento.indemnizacion20Dias),
+      factorPrimaAntiguedadComplemento: new Decimal(calculation.factores.liquidacionComplemento.primaAntiguedad),
+    }),
+
+    // ===== LIQUIDACIÓN COMPLEMENTO - MONTOS (opcional) =====
+    ...(calculation.montos.liquidacionComplemento && {
+      montoIndemnizacion90DiasComplemento: new Decimal(calculation.montos.liquidacionComplemento.indemnizacion90Dias.totalAmount),
+      montoIndemnizacion20DiasComplemento: new Decimal(calculation.montos.liquidacionComplemento.indemnizacion20Dias.totalAmount),
+      montoPrimaAntiguedadComplemento: new Decimal(calculation.montos.liquidacionComplemento.primaAntiguedad.totalAmount),
     }),
 
     // ===== TOTALES - FINIQUITO =====
@@ -104,6 +122,13 @@ export function mapCalculationToPrisma(calculation: CalculateFiniquitoOutput) {
       totalPercepcionesComplemento: new Decimal(calculation.totales.complemento.percepciones),
       totalDeduccionesComplemento: new Decimal(calculation.totales.complemento.deducciones),
       totalComplemento: new Decimal(calculation.totales.complemento.neto),
+    }),
+
+    // ===== TOTALES - LIQUIDACIÓN COMPLEMENTO (opcional) =====
+    ...(calculation.totales.liquidacionComplemento && {
+      totalPercepcionesLiquidacionComplemento: new Decimal(calculation.totales.liquidacionComplemento.percepciones),
+      totalDeduccionesLiquidacionComplemento: new Decimal(calculation.totales.liquidacionComplemento.deducciones),
+      totalLiquidacionComplemento: new Decimal(calculation.totales.liquidacionComplemento.neto),
     }),
 
     // ===== TOTAL FINAL =====
