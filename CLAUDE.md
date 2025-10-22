@@ -271,6 +271,11 @@ The dashboard app includes a comprehensive finiquito calculator system for Mexic
 
 **Step-to-Step Data Flow:**
 1. **Step 1 (Base Config)**: User enters employee info, dates, salaries
+   - **Vacation Days Editing**: Field is editable with smart auto-recalculation
+     - When hire/termination dates change: recalculates vacation days automatically
+     - When user manually edits vacation days: preserves manual value, only recalculates integration factor
+     - When dates change after manual edit: resets to auto-calculated value
+     - Integration factor formula: `FI = (365 + aguinaldo + (vacationDays * PV/100)) / 365`
    - On submit, calls `calculateFiniquitoComplete()` to compute initial factors
    - Auto-populates Step 2 data via `updateStep2()` in wizard context
    - Sets `diasTrabajados` and `septimoDia` to 0 (user must fill manually)
@@ -282,11 +287,13 @@ The dashboard app includes a comprehensive finiquito calculator system for Mexic
    - Live calculation updates as user edits (debounced 300ms)
    - Supports fiscal + complement scenarios, liquidación + complement combinations
    - Gratificación converts bidirectionally between días and pesos
+   - **CRITICAL**: Manual edits are preserved via `manualFactors` parameter when saving
 
 3. **Step 3 (Deductions)**: User enters manual deductions (Infonavit, Fonacot, etc.)
    - Live calculation includes deductions in real-time
 
 4. **Step 4 (Review)**: Final review before submission
+   - Displays all concepts including pending vacation amounts and gratification
 
 **Live Calculation System** (`hooks/use-live-calculation.ts`):
 - Uses `form.watch()` to detect changes in form data
@@ -297,11 +304,13 @@ The dashboard app includes a comprehensive finiquito calculator system for Mexic
 
 **Calculation Orchestration** (`calculate-finiquito-complete.ts`):
 - Entry point: accepts `CalculateFiniquitoInput`, returns `CalculateFiniquitoOutput`
+- **IMPORTANT**: Supports optional `manualFactors` parameter to preserve Step 2 user edits
 - Flow:
   1. Calls `DefaultTerminationProportionalImpl` (calculadora-factores) for base factors
   2. Merges manual factors from Step 2 if provided (overrides calculated values)
   3. Calls `ImplementationV1` (calculadora-finiquitos) for monetary calculations
   4. Maps result to structured output with `factores`, `montos`, `isr`, `deducciones`, `totales`
+- When creating finiquito: `create-finiquito.ts` must pass `step2Data` as `manualFactors` to preserve user edits
 
 **Important Data Distinctions:**
 - **Prima Vacacional Factor vs Value**:
@@ -324,6 +333,14 @@ The dashboard app includes a comprehensive finiquito calculator system for Mexic
 - Finiquito factors: `factorDiasTrabajadosFiniquito`, `factorVacacionesFiniquito`, `factorPrimaVacacionalFiniquito`, `factorAguinaldoFiniquito`
 - Liquidacion amounts: `montoIndemnizacion90Dias`, `montoIndemnizacion20Dias`, `montoPrimaAntiguedad`
 - Complemento amounts: `montoDiasTrabajadosComplemento`, `montoVacacionesComplemento`, etc.
+- **Liquidacion Complemento**: `totalPercepcionesLiquidacionComplemento`, `totalDeduccionesLiquidacionComplemento`, `totalLiquidacionComplemento`
+- **Pending Concepts** (stored as input values for display):
+  - `pendingVacationDays`, `pendingVacationPremiumDays` (fiscal)
+  - `complementPendingVacationDays`, `complementPendingVacationPremiumDays` (complemento)
+- **Input Preservation Fields** (store original input values before calculations):
+  - `integrationFactor`, `complementIntegrationFactor`
+  - `realSalary`, `complementIntegratedDailySalary`
+  - `pendingWorkDays`
 - Total to pay: `totalAPagar`
 - Employee identification: `employeeRFC`, `employeeCURP` (both required)
 
@@ -333,19 +350,51 @@ The dashboard app includes a comprehensive finiquito calculator system for Mexic
 - These fields are NULL for all version 2 finiquitos
 
 **Field Mapping Reference:**
-See `/apps/dashboard/actions/finiquitos/helpers/map-calculation.ts` for the complete mapping from calculation results to Prisma fields.
+See `/apps/dashboard/actions/finiquitos/helpers/map-calculation.ts` for the complete mapping from calculation results to Prisma fields. This file includes mappings for:
+- Base finiquito concepts (fiscal amounts and factors)
+- Liquidación concepts (90-day, 20-day indemnification, seniority premium)
+- Complemento concepts (complement amounts for all categories)
+- Liquidación Complemento totals (percepciones, deducciones, total)
+- Input preservation fields (integration factors, pending concepts)
+
+#### PDF Generation
+
+**Dynamic Layout Optimization** (`finiquito-pdf-template.tsx`):
+The PDF template dynamically adjusts margins and font size based on the number of concepts to prevent overflow to a third page:
+- Counts concept lines: dynamic concepts + 1 total line
+- **If > 4 lines**: Reduces margins
+  - Horizontal: 2.54cm → 1.41cm
+  - Vertical top: 1.83cm → 1.27cm
+  - Vertical bottom: 2.54cm → 1.76cm
+- **If >= 10 lines**: Also reduces font size from 11pt → 10pt
+- Ensures signature section stays on second page
+
+**Dynamic Concept Rendering**:
+The PDF filters and displays only concepts with non-zero amounts, supporting:
+- Fiscal finiquito concepts (días trabajados, vacaciones, prima vacacional, aguinaldo)
+- Liquidación concepts (90-day/20-day indemnification, seniority premium)
+- Complemento concepts (all categories)
+- Pending concepts (vacaciones pendientes, prima vacacional pendiente)
+- Gratification (if present)
 
 #### File Reference
 
 **Key Files:**
 - Entry point: `/apps/dashboard/lib/finiquitos/calculate-finiquito-complete.ts`
+- Create action: `/apps/dashboard/actions/finiquitos/create-finiquito.ts` (includes manualFactors parameter)
 - Field mapping: `/apps/dashboard/actions/finiquitos/helpers/map-calculation.ts`
 - PDF template: `/apps/dashboard/lib/finiquitos/pdf/finiquito-pdf-template.tsx`
-- Detail view: `/apps/dashboard/components/organizations/slug/finiquitos/detail/general-info-section.tsx`
+- Detail sections: `/apps/dashboard/components/organizations/slug/finiquitos/detail/`
+  - `general-info-section.tsx`
+  - `finiquito-section.tsx` (displays pending concepts)
+  - `complemento-section.tsx` (displays pending concepts)
+  - `liquidacion-complemento-section.tsx` (NEW - displays liquidación complemento)
+  - `total-section.tsx` (includes liquidación complemento in totals)
 - Live calc hook: `/apps/dashboard/components/organizations/slug/finiquitos/create/hooks/use-live-calculation.ts`
 - Wizard context: `/apps/dashboard/components/organizations/slug/finiquitos/create/wizard-context.tsx`
-- Step 1: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step1-base-config.tsx`
-- Step 2: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step2-factors.tsx`
+- Step 1: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step1-base-config.tsx` (vacation days editing)
+- Step 2: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step2-factors.tsx` (label corrections)
+- Step 4: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step4-review/finiquito-breakdown.tsx`
 - Live panel: `/apps/dashboard/components/organizations/slug/finiquitos/shared/live-calculation-panel.tsx`
 
 **Schemas:**
@@ -363,4 +412,8 @@ See `/apps/dashboard/actions/finiquitos/helpers/map-calculation.ts` for the comp
 - **Finiquito live calculation not updating**: Check browser console for errors; ensure Step 1 data is complete
 - **Infinite re-renders in wizard**: Verify `useLiveCalculation` uses stable keys (JSON.stringify) not object references
 - **Finiquito PDF showing zeros**: Ensure PDF template uses v2 field names (e.g., `montoVacacionesFiniquito` not `realVacationAmount`)
-- **Missing RFC/CURP in finiquito**: Ensure `create-finiquito.ts` saves `employeeRFC` and `employeeCURP` to database (lines 67-68)
+- **Missing RFC/CURP in finiquito**: Ensure `create-finiquito.ts` saves `employeeRFC` and `employeeCURP` to database (lines 75-76)
+- **Step 2 edits not saving**: CRITICAL - Ensure `create-finiquito.ts` passes `step2Data` as `manualFactors` parameter to `calculateFiniquitoComplete()`. Without this, all Step 2 edits are lost and calculations restart from scratch.
+- **PDF overflowing to 3rd page**: The template has dynamic margin/font adjustments (>4 lines reduces margins, >=10 lines reduces font to 10pt). If still overflowing, check that `conceptLines` calculation includes all displayed concepts.
+- **Missing liquidación complemento in totals**: Ensure `total-section.tsx` includes `totalLiquidacionComplemento` in final sum calculation.
+- **Vacation days not respecting manual edits**: Step 1 uses refs to track manual edits. Check that `vacationDaysManuallyEdited` ref is properly set when user changes value, and that date changes reset the flag.
