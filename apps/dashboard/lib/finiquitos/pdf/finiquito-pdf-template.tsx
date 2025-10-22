@@ -205,9 +205,33 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
     toNumber(finiquito.totalPercepcionesFiniquito) +
     (finiquito.liquidacionActivada ? toNumber(finiquito.totalPercepcionesLiquidacion) : 0);
 
+  // Calcular número de líneas en la tabla de conceptos
+  // Conceptos dinámicos + 1 línea de "TOTAL NETO DE PERCEPCIONES"
+  const conceptLines = concepts.length + 1;
+
+  // Si hay más de 4 líneas, reducir márgenes para evitar página extra
+  const shouldReduceMargins = conceptLines > 4;
+  const horizontalPadding = shouldReduceMargins ? 40 : 72; // Reducir de 2.54cm a ~1.41cm
+  const verticalPaddingTop = shouldReduceMargins ? 36 : 52; // Reducir de ~2.4cm a ~1.27cm
+  const verticalPaddingBottom = shouldReduceMargins ? 50 : 72; // Reducir de 2.54cm a ~1.76cm
+
+  // Si hay 10 o más líneas, reducir también el tamaño de letra
+  const shouldReduceFontSize = conceptLines >= 10;
+  const fontSize = shouldReduceFontSize ? 10 : 11; // Reducir de 11pt a 10pt
+
+  // Estilos dinámicos de página con márgenes y fuente ajustados
+  const dynamicPageStyle = {
+    ...styles.page,
+    fontSize: fontSize,
+    paddingTop: verticalPaddingTop,
+    paddingBottom: verticalPaddingBottom,
+    paddingLeft: horizontalPadding,
+    paddingRight: horizontalPadding,
+  };
+
   return (
     <Document>
-      <Page size="LETTER" style={styles.page}>
+      <Page size="LETTER" style={dynamicPageStyle}>
         {/* ENCABEZADO */}
         <Text style={[styles.center, styles.paragraph]}>
           <Text style={[styles.bold, styles.textUnderline, styles.right]}>ASUNTO: RENUNCIA VOLUNTARIA.</Text>
