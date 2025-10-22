@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { BorderZone, SalaryFrequency } from '@workspace/database';
@@ -72,12 +72,17 @@ export function Step1BaseConfig() {
   const terminationDate = form.watch('terminationDate');
   const fiscalDailySalary = form.watch('fiscalDailySalary');
   const aguinaldoDays = form.watch('aguinaldoDays');
+  const vacationDays = form.watch('vacationDays');
   const vacationPremiumPercentage = form.watch('vacationPremiumPercentage');
   const complementoActivado = form.watch('complementoActivado');
   const realSalary = form.watch('realSalary');
   const salaryFrequency = form.watch('salaryFrequency');
   const realDailySalary = form.watch('realDailySalary');
   const realHireDate = form.watch('realHireDate');
+
+  // Refs para trackear si campos fueron editados manualmente
+  const vacationDaysManuallyEdited = useRef(false);
+  const lastCalculatedVacationDays = useRef<number | null>(null);
 
   // AUTO-CÁLCULO 1: Salario Diario Fiscal según Zona Fronteriza (Default Value)
   // NO_FRONTERIZA: 278.80 | FRONTERIZA: 419.88
@@ -89,23 +94,51 @@ export function Step1BaseConfig() {
 
   // AUTO-CÁLCULO 2: Días de Vacaciones según Antigüedad (LFT 2023)
   // Usa getEmployeeVacationDays(hireDate, terminationDate)
+  // Solo recalcula si NO fue editado manualmente
   useEffect(() => {
     if (hireDate && terminationDate) {
       const calculatedVacationDays = getEmployeeVacationDays(hireDate, terminationDate);
-      form.setValue('vacationDays', calculatedVacationDays);
+
+      // Si el usuario no ha editado manualmente, actualizar automáticamente
+      if (!vacationDaysManuallyEdited.current) {
+        form.setValue('vacationDays', calculatedVacationDays);
+        lastCalculatedVacationDays.current = calculatedVacationDays;
+      } else {
+        // Si las fechas cambiaron después de una edición manual, resetear el flag
+        // para permitir auto-cálculo en el siguiente cambio de fechas
+        vacationDaysManuallyEdited.current = false;
+        form.setValue('vacationDays', calculatedVacationDays);
+        lastCalculatedVacationDays.current = calculatedVacationDays;
+      }
     }
   }, [hireDate, terminationDate, form]);
+
+  // Detectar edición manual de días de vacaciones
+  useEffect(() => {
+    if (vacationDays !== undefined && lastCalculatedVacationDays.current !== null) {
+      // Si el valor actual difiere del último calculado, fue editado manualmente
+      if (vacationDays !== lastCalculatedVacationDays.current) {
+        vacationDaysManuallyEdited.current = true;
+      }
+    }
+  }, [vacationDays]);
 
   // AUTO-CÁLCULO 3: Salario Diario Integrado y Factor de Integración
   // SDI = Salario Fiscal × Factor de Integración (topado a 25 UMAs)
   // Factor de Integración considera: días aguinaldo, días vacaciones, prima vacacional
+  // IMPORTANTE: Usa vacationDays del formulario (puede ser editado manualmente)
   useEffect(() => {
-    if (hireDate && terminationDate && fiscalDailySalary) {
-      const integrationFactor = getEmployeeIntegrationFactor(hireDate, {
-        terminationDate,
-        aguinaldo: aguinaldoDays,
-        vacationBonus: vacationPremiumPercentage,
-      });
+    if (fiscalDailySalary && vacationDays !== undefined) {
+      // Calcular factor de integración manualmente usando vacationDays del formulario
+      // Fórmula: FI = (D_anio + D_ag + (D_vac * (PV/100))) / D_anio
+      const D_anio = 365;
+      const D_ag = aguinaldoDays;
+      const D_vac = vacationDays;
+      const PV = vacationPremiumPercentage;
+
+      const integrationFactor = parseFloat(
+        ((D_anio + D_ag + (D_vac * (PV / 100))) / D_anio).toFixed(4)
+      );
 
       const calculatedSDI = fiscalDailySalary * integrationFactor;
       const integratedSalary = parseFloat(applyUMALimit(calculatedSDI).toFixed(2));
@@ -113,7 +146,7 @@ export function Step1BaseConfig() {
       form.setValue('integrationFactor', integrationFactor);
       form.setValue('integratedDailySalary', integratedSalary);
     }
-  }, [hireDate, terminationDate, fiscalDailySalary, aguinaldoDays, vacationPremiumPercentage, form]);
+  }, [fiscalDailySalary, aguinaldoDays, vacationDays, vacationPremiumPercentage, form]);
 
   // AUTO-COMPLETADO: Fecha de Ingreso Real cuando se activa Complemento
   // Si el complemento se activa y la fecha real está vacía, usar la fecha fiscal como default
@@ -159,13 +192,19 @@ export function Step1BaseConfig() {
   // AUTO-CÁLCULO 4: Salario Diario Integrado y Factor de Integración de Complemento
   // SDI Complemento = Salario Real × Factor de Integración Complemento (topado a 25 UMAs)
   // Factor de Integración considera: días aguinaldo, días vacaciones, prima vacacional
+  // IMPORTANTE: Usa vacationDays del formulario (puede ser editado manualmente)
   useEffect(() => {
-    if (complementoActivado && realHireDate && terminationDate && realDailySalary) {
-      const complementIntegrationFactor = getEmployeeIntegrationFactor(realHireDate, {
-        terminationDate,
-        aguinaldo: aguinaldoDays,
-        vacationBonus: vacationPremiumPercentage,
-      });
+    if (complementoActivado && realDailySalary && vacationDays !== undefined) {
+      // Calcular factor de integración manualmente usando vacationDays del formulario
+      // Fórmula: FI = (D_anio + D_ag + (D_vac * (PV/100))) / D_anio
+      const D_anio = 365;
+      const D_ag = aguinaldoDays;
+      const D_vac = vacationDays;
+      const PV = vacationPremiumPercentage;
+
+      const complementIntegrationFactor = parseFloat(
+        ((D_anio + D_ag + (D_vac * (PV / 100))) / D_anio).toFixed(4)
+      );
 
       const calculatedComplementSDI = realDailySalary * complementIntegrationFactor;
       const complementIntegratedSalary = parseFloat(applyUMALimit(calculatedComplementSDI).toFixed(2));
@@ -173,7 +212,7 @@ export function Step1BaseConfig() {
       form.setValue('complementIntegrationFactor', complementIntegrationFactor);
       form.setValue('complementIntegratedDailySalary', complementIntegratedSalary);
     }
-  }, [complementoActivado, realHireDate, terminationDate, realDailySalary, aguinaldoDays, vacationPremiumPercentage, form]);
+  }, [complementoActivado, realDailySalary, aguinaldoDays, vacationDays, vacationPremiumPercentage, form]);
 
   const onSubmit = (data: Step1BaseConfigType) => {
     // Guardar datos del paso 1
@@ -521,14 +560,12 @@ export function Step1BaseConfig() {
                     <Input
                       type="number"
                       step="1"
-                      disabled
-                      className="bg-muted"
                       {...field}
                       onChange={(e) => field.onChange(parseInt(e.target.value) || 12)}
                     />
                   </FormControl>
                   <FormDescription>
-                    Auto-calculado según antigüedad
+                    Calculado según antigüedad (editable)
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
