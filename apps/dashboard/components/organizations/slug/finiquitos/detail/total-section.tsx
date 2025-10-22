@@ -43,6 +43,15 @@ export function TotalSection({ finiquito }: TotalSectionProps) {
             </div>
           )}
 
+          {finiquito.liquidacionActivada && finiquito.complementoActivado && finiquito.totalLiquidacionComplemento && (
+            <div className="flex justify-between items-center">
+              <span className="font-medium">Liquidación Complemento:</span>
+              <span className="font-mono text-lg font-semibold">
+                {formatCurrency(finiquito.totalLiquidacionComplemento)}
+              </span>
+            </div>
+          )}
+
           {finiquito.complementoActivado && finiquito.totalComplemento && (
             <div className="flex justify-between items-center">
               <span className="font-medium">Complemento:</span>

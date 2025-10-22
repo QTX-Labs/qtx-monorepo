@@ -18,6 +18,7 @@ import type {
   MontosFiniquito,
   FactoresLiquidacion,
   MontosLiquidacion,
+  ConfiguracionAdicional,
 } from '~/lib/finiquitos/types/calculate-finiquito-types';
 
 type FiniquitoBreakdownProps = {
@@ -41,9 +42,13 @@ type FiniquitoTableProps = {
   title: string;
   badge: string;
   badgeVariant?: 'default' | 'secondary' | 'outline';
+  configuracionAdicional?: ConfiguracionAdicional;
 };
 
-function FiniquitoTable({ factores, montos, title, badge, badgeVariant = 'secondary' }: FiniquitoTableProps) {
+function FiniquitoTable({ factores, montos, title, badge, badgeVariant = 'secondary', configuracionAdicional }: FiniquitoTableProps) {
+  // Mostrar gratificación solo si es "FINIQUITO" (no Complemento ni Liquidación)
+  const gratificacionPesos = title === 'FINIQUITO' ? configuracionAdicional?.gratificacionPesos : undefined;
+
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
@@ -60,7 +65,7 @@ function FiniquitoTable({ factores, montos, title, badge, badgeVariant = 'second
         </TableHeader>
         <TableBody>
           <TableRow>
-            <TableCell>Días Trabajados</TableCell>
+            <TableCell>Días Pendientes de Sueldo</TableCell>
             <TableCell className="text-right font-mono">{formatFactor(factores.diasTrabajados)}</TableCell>
             <TableCell className="text-right font-mono">{formatCurrency(montos.diasTrabajados.totalAmount)}</TableCell>
           </TableRow>
@@ -74,16 +79,39 @@ function FiniquitoTable({ factores, montos, title, badge, badgeVariant = 'second
             <TableCell className="text-right font-mono">{formatFactor(factores.vacaciones)}</TableCell>
             <TableCell className="text-right font-mono">{formatCurrency(montos.vacaciones.totalAmount)}</TableCell>
           </TableRow>
+          {montos.vacacionesPendientes.totalAmount > 0 && (
+            <TableRow>
+              <TableCell>Vacaciones Pendientes</TableCell>
+              <TableCell className="text-right font-mono">{formatFactor(montos.vacacionesPendientes.totalQuantity)}</TableCell>
+              <TableCell className="text-right font-mono">{formatCurrency(montos.vacacionesPendientes.totalAmount)}</TableCell>
+            </TableRow>
+          )}
           <TableRow>
             <TableCell>Prima Vacacional</TableCell>
             <TableCell className="text-right font-mono">{formatFactor(factores.primaVacacional)}</TableCell>
             <TableCell className="text-right font-mono">{formatCurrency(montos.primaVacacional.totalAmount)}</TableCell>
           </TableRow>
+          {montos.primaVacacionalPendiente.totalAmount > 0 && (
+            <TableRow>
+              <TableCell>Prima Vacacional Pendiente</TableCell>
+              <TableCell className="text-right font-mono">{formatFactor(montos.primaVacacionalPendiente.totalQuantity)}</TableCell>
+              <TableCell className="text-right font-mono">{formatCurrency(montos.primaVacacionalPendiente.totalAmount)}</TableCell>
+            </TableRow>
+          )}
           <TableRow>
             <TableCell className="font-semibold">Aguinaldo</TableCell>
             <TableCell className="text-right font-mono">{formatFactor(factores.aguinaldo)}</TableCell>
             <TableCell className="text-right font-mono">{formatCurrency(montos.aguinaldo.totalAmount)}</TableCell>
           </TableRow>
+          {gratificacionPesos && gratificacionPesos > 0 && (
+            <TableRow>
+              <TableCell>Gratificación</TableCell>
+              <TableCell className="text-right font-mono">
+                {configuracionAdicional?.gratificacionDias ? formatFactor(configuracionAdicional.gratificacionDias) : '-'}
+              </TableCell>
+              <TableCell className="text-right font-mono">{formatCurrency(gratificacionPesos)}</TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>
@@ -93,14 +121,17 @@ function FiniquitoTable({ factores, montos, title, badge, badgeVariant = 'second
 type LiquidacionTableProps = {
   factores: FactoresLiquidacion;
   montos: MontosLiquidacion;
+  title?: string;
+  badge?: string;
+  badgeVariant?: 'default' | 'secondary' | 'outline';
 };
 
-function LiquidacionTable({ factores, montos }: LiquidacionTableProps) {
+function LiquidacionTable({ factores, montos, title = 'LIQUIDACIÓN', badge = 'Indemnización', badgeVariant = 'default' }: LiquidacionTableProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-semibold">LIQUIDACIÓN</h3>
-        <Badge variant="default">Indemnización</Badge>
+        <h3 className="font-semibold">{title}</h3>
+        <Badge variant={badgeVariant}>{badge}</Badge>
       </div>
       <Table>
         <TableHeader>
@@ -144,6 +175,7 @@ export function FiniquitoBreakdown({ calculation }: FiniquitoBreakdownProps) {
             title="FINIQUITO"
             badge="Base"
             badgeVariant="secondary"
+            configuracionAdicional={calculation.factores.configuracionAdicional}
           />
           <Separator className="my-4" />
           <div className="flex justify-between text-sm">
@@ -183,6 +215,35 @@ export function FiniquitoBreakdown({ calculation }: FiniquitoBreakdownProps) {
             <div className="flex justify-between font-bold text-lg">
               <span>Neto Liquidación:</span>
               <span className="text-primary">{formatCurrency(calculation.totales.liquidacion.neto)}</span>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Liquidación Complemento */}
+      {calculation.factores.liquidacionComplemento && calculation.montos.liquidacionComplemento && calculation.totales.liquidacionComplemento && (
+        <Card>
+          <CardContent className="pt-6">
+            <LiquidacionTable
+              factores={calculation.factores.liquidacionComplemento}
+              montos={calculation.montos.liquidacionComplemento}
+              title="LIQUIDACIÓN COMPLEMENTO"
+              badge="Diferencia"
+              badgeVariant="outline"
+            />
+            <Separator className="my-4" />
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Percepciones Totales:</span>
+              <span className="font-semibold">{formatCurrency(calculation.totales.liquidacionComplemento.percepciones)}</span>
+            </div>
+            <div className="flex justify-between text-sm mt-1">
+              <span className="text-muted-foreground">Deducciones Totales:</span>
+              <span className="font-semibold text-destructive">-{formatCurrency(calculation.totales.liquidacionComplemento.deducciones)}</span>
+            </div>
+            <Separator className="my-2" />
+            <div className="flex justify-between font-bold text-lg">
+              <span>Neto Liquidación Complemento:</span>
+              <span className="text-primary">{formatCurrency(calculation.totales.liquidacionComplemento.neto)}</span>
             </div>
           </CardContent>
         </Card>

@@ -617,8 +617,12 @@ model Finiquito {
   salaryFrequency             SalaryFrequency
   borderZone                  BorderZone        @default(NO_FRONTERIZA)
   fiscalDailySalary           Decimal           @db.Decimal(12, 2)
+  integrationFactor           Decimal?          @db.Decimal(12, 6) // Factor de integración fiscal
   realDailySalary             Decimal           @db.Decimal(12, 2)
+  realSalary                  Decimal?          @db.Decimal(12, 2) // Salario real según frecuencia (antes de convertir a diario)
   integratedDailySalary       Decimal           @db.Decimal(12, 2)
+  complementIntegrationFactor Decimal?          @db.Decimal(12, 6) // Factor de integración de complemento
+  complementIntegratedDailySalary Decimal?      @db.Decimal(12, 2) // SDI del complemento
   pendingWorkDays             Int               @default(0)
   realHireDate                DateTime?         @db.Date // Fecha de ingreso real para complemento
 
@@ -626,7 +630,10 @@ model Finiquito {
   aguinaldoDays               Int               @default(15)
   vacationDays                Int               @default(12)
   vacationPremiumPercentage   Decimal           @db.Decimal(5, 2) @default(25)
-  pendingVacationDays         Int               @default(0)
+  pendingVacationDays         Int               @default(0) // Input: Días de vacaciones pendientes fiscal
+  pendingVacationPremiumDays  Int?              @default(0) // Input: Días de prima vacacional pendiente fiscal
+  complementPendingVacationDays Int?            @default(0) // Input: Días de vacaciones pendientes complemento
+  complementPendingVacationPremiumDays Int?    @default(0) // Input: Días de prima vacacional pendiente complemento
 
   // Toggles de activación
   liquidacionActivada         Boolean           @default(false)

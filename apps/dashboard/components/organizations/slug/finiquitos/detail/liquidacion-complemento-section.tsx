@@ -36,10 +36,11 @@ export function LiquidacionComplementoSection({ finiquito }: LiquidacionCompleme
     },
   ];
 
-  // Filtrar solo conceptos con monto > 0
+  // Filtrar solo conceptos con monto > 0 O factor > 0
   const factoresMontos = allFactoresMontos.filter(item => {
     const amount = item.monto ? (typeof item.monto === 'number' ? item.monto : Number(item.monto)) : 0;
-    return amount > 0;
+    const factor = item.factor ? (typeof item.factor === 'number' ? item.factor : Number(item.factor)) : 0;
+    return amount > 0 || factor > 0;
   });
 
   // Si no hay conceptos con valor, no mostrar la sección
