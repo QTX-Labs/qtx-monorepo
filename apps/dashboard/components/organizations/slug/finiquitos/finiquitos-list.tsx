@@ -60,6 +60,7 @@ type FiniquitoListItem = Pick<
   | 'totalAPagar'
   | 'version'
   | 'createdAt'
+  | 'gratificationDays'
 > & {
   user: Pick<User, 'name' | 'email'>;
 };
@@ -157,6 +158,7 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
                 <TableHead>Empresa</TableHead>
                 <TableHead>Cliente</TableHead>
                 <TableHead>Fecha de Baja</TableHead>
+                <TableHead>Días de Gratificación</TableHead>
                 <TableHead>Total a Pagar</TableHead>
                 <TableHead>Creado Por</TableHead>
                 <TableHead>Fecha de Creación</TableHead>
@@ -176,16 +178,18 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
                   <TableCell>{finiquito.empresaName || '-'}</TableCell>
                   <TableCell>{finiquito.clientName || '-'}</TableCell>
                   <TableCell>
-                    {format(toLocalDate(finiquito.terminationDate), 'PPP', {
-                      locale: es
-                    })}
+                    {format(toLocalDate(finiquito.terminationDate), 'yyyy-MM-dd')}
+                  </TableCell>
+                  <TableCell>
+                    {finiquito.gratificationDays
+                      ? numeral(Number(finiquito.gratificationDays)).format('0,0.00')
+                      : '-'
+                    }
                   </TableCell>
                   <TableCell>${numeral(Number(finiquito.totalAPagar ?? finiquito.totalToPay)).format('0,0.00')}</TableCell>
                   <TableCell>{finiquito.user.name}</TableCell>
                   <TableCell>
-                    {format(toLocalDate(finiquito.createdAt), 'PPP', {
-                      locale: es
-                    })}
+                    {format(new Date(finiquito.createdAt), 'yyyy-MM-dd hh:mm a')}
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>

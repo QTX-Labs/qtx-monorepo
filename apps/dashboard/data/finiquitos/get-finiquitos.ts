@@ -42,6 +42,7 @@ export const getFiniquitos = cache(async () => {
       totalAPagar: true,
       liquidacionActivada: true,
       complementoActivado: true,
+      gratificationDays: true,
 
       createdAt: true,
       user: {
