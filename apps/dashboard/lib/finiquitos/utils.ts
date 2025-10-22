@@ -237,6 +237,36 @@ export function toLocalDate(date: Date | string): Date {
 }
 
 /**
+ * Valores UMA históricos (Unidad de Medida y Actualización)
+ */
+const UMA_VALUES = [
+  { value: 103.74, effectiveDate: new Date('2024-01-01') },
+  { value: 108.57, effectiveDate: new Date('2024-02-01') },
+  { value: 113.14, effectiveDate: new Date('2025-02-01') },
+];
+
+/**
+ * Obtiene el valor UMA más reciente
+ * @returns Valor UMA vigente
+ */
+export function getMostRecentUMA(): number {
+  const sorted = [...UMA_VALUES].sort((a, b) =>
+    b.effectiveDate.getTime() - a.effectiveDate.getTime()
+  );
+  return sorted[0].value;
+}
+
+/**
+ * Aplica el tope de 25 UMAs al Salario Diario Integrado
+ * @param sdi - Salario Diario Integrado calculado
+ * @returns SDI topado a 25 UMAs si excede el límite
+ */
+export function applyUMALimit(sdi: number): number {
+  const umaLimit = getMostRecentUMA() * 25;
+  return Math.min(sdi, umaLimit);
+}
+
+/**
  * Calcula los días de vacaciones que le corresponden a un empleado según su antigüedad
  * Basado en la Ley Federal del Trabajo 2023 (prestaciones superiores de ley)
  *

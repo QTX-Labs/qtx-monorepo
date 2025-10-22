@@ -42,6 +42,13 @@ export const createFiniquito = authOrganizationActionClient
       } : undefined,
       liquidacion: parsedInput.liquidacionActivada ? { enabled: true } : undefined,
       deduccionesManuales: parsedInput.deduccionesManuales,
+      manualFactors: {
+        finiquito: parsedInput.factoresFiniquito,
+        liquidacion: parsedInput.factoresLiquidacion,
+        complemento: parsedInput.factoresComplemento,
+        liquidacionComplemento: parsedInput.factoresLiquidacionComplemento,
+        configuracionAdicional: parsedInput.configuracionAdicional,
+      },
     });
     console.log('[createFiniquito] Cálculo completado:', {
       totalAPagar: calculation.totales.totalAPagar,
@@ -81,8 +88,12 @@ export const createFiniquito = authOrganizationActionClient
           salaryFrequency: parsedInput.salaryFrequency ?? SalaryFrequency.MONTHLY,
           borderZone: parsedInput.borderZone,
           fiscalDailySalary: parsedInput.fiscalDailySalary,
+          integrationFactor: parsedInput.integrationFactor ?? null,
           realDailySalary: parsedInput.realDailySalary ?? parsedInput.fiscalDailySalary,
+          realSalary: parsedInput.realSalary ?? null,
           integratedDailySalary: parsedInput.integratedDailySalary,
+          complementIntegrationFactor: parsedInput.complementIntegrationFactor ?? null,
+          complementIntegratedDailySalary: parsedInput.complementIntegratedDailySalary ?? null,
           realHireDate: parsedInput.realHireDate ?? null,
           pendingWorkDays: 0, // No se usa en nueva estructura
 
@@ -91,6 +102,9 @@ export const createFiniquito = authOrganizationActionClient
           vacationDays: parsedInput.vacationDays,
           vacationPremiumPercentage: parsedInput.vacationPremiumPercentage,
           pendingVacationDays: parsedInput.beneficiosFiscalesPendientes?.pendingVacationDays ?? 0,
+          pendingVacationPremiumDays: parsedInput.beneficiosFiscalesPendientes?.pendingVacationPremium ?? 0,
+          complementPendingVacationDays: parsedInput.beneficiosComplementoPendientes?.complementPendingVacationDays ?? 0,
+          complementPendingVacationPremiumDays: parsedInput.beneficiosComplementoPendientes?.complementPendingVacationPremium ?? 0,
 
           // Toggles de activación
           liquidacionActivada: parsedInput.liquidacionActivada,
@@ -99,6 +113,11 @@ export const createFiniquito = authOrganizationActionClient
           // Modificación del factor de días
           daysFactorModified: parsedInput.daysFactorModified,
           daysFactorModificationReason: parsedInput.daysFactorModificationReason ?? null,
+
+          // Gratificación (configuración adicional)
+          gratificationDays: parsedInput.configuracionAdicional?.gratificacionDias ?? null,
+          gratificationPesos: parsedInput.configuracionAdicional?.gratificacionPesos ?? null,
+          realGratificationAmount: parsedInput.configuracionAdicional?.gratificacionPesos ?? 0,
 
           // Versión (importante: 2 para nueva estructura)
           version: 2,

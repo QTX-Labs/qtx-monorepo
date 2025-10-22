@@ -31,6 +31,7 @@ import { formatDate } from '~/lib/finiquitos/format-helpers';
 import { GeneralInfoSection } from './detail/general-info-section';
 import { FiniquitoSection } from './detail/finiquito-section';
 import { LiquidacionSection } from './detail/liquidacion-section';
+import { LiquidacionComplementoSection } from './detail/liquidacion-complemento-section';
 import { ComplementoSection } from './detail/complemento-section';
 import { DeduccionesManualesSection } from './detail/deducciones-manuales-section';
 import { TotalSection } from './detail/total-section';
@@ -249,6 +250,11 @@ export function FiniquitoDetailContent({ finiquito }: FiniquitoDetailContentProp
         {/* Liquidación Section (si existe) */}
         {finiquito.liquidacionActivada && (
           <LiquidacionSection finiquito={finiquito} />
+        )}
+
+        {/* Liquidación Complemento Section (si ambos existen) */}
+        {finiquito.liquidacionActivada && finiquito.complementoActivado && (
+          <LiquidacionComplementoSection finiquito={finiquito} />
         )}
 
         {/* Complemento Section (si existe) */}
