@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from 'react';
 import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { MoreHorizontal, Download, Trash2, Loader2, Search, ArrowUp, ArrowDown } from 'lucide-react';
 import { useDebounce } from '@workspace/ui/hooks/use-debounce';
 import { type Finiquito, type User } from '@workspace/database';
@@ -319,7 +318,9 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
 
         {/* Table Section */}
         <div className="px-4 sm:px-6 lg:px-8">
-          <Table>
+          <div className="overflow-x-auto -mx-4 sm:mx-0">
+            <div className="inline-block align-middle">
+              <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[180px]">Fecha de Creación</TableHead>
@@ -410,6 +411,8 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
               ))}
             </TableBody>
           </Table>
+            </div>
+          </div>
         </div>
       </div>
 

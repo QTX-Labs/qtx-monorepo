@@ -61,7 +61,7 @@ export default async function OrganizationLayout(
         {/* Set max-width so full-width tables can overflow horizontally correctly */}
         <SidebarInset
           id="skip"
-          className="size-full lg:[transition:max-width_0.2s_linear] lg:peer-data-[state=collapsed]:max-w-[calc(100svw-var(--sidebar-width-icon))] lg:peer-data-[state=expanded]:max-w-[calc(100svw-var(--sidebar-width))]"
+          className="h-full w-full min-w-0 lg:[transition:max-width_0.2s_linear] lg:peer-data-[state=collapsed]:max-w-[calc(100svw-var(--sidebar-width-icon))] lg:peer-data-[state=expanded]:max-w-[calc(100svw-var(--sidebar-width))]"
         >
           {props.children}
         </SidebarInset>
