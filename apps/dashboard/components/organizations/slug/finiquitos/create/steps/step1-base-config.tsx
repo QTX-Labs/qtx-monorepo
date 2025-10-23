@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { BorderZone, SalaryFrequency } from '@workspace/database';
@@ -105,7 +105,7 @@ export function Step1BaseConfig() {
       previousBorderZone.current = step1Data.borderZone;
     }
   }, []); // Solo ejecutar una vez al montar
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
 
   // AUTO-CÁLCULO 1: Salario Diario Fiscal según Zona Fronteriza (Default Value)
   // NO_FRONTERIZA: 278.80 | FRONTERIZA: 419.88
@@ -116,7 +116,7 @@ export function Step1BaseConfig() {
 
     // Detectar si borderZone cambió realmente (no es el montaje inicial)
     const borderZoneChanged = previousBorderZone.current !== null &&
-                              previousBorderZone.current !== borderZone;
+      previousBorderZone.current !== borderZone;
 
     // Si el usuario no ha editado manualmente, actualizar automáticamente
     if (!fiscalDailySalaryManuallyEdited.current) {
@@ -136,6 +136,9 @@ export function Step1BaseConfig() {
     // Actualizar previousBorderZone para la próxima ejecución
     previousBorderZone.current = borderZone;
   }, [borderZone, form]);
+
+  // Watch fiscal daily salary for manual edit detection
+  const fiscalDailySalary = form.watch('fiscalDailySalary');
 
   // Detectar edición manual de salario diario fiscal
   useEffect(() => {
@@ -159,7 +162,6 @@ export function Step1BaseConfig() {
   // AUTO-CÁLCULO 3: Salario Diario Integrado y Factor de Integración
   // SDI = Salario Fiscal × Factor de Integración
   // Factor de Integración considera: días aguinaldo, días vacaciones, prima vacacional
-  const fiscalDailySalary = form.watch('fiscalDailySalary');
 
   useEffect(() => {
     if (hireDate && terminationDate && fiscalDailySalary && fiscalDailySalary > 0) {
