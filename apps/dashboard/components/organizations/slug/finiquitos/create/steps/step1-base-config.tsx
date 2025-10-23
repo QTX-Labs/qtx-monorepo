@@ -84,13 +84,37 @@ export function Step1BaseConfig() {
   const vacationDaysManuallyEdited = useRef(false);
   const lastCalculatedVacationDays = useRef<number | null>(null);
 
+  // Inicializar refs desde step1Data ANTES de cualquier useEffect (previene race condition)
+  const fiscalDailySalaryManuallyEdited = useRef(!!step1Data?.fiscalDailySalary);
+  const lastCalculatedFiscalDailySalary = useRef(step1Data?.fiscalDailySalary ?? null);
+  const previousBorderZone = useRef(step1Data?.borderZone ?? null);
+
   // AUTO-CÁLCULO 1: Salario Diario Fiscal según Zona Fronteriza (Default Value)
   // NO_FRONTERIZA: 278.80 | FRONTERIZA: 419.88
-  // Se actualiza cuando cambia la zona fronteriza para sugerir el mínimo
+  // Solo recalcula si NO fue editado manualmente O si la zona fronteriza cambió realmente
   useEffect(() => {
     const fiscalSalary = borderZone === BorderZone.FRONTERIZA ? 419.88 : 278.80;
-    form.setValue('fiscalDailySalary', fiscalSalary);
+
+    // Solo actualizar si:
+    // 1. Usuario NO ha editado manualmente Y es montaje inicial, O
+    // 2. La zona fronteriza cambió realmente (no solo re-render)
+    if (!fiscalDailySalaryManuallyEdited.current || previousBorderZone.current !== borderZone) {
+      form.setValue('fiscalDailySalary', fiscalSalary);
+      lastCalculatedFiscalDailySalary.current = fiscalSalary;
+      fiscalDailySalaryManuallyEdited.current = false;
+      previousBorderZone.current = borderZone;
+    }
   }, [borderZone, form]);
+
+  // Detectar edición manual de salario diario fiscal
+  useEffect(() => {
+    if (fiscalDailySalary !== undefined && lastCalculatedFiscalDailySalary.current !== null) {
+      // Si el valor actual difiere del último calculado, fue editado manualmente
+      if (fiscalDailySalary !== lastCalculatedFiscalDailySalary.current) {
+        fiscalDailySalaryManuallyEdited.current = true;
+      }
+    }
+  }, [fiscalDailySalary]);
 
   // AUTO-CÁLCULO 2: Días de Vacaciones según Antigüedad (LFT 2023)
   // Usa getEmployeeVacationDays(hireDate, terminationDate)
@@ -322,7 +346,7 @@ export function Step1BaseConfig() {
               name="employeePosition"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Puesto</FormLabel>
+                  <FormLabel>Puesto *</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="Desarrollador" />
                   </FormControl>
