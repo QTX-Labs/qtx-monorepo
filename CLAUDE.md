@@ -279,11 +279,10 @@ The dashboard app includes a comprehensive finiquito calculator system for Mexic
      - When user manually edits vacation days: preserves manual value, only recalculates integration factor
      - When dates change after manual edit: resets to auto-calculated value
      - Integration factor formula: `FI = (365 + aguinaldo + (vacationDays * PV/100)) / 365`
-   - On submit, calls `calculateFiniquitoComplete()` to compute initial factors
-   - Auto-populates Step 2 data via `updateStep2()` in wizard context
-   - Sets `diasTrabajados` and `septimoDia` to 0 (user must fill manually)
-   - Populates all other factors: vacaciones, primaVacacional, aguinaldo, liquidación, complemento
-   - Stores initial calculation in context via `updateLiveCalculation()`
+   - **Step 1 Submit Handler Behavior**:
+     - **New finiquito scenario** (when `step2Data` is null): Calls `calculateFiniquitoComplete()` without `manualFactors`, auto-populates Step 2 via `updateStep2()`, sets `diasTrabajados` and `septimoDia` to 0
+     - **Duplication scenario** (when `step2Data` exists): Preserves all Step 2 values by passing `step2Data` as `manualFactors` parameter, skips `updateStep2()` call, only validates that liquidación/complemento factors match current toggle states
+     - Both scenarios: Store calculation result via `updateLiveCalculation()` and advance to next step
 
 2. **Step 2 (Factors)**: User reviews and edits calculated factors
    - Form pre-populated with factors from Step 1
@@ -390,8 +389,9 @@ The system supports duplicating existing finiquitos to streamline the creation o
 2. System fetches the complete finiquito data from the database
 3. All data is transformed from database format to wizard step formats (Step 1, Step 2, Step 3)
 4. Wizard opens with all fields pre-populated from the selected finiquito
-5. User can modify any field (including the custom identifier) before saving
-6. Clicking "Guardar Finiquito" creates a new database record (original remains unchanged)
+5. **Step 2 Value Preservation**: When advancing from Step 1 to Step 2, all manually edited Step 2 values (gratification, pending vacation days, edited factors) are preserved by passing existing `step2Data` as `manualFactors` to `calculateFiniquitoComplete()`
+6. User can modify any field (including the custom identifier) before saving
+7. Clicking "Guardar Finiquito" creates a new database record (original remains unchanged)
 
 **Custom Identifier Handling:**
 - The `customFiniquitoIdentifier` field (optional, max 20 chars) helps users distinguish finiquitos in the list view
@@ -422,6 +422,12 @@ The system supports duplicating existing finiquitos to streamline the creation o
 - `FiniquitosContent` component handles duplication via `handleDuplicateClick()` handler
 - Success/error states displayed via toast notifications
 - Wizard automatically opens with pre-populated data from context updates
+
+**Step 2 Preservation Logic** (`step1-base-config.tsx` lines 253-297):
+- Step 1 submit handler checks if `step2Data` exists in wizard context
+- If exists (duplication scenario): passes entire `step2Data` as `manualFactors` parameter, validates toggle state consistency (liquidación/complemento factors only included if toggles are enabled), skips `updateStep2()` call to preserve all manually edited values
+- If null (new finiquito): uses existing auto-population logic with fresh calculations
+- Ensures gratification, pending vacation days, and all edited factors are maintained during Step 1 → Step 2 transition
 
 **Version Requirement:**
 Only version 2 finiquitos can be duplicated. This avoids complexity with legacy v1 field mappings and ensures all duplicated finiquitos use current field structure.
@@ -476,3 +482,4 @@ Only version 2 finiquitos can be duplicated. This avoids complexity with legacy 
 - **Custom identifier not showing in list**: Ensure `getFiniquitos()` includes `customFiniquitoIdentifier` in the select clause and that the list component renders it conditionally.
 - **Duplicated identifier exceeds 20 chars**: The mapping function truncates to 15 chars before appending "-copy". If still exceeding limit, check truncation logic in `mapFiniquitoToStep1()`.
 - **Wizard not opening with duplicated data**: Verify that `handleDuplicateClick()` in `FiniquitosContent` properly updates all wizard context (step1, step2, step3, liveCalculation) before setting `isCreating=true`.
+- **Step 2 values overwritten when duplicating**: FIXED - The Step 1 submit handler now checks if `step2Data` exists and preserves values during duplication. If Step 2 values are still being lost, verify that `step2Data` is properly set in wizard context before advancing from Step 1, and that the conditional logic in `step1-base-config.tsx` (lines 253-297) properly passes `manualFactors` when `step2Data` is present.

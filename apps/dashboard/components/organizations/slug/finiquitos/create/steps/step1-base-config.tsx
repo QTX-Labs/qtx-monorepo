@@ -31,7 +31,7 @@ import { getEmployeeVacationDays, getEmployeeIntegrationFactor, applyUMALimit } 
 import { useWizard } from '../wizard-context';
 
 export function Step1BaseConfig() {
-  const { step1Data, updateStep1, updateStep2, updateLiveCalculation, goNext } = useWizard();
+  const { step1Data, step2Data, updateStep1, updateStep2, updateLiveCalculation, goNext } = useWizard();
 
   const form = useForm<Step1BaseConfigType>({
     resolver: zodResolver(step1BaseConfigSchema) as any, // Type inference issue with ZodEffects from .refine()
@@ -250,64 +250,111 @@ export function Step1BaseConfig() {
     // Guardar datos del paso 1
     updateStep1(data);
 
-    // Calcular factores y montos iniciales
-    const calculation = calculateFiniquitoComplete({
-      employeeId: data.employeeId,
-      hireDate: data.hireDate,
-      terminationDate: data.terminationDate,
-      fiscalDailySalary: data.fiscalDailySalary,
-      integratedDailySalary: data.integratedDailySalary,
-      borderZone: data.borderZone,
-      salaryFrequency: data.salaryFrequency ?? SalaryFrequency.MONTHLY, // Solo usado en Complemento
-      aguinaldoDays: data.aguinaldoDays,
-      vacationDays: data.vacationDays,
-      vacationPremiumPercentage: data.vacationPremiumPercentage,
-      complemento: data.complementoActivado && data.realHireDate && data.realDailySalary ? {
-        enabled: true,
-        realHireDate: data.realHireDate,
-        realDailySalary: data.realDailySalary,
-        complementIntegratedDailySalary: data.complementIntegratedDailySalary,
-      } : undefined,
-      liquidacion: data.liquidacionActivada ? { enabled: true } : undefined,
-      deduccionesManuales: {
-        infonavit: 0,
-        fonacot: 0,
-        otras: 0,
-        subsidio: 0,
-      },
-    });
+    // Check if step2Data already exists (duplication scenario)
+    if (step2Data && step2Data.factoresFiniquito) {
+      // DUPLICATION SCENARIO: Preserve Step 2 values by passing them as manualFactors
 
-    // Guardar factores en step2Data
-    // NOTA: diasTrabajados y septimoDia se inicializan en 0 para que el usuario los llene manualmente
-    updateStep2({
-      factoresFiniquito: {
-        ...calculation.factores.finiquito,
-        diasTrabajados: 0,
-        septimoDia: 0,
-      },
-      factoresLiquidacion: calculation.factores.liquidacion,
-      factoresComplemento: calculation.factores.complemento ? {
-        ...calculation.factores.complemento,
-        diasTrabajados: 0,
-        septimoDia: 0,
-      } : undefined,
-      factoresLiquidacionComplemento: calculation.factores.liquidacionComplemento,
-      configuracionAdicional: calculation.factores.configuracionAdicional,
-      beneficiosFiscalesPendientes: {
-        pendingVacationDays: 0,
-        pendingVacationPremium: 0,
-      },
-      beneficiosComplementoPendientes: {
-        complementPendingVacationDays: 0,
-        complementPendingVacationPremium: 0,
-      },
-    });
+      const calculation = calculateFiniquitoComplete({
+        employeeId: data.employeeId,
+        hireDate: data.hireDate,
+        terminationDate: data.terminationDate,
+        fiscalDailySalary: data.fiscalDailySalary,
+        integratedDailySalary: data.integratedDailySalary,
+        borderZone: data.borderZone,
+        salaryFrequency: data.salaryFrequency ?? SalaryFrequency.MONTHLY,
+        aguinaldoDays: data.aguinaldoDays,
+        vacationDays: data.vacationDays,
+        vacationPremiumPercentage: data.vacationPremiumPercentage,
+        complemento: data.complementoActivado && data.realHireDate && data.realDailySalary ? {
+          enabled: true,
+          realHireDate: data.realHireDate,
+          realDailySalary: data.realDailySalary,
+          complementIntegratedDailySalary: data.complementIntegratedDailySalary,
+        } : undefined,
+        liquidacion: data.liquidacionActivada ? { enabled: true } : undefined,
+        deduccionesManuales: {
+          infonavit: 0,
+          fonacot: 0,
+          otras: 0,
+          subsidio: 0,
+        },
+        // Pass existing Step 2 values as manualFactors to preserve them
+        // Only pass sections that match current toggle states to prevent inconsistencies
+        manualFactors: {
+          finiquito: step2Data.factoresFiniquito,
+          liquidacion: data.liquidacionActivada ? step2Data.factoresLiquidacion : undefined,
+          complemento: data.complementoActivado ? step2Data.factoresComplemento : undefined,
+          liquidacionComplemento: (data.liquidacionActivada && data.complementoActivado)
+            ? step2Data.factoresLiquidacionComplemento
+            : undefined,
+          configuracionAdicional: step2Data.configuracionAdicional,
+        },
+      });
 
-    // Guardar cálculo en context
-    updateLiveCalculation(calculation);
+      // Do NOT call updateStep2() - preserve existing step2Data
+      // Only update live calculation and advance
+      updateLiveCalculation(calculation);
+      goNext();
+    } else {
+      // NEW FINIQUITO SCENARIO: Auto-populate Step 2 with calculated factors
+      const calculation = calculateFiniquitoComplete({
+        employeeId: data.employeeId,
+        hireDate: data.hireDate,
+        terminationDate: data.terminationDate,
+        fiscalDailySalary: data.fiscalDailySalary,
+        integratedDailySalary: data.integratedDailySalary,
+        borderZone: data.borderZone,
+        salaryFrequency: data.salaryFrequency ?? SalaryFrequency.MONTHLY,
+        aguinaldoDays: data.aguinaldoDays,
+        vacationDays: data.vacationDays,
+        vacationPremiumPercentage: data.vacationPremiumPercentage,
+        complemento: data.complementoActivado && data.realHireDate && data.realDailySalary ? {
+          enabled: true,
+          realHireDate: data.realHireDate,
+          realDailySalary: data.realDailySalary,
+          complementIntegratedDailySalary: data.complementIntegratedDailySalary,
+        } : undefined,
+        liquidacion: data.liquidacionActivada ? { enabled: true } : undefined,
+        deduccionesManuales: {
+          infonavit: 0,
+          fonacot: 0,
+          otras: 0,
+          subsidio: 0,
+        },
+      });
 
-    // Avanzar al paso 2
-    goNext();
+      // Guardar factores en step2Data
+      // NOTA: diasTrabajados y septimoDia se inicializan en 0 para que el usuario los llene manualmente
+      updateStep2({
+        factoresFiniquito: {
+          ...calculation.factores.finiquito,
+          diasTrabajados: 0,
+          septimoDia: 0,
+        },
+        factoresLiquidacion: calculation.factores.liquidacion,
+        factoresComplemento: calculation.factores.complemento ? {
+          ...calculation.factores.complemento,
+          diasTrabajados: 0,
+          septimoDia: 0,
+        } : undefined,
+        factoresLiquidacionComplemento: calculation.factores.liquidacionComplemento,
+        configuracionAdicional: calculation.factores.configuracionAdicional,
+        beneficiosFiscalesPendientes: {
+          pendingVacationDays: 0,
+          pendingVacationPremium: 0,
+        },
+        beneficiosComplementoPendientes: {
+          complementPendingVacationDays: 0,
+          complementPendingVacationPremium: 0,
+        },
+      });
+
+      // Guardar cálculo en context
+      updateLiveCalculation(calculation);
+
+      // Avanzar al paso 2
+      goNext();
+    }
   };
 
   const onError = (errors: any) => {
