@@ -271,6 +271,9 @@ The dashboard app includes a comprehensive finiquito calculator system for Mexic
 
 **Step-to-Step Data Flow:**
 1. **Step 1 (Base Config)**: User enters employee info, dates, salaries
+   - **Custom Identifier**: Optional field (max 20 chars) to help distinguish finiquitos in list view
+     - Displayed below employee name in stacked layout on list page
+     - When duplicating: original truncated to 15 chars, "-copy" appended
    - **Vacation Days Editing**: Field is editable with smart auto-recalculation
      - When hire/termination dates change: recalculates vacation days automatically
      - When user manually edits vacation days: preserves manual value, only recalculates integration factor
@@ -343,6 +346,7 @@ The dashboard app includes a comprehensive finiquito calculator system for Mexic
   - `pendingWorkDays`
 - Total to pay: `totalAPagar`
 - Employee identification: `employeeRFC`, `employeeCURP` (both required)
+- Custom identifier: `customFiniquitoIdentifier` (optional, max 20 chars) - helps distinguish finiquitos in list view
 
 **V1 Field Names (DEPRECATED - DO NOT USE):**
 - Legacy amounts: `realWorkedDaysAmount`, `realVacationAmount`, `realVacationPremiumAmount`, `realAguinaldoAmount`
@@ -377,28 +381,79 @@ The PDF filters and displays only concepts with non-zero amounts, supporting:
 - Pending concepts (vacaciones pendientes, prima vacacional pendiente)
 - Gratification (if present)
 
+#### Finiquito Duplication
+
+The system supports duplicating existing finiquitos to streamline the creation of similar records. This feature is accessible from the finiquitos list view via the Actions dropdown menu.
+
+**Duplication Workflow:**
+1. User clicks "Duplicar" button in the Actions dropdown for any finiquito in the list
+2. System fetches the complete finiquito data from the database
+3. All data is transformed from database format to wizard step formats (Step 1, Step 2, Step 3)
+4. Wizard opens with all fields pre-populated from the selected finiquito
+5. User can modify any field (including the custom identifier) before saving
+6. Clicking "Guardar Finiquito" creates a new database record (original remains unchanged)
+
+**Custom Identifier Handling:**
+- The `customFiniquitoIdentifier` field (optional, max 20 chars) helps users distinguish finiquitos in the list view
+- Displayed below the employee name in stacked layout (matching date/time pattern)
+- When duplicating WITH an identifier: original is truncated to 15 chars, "-copy" is appended (total max 20 chars)
+- When duplicating WITHOUT an identifier: field remains empty (user can optionally add one)
+- User can manually edit the identifier in Step 1 before saving the duplicated finiquito
+
+**Technical Implementation:**
+
+**Data Mapping Layer** (`/apps/dashboard/lib/finiquitos/map-finiquito-to-wizard.ts`):
+- `mapFiniquitoToStep1()`: Maps all 29 Step 1 fields including employee info, dates, salaries, and toggles
+- `mapFiniquitoToStep2()`: Maps all 22 factor groups (finiquito, liquidación, complemento, gratification, pending benefits)
+- `mapFiniquitoToStep3()`: Maps all 3 manual deductions (Infonavit, Fonacot, Otras)
+- Handles Prisma Decimal to number conversions throughout
+- Implements custom identifier truncation logic
+
+**Server Action** (`/apps/dashboard/actions/finiquitos/duplicate-finiquito.ts`):
+- Uses `authOrganizationActionClient` for proper authorization
+- Fetches complete finiquito via `getFiniquitoById()`
+- Validates finiquito exists and enforces version 2 requirement (v1 finiquitos cannot be duplicated)
+- Transforms database model to wizard format using mapping functions
+- Serializes Decimals and restores Date objects for client transmission
+- Returns structured data ready for wizard consumption
+
+**UI Integration:**
+- Actions dropdown in list view includes "Duplicar" menu item
+- `FiniquitosContent` component handles duplication via `handleDuplicateClick()` handler
+- Success/error states displayed via toast notifications
+- Wizard automatically opens with pre-populated data from context updates
+
+**Version Requirement:**
+Only version 2 finiquitos can be duplicated. This avoids complexity with legacy v1 field mappings and ensures all duplicated finiquitos use current field structure.
+
 #### File Reference
 
 **Key Files:**
 - Entry point: `/apps/dashboard/lib/finiquitos/calculate-finiquito-complete.ts`
-- Create action: `/apps/dashboard/actions/finiquitos/create-finiquito.ts` (includes manualFactors parameter)
-- Field mapping: `/apps/dashboard/actions/finiquitos/helpers/map-calculation.ts`
+- Create action: `/apps/dashboard/actions/finiquitos/create-finiquito.ts` (includes manualFactors parameter, saves customFiniquitoIdentifier)
+- Duplicate action: `/apps/dashboard/actions/finiquitos/duplicate-finiquito.ts` (fetches and transforms finiquito for duplication)
+- Field mapping: `/apps/dashboard/actions/finiquitos/helpers/map-calculation.ts` (calculation to Prisma)
+- Wizard mapping: `/apps/dashboard/lib/finiquitos/map-finiquito-to-wizard.ts` (Prisma to wizard format for duplication)
 - PDF template: `/apps/dashboard/lib/finiquitos/pdf/finiquito-pdf-template.tsx`
+- List components: `/apps/dashboard/components/organizations/slug/finiquitos/`
+  - `finiquitos-list.tsx` (displays custom identifier, includes "Duplicar" action)
+  - `finiquitos-content.tsx` (handles duplication click, manages wizard state)
 - Detail sections: `/apps/dashboard/components/organizations/slug/finiquitos/detail/`
   - `general-info-section.tsx`
   - `finiquito-section.tsx` (displays pending concepts)
   - `complemento-section.tsx` (displays pending concepts)
-  - `liquidacion-complemento-section.tsx` (NEW - displays liquidación complemento)
+  - `liquidacion-complemento-section.tsx` (displays liquidación complemento)
   - `total-section.tsx` (includes liquidación complemento in totals)
 - Live calc hook: `/apps/dashboard/components/organizations/slug/finiquitos/create/hooks/use-live-calculation.ts`
 - Wizard context: `/apps/dashboard/components/organizations/slug/finiquitos/create/wizard-context.tsx`
-- Step 1: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step1-base-config.tsx` (vacation days editing)
+- Step 1: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step1-base-config.tsx` (vacation days editing, custom identifier field)
 - Step 2: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step2-factors.tsx` (label corrections)
 - Step 4: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step4-review/finiquito-breakdown.tsx`
 - Live panel: `/apps/dashboard/components/organizations/slug/finiquitos/shared/live-calculation-panel.tsx`
+- Data fetching: `/apps/dashboard/data/finiquitos/get-finiquitos.ts` (includes customFiniquitoIdentifier in query)
 
 **Schemas:**
-- Step 1: `/apps/dashboard/lib/finiquitos/schemas/step1-base-config-schema.ts`
+- Step 1: `/apps/dashboard/lib/finiquitos/schemas/step1-base-config-schema.ts` (includes customFiniquitoIdentifier validation)
 - Step 2: `/apps/dashboard/lib/finiquitos/schemas/step2-factors-schema.ts`
 - Step 3: `/apps/dashboard/lib/finiquitos/schemas/step3-deductions-schema.ts`
 - Types: `/apps/dashboard/lib/finiquitos/types/calculate-finiquito-types.ts`
@@ -417,3 +472,7 @@ The PDF filters and displays only concepts with non-zero amounts, supporting:
 - **PDF overflowing to 3rd page**: The template has dynamic margin/font adjustments (>4 lines reduces margins, >=10 lines reduces font to 10pt). If still overflowing, check that `conceptLines` calculation includes all displayed concepts.
 - **Missing liquidación complemento in totals**: Ensure `total-section.tsx` includes `totalLiquidacionComplemento` in final sum calculation.
 - **Vacation days not respecting manual edits**: Step 1 uses refs to track manual edits. Check that `vacationDaysManuallyEdited` ref is properly set when user changes value, and that date changes reset the flag.
+- **Duplication fails with version error**: Only version 2 finiquitos can be duplicated. Check `finiquito.version === 2` in the database. V1 finiquitos must be manually recreated.
+- **Custom identifier not showing in list**: Ensure `getFiniquitos()` includes `customFiniquitoIdentifier` in the select clause and that the list component renders it conditionally.
+- **Duplicated identifier exceeds 20 chars**: The mapping function truncates to 15 chars before appending "-copy". If still exceeding limit, check truncation logic in `mapFiniquitoToStep1()`.
+- **Wizard not opening with duplicated data**: Verify that `handleDuplicateClick()` in `FiniquitosContent` properly updates all wizard context (step1, step2, step3, liveCalculation) before setting `isCreating=true`.

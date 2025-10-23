@@ -22,6 +22,18 @@ export const duplicateFiniquito = authOrganizationActionClient
       // Fetch full finiquito data
       console.log('[duplicateFiniquito] Fetching finiquito...');
       const finiquito = await getFiniquitoById(parsedInput.finiquitoId);
+
+      if (!finiquito) {
+        console.error('[duplicateFiniquito] Finiquito not found');
+        throw new Error('Finiquito no encontrado');
+      }
+
+      // Version check - only v2 finiquitos can be duplicated
+      if (finiquito.version !== 2) {
+        console.error('[duplicateFiniquito] Invalid version:', finiquito.version);
+        throw new Error('Solo se pueden duplicar finiquitos versión 2');
+      }
+
       console.log('[duplicateFiniquito] Finiquito fetched successfully');
 
       // Transform to wizard format
@@ -52,6 +64,12 @@ export const duplicateFiniquito = authOrganizationActionClient
       return serialized;
     } catch (error) {
       console.error('[duplicateFiniquito] Error:', error);
-      throw error;
+
+      // Provide user-friendly error messages
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+
+      throw new Error('Error al duplicar el finiquito. Por favor, intente nuevamente.');
     }
   });
