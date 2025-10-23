@@ -251,9 +251,8 @@ export function Step1BaseConfig() {
     updateStep1(data);
 
     // Check if step2Data already exists (duplication scenario)
-    if (step2Data) {
+    if (step2Data && step2Data.factoresFiniquito) {
       // DUPLICATION SCENARIO: Preserve Step 2 values by passing them as manualFactors
-      console.log('🔄 Duplication detected - preserving Step 2 values');
 
       const calculation = calculateFiniquitoComplete({
         employeeId: data.employeeId,
@@ -280,11 +279,14 @@ export function Step1BaseConfig() {
           subsidio: 0,
         },
         // Pass existing Step 2 values as manualFactors to preserve them
+        // Only pass sections that match current toggle states to prevent inconsistencies
         manualFactors: {
           finiquito: step2Data.factoresFiniquito,
-          liquidacion: step2Data.factoresLiquidacion,
-          complemento: step2Data.factoresComplemento,
-          liquidacionComplemento: step2Data.factoresLiquidacionComplemento,
+          liquidacion: data.liquidacionActivada ? step2Data.factoresLiquidacion : undefined,
+          complemento: data.complementoActivado ? step2Data.factoresComplemento : undefined,
+          liquidacionComplemento: (data.liquidacionActivada && data.complementoActivado)
+            ? step2Data.factoresLiquidacionComplemento
+            : undefined,
           configuracionAdicional: step2Data.configuracionAdicional,
         },
       });
@@ -295,8 +297,6 @@ export function Step1BaseConfig() {
       goNext();
     } else {
       // NEW FINIQUITO SCENARIO: Auto-populate Step 2 with calculated factors
-      console.log('🆕 New finiquito - auto-populating Step 2');
-
       const calculation = calculateFiniquitoComplete({
         employeeId: data.employeeId,
         hireDate: data.hireDate,
