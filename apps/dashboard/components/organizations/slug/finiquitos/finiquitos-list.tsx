@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { MoreHorizontal, Download, Trash2, Loader2, Search, ArrowUp, ArrowDown } from 'lucide-react';
+import { MoreHorizontal, Download, Trash2, Loader2, Search, ArrowUp, ArrowDown, Copy } from 'lucide-react';
 import { useDebounce } from '@workspace/ui/hooks/use-debounce';
 import { type Finiquito, type User } from '@workspace/database';
 import { useAction } from 'next-safe-action/hooks';
@@ -52,6 +52,7 @@ type FiniquitoListItem = Pick<
   Finiquito,
   | 'id'
   | 'employeeName'
+  | 'customFiniquitoIdentifier'
   | 'empresaName'
   | 'clientName'
   | 'hireDate'
@@ -70,9 +71,10 @@ type FiniquitoListItem = Pick<
 
 interface FiniquitosListProps {
   finiquitos: FiniquitoListItem[];
+  onDuplicateClick?: (finiquitoId: string) => void;
 }
 
-export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
+export function FiniquitosList({ finiquitos, onDuplicateClick }: FiniquitosListProps) {
   const router = useRouter();
   const params = useParams();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -351,8 +353,15 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="font-semibold text-base">
-                        {finiquito.employeeName}
+                      <TableCell className="font-semibold">
+                        <div className="flex flex-col">
+                          <span className="text-base">{finiquito.employeeName}</span>
+                          {finiquito.customFiniquitoIdentifier && (
+                            <span className="text-xs text-muted-foreground">
+                              {finiquito.customFiniquitoIdentifier}
+                            </span>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell className="font-bold text-lg text-primary">
                         ${numeral(Number(finiquito.totalAPagar ?? finiquito.totalToPay)).format('0,0.00')}
@@ -395,6 +404,17 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
                               <Download className="mr-2 h-4 w-4" />
                               Descargar PDF
                             </DropdownMenuItem>
+                            {onDuplicateClick && (
+                              <DropdownMenuItem
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onDuplicateClick(finiquito.id);
+                                }}
+                              >
+                                <Copy className="mr-2 h-4 w-4" />
+                                Duplicar
+                              </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem
                               onClick={(e) => {
                                 e.stopPropagation();

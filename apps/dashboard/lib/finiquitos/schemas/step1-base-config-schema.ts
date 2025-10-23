@@ -25,6 +25,9 @@ export const step1BaseConfigSchema = z.object({
     .min(1, 'La CURP del empleado es requerida')
     .regex(/^[A-Z]{4}\d{6}[HM][A-Z]{5}[0-9A-Z]\d$/, 'CURP inválida. Debe tener 18 caracteres'),
   employeeId: z.string().optional(), // Si se selecciona desde lista de empleados
+  customFiniquitoIdentifier: z.string()
+    .max(20, 'El identificador no puede exceder 20 caracteres')
+    .optional(),
 
   // Datos de la Empresa
   empresaName: z.string().min(1, 'El nombre de la empresa es requerido'),

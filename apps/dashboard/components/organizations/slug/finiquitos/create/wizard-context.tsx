@@ -73,14 +73,20 @@ const WizardContext = createContext<WizardState | null>(null);
 
 type WizardProviderProps = {
   children: ReactNode;
+  initialData?: {
+    step1?: Step1BaseConfig;
+    step2?: Step2Factors;
+    step3?: Step3Deductions;
+    liveCalculation?: CalculateFiniquitoOutput;
+  };
 };
 
-export function WizardProvider({ children }: WizardProviderProps) {
+export function WizardProvider({ children, initialData }: WizardProviderProps) {
   const [currentStep, setCurrentStep] = useState<WizardStep>(1);
-  const [step1Data, setStep1Data] = useState<Step1BaseConfig | null>(null);
-  const [step2Data, setStep2Data] = useState<Step2Factors | null>(null);
-  const [step3Data, setStep3Data] = useState<Step3Deductions | null>(null);
-  const [liveCalculation, setLiveCalculation] = useState<CalculateFiniquitoOutput | null>(null);
+  const [step1Data, setStep1Data] = useState<Step1BaseConfig | null>(initialData?.step1 ?? null);
+  const [step2Data, setStep2Data] = useState<Step2Factors | null>(initialData?.step2 ?? null);
+  const [step3Data, setStep3Data] = useState<Step3Deductions | null>(initialData?.step3 ?? null);
+  const [liveCalculation, setLiveCalculation] = useState<CalculateFiniquitoOutput | null>(initialData?.liveCalculation ?? null);
 
   const goToStep = (step: WizardStep) => {
     setCurrentStep(step);
