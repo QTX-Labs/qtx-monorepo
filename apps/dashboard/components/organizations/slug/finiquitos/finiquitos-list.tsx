@@ -319,97 +319,101 @@ export function FiniquitosList({ finiquitos }: FiniquitosListProps) {
 
         {/* Table Section */}
         <div className="px-4 sm:px-6 lg:px-8">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[180px]">Fecha de Creación</TableHead>
-                <TableHead className="w-[200px]">Empleado</TableHead>
-                <TableHead className="w-[140px]">Total a Pagar</TableHead>
-                <TableHead>Días de Gratificación</TableHead>
-                <TableHead>Empresa</TableHead>
-                <TableHead>Cliente</TableHead>
-                <TableHead>Fecha de Baja</TableHead>
-                <TableHead className="text-right">Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredAndSortedFiniquitos.map((finiquito) => (
-                <TableRow
-                  key={finiquito.id}
-                  className="cursor-pointer hover:bg-muted/50"
-                  onClick={() => handleRowClick(finiquito.id)}
-                >
-                  <TableCell className="font-semibold">
-                    <div className="flex flex-col">
-                      <span className="text-sm">
-                        {format(new Date(finiquito.createdAt), 'yyyy-MM-dd')}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {format(new Date(finiquito.createdAt), 'hh:mm a')}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-semibold text-base">
-                    {finiquito.employeeName}
-                  </TableCell>
-                  <TableCell className="font-bold text-lg text-primary">
-                    ${numeral(Number(finiquito.totalAPagar ?? finiquito.totalToPay)).format('0,0.00')}
-                  </TableCell>
-                  <TableCell className="text-sm text-center">
-                    {finiquito.gratificationDays
-                      ? numeral(Number(finiquito.gratificationDays)).format('0,0.00')
-                      : '-'
-                    }
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">{finiquito.empresaName || '-'}</TableCell>
-                  <TableCell className="text-sm text-muted-foreground">{finiquito.clientName || '-'}</TableCell>
-                  <TableCell className="text-sm">
-                    {format(toLocalDate(finiquito.terminationDate), 'yyyy-MM-dd')}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          disabled={isLoading}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {isLoading ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <MoreHorizontal className="h-4 w-4" />
-                          )}
-                          <span className="sr-only">Abrir menú</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDownloadPDF(finiquito.id);
-                          }}
-                        >
-                          <Download className="mr-2 h-4 w-4" />
-                          Descargar PDF
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteClick(finiquito.id);
-                          }}
-                          className="text-destructive"
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Eliminar
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <div className="overflow-x-auto -mx-4 sm:mx-0">
+            <div className="inline-block align-middle">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[180px]">Fecha de Creación</TableHead>
+                    <TableHead className="w-[200px]">Empleado</TableHead>
+                    <TableHead className="w-[140px]">Total a Pagar</TableHead>
+                    <TableHead>Días de Gratificación</TableHead>
+                    <TableHead>Empresa</TableHead>
+                    <TableHead>Cliente</TableHead>
+                    <TableHead>Fecha de Baja</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredAndSortedFiniquitos.map((finiquito) => (
+                    <TableRow
+                      key={finiquito.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleRowClick(finiquito.id)}
+                    >
+                      <TableCell className="font-semibold">
+                        <div className="flex flex-col">
+                          <span className="text-sm">
+                            {format(new Date(finiquito.createdAt), 'yyyy-MM-dd')}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {format(new Date(finiquito.createdAt), 'hh:mm a')}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-semibold text-base">
+                        {finiquito.employeeName}
+                      </TableCell>
+                      <TableCell className="font-bold text-lg text-primary">
+                        ${numeral(Number(finiquito.totalAPagar ?? finiquito.totalToPay)).format('0,0.00')}
+                      </TableCell>
+                      <TableCell className="text-sm text-center">
+                        {finiquito.gratificationDays
+                          ? numeral(Number(finiquito.gratificationDays)).format('0,0.00')
+                          : '-'
+                        }
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{finiquito.empresaName || '-'}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{finiquito.clientName || '-'}</TableCell>
+                      <TableCell className="text-sm">
+                        {format(toLocalDate(finiquito.terminationDate), 'yyyy-MM-dd')}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              disabled={isLoading}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {isLoading ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <MoreHorizontal className="h-4 w-4" />
+                              )}
+                              <span className="sr-only">Abrir menú</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDownloadPDF(finiquito.id);
+                              }}
+                            >
+                              <Download className="mr-2 h-4 w-4" />
+                              Descargar PDF
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteClick(finiquito.id);
+                              }}
+                              className="text-destructive"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Eliminar
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
         </div>
       </div>
 
