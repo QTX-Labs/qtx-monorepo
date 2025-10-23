@@ -17,7 +17,7 @@ export function MostVisitedContactsSkeletonCard(
   return (
     <Card {...props}>
       <CardHeader className="gap-0">
-        <CardTitle className="text-sm">Most visited contacts</CardTitle>
+        <CardTitle className="text-sm">Contactos más visitados</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-1">

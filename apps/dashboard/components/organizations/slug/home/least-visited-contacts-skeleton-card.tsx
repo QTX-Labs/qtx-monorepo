@@ -17,7 +17,7 @@ export function LeastVisitedContactsSkeletonCard(
   return (
     <Card {...props}>
       <CardHeader className="gap-0">
-        <CardTitle className="text-sm">Least visited contacts</CardTitle>
+        <CardTitle className="text-sm">Contactos menos visitados</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-1">

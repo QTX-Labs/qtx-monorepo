@@ -64,8 +64,8 @@ export const FeedbackModal = NiceModal.create<FeedbackModalProps>(() => {
       message: ''
     }
   });
-  const title = 'Feedback';
-  const description = 'Send your feedback by filling out the form below.';
+  const title = 'Comentarios';
+  const description = 'Envía tus comentarios completando el formulario a continuación.';
   const canSubmit =
     !methods.formState.isSubmitting &&
     (!methods.formState.isSubmitted || methods.formState.isDirty);
@@ -75,10 +75,10 @@ export const FeedbackModal = NiceModal.create<FeedbackModalProps>(() => {
     }
     const result = await sendFeedback(values);
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Feedback sent');
+      toast.success('Comentarios enviados');
       modal.handleClose();
     } else {
-      toast.error("Couldn't send feedback");
+      toast.error("No se pudieron enviar los comentarios");
     }
   };
   const renderForm = (
@@ -91,7 +91,7 @@ export const FeedbackModal = NiceModal.create<FeedbackModalProps>(() => {
         name="category"
         render={({ field }) => (
           <FormItem className="flex w-full flex-col">
-            <FormLabel required>Topic</FormLabel>
+            <FormLabel required>Tema</FormLabel>
             <FormControl>
               <Select
                 required
@@ -123,7 +123,7 @@ export const FeedbackModal = NiceModal.create<FeedbackModalProps>(() => {
         name="message"
         render={({ field }) => (
           <FormItem className="flex flex-col">
-            <FormLabel required>Message</FormLabel>
+            <FormLabel required>Mensaje</FormLabel>
             <FormControl>
               <Textarea
                 required
@@ -146,7 +146,7 @@ export const FeedbackModal = NiceModal.create<FeedbackModalProps>(() => {
         variant="outline"
         onClick={modal.handleClose}
       >
-        Cancel
+        Cancelar
       </Button>
       <Button
         type="button"
@@ -155,7 +155,7 @@ export const FeedbackModal = NiceModal.create<FeedbackModalProps>(() => {
         loading={methods.formState.isSubmitting}
         onClick={methods.handleSubmit(onSubmit)}
       >
-        Send
+        Enviar
       </Button>
     </>
   );

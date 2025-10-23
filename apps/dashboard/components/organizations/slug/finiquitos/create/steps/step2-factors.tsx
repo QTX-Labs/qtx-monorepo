@@ -23,7 +23,6 @@ import {
 
 import { step2FactorsSchema, type Step2Factors as Step2FactorsType } from '~/lib/finiquitos/schemas/step2-factors-schema';
 import { gratificationDaysToPesos, gratificationPesosToDays } from '~/lib/finiquitos/utils';
-import { useDebounce } from '~/hooks/use-debounce';
 import { useWizard } from '../wizard-context';
 import { WizardNavigation } from '../wizard-navigation';
 import { LiveCalculationPanel } from '../../shared/live-calculation-panel';
@@ -93,17 +92,13 @@ export function Step2Factors() {
   const gratificacionDias = form.watch('configuracionAdicional.gratificacionDias');
   const gratificacionPesos = form.watch('configuracionAdicional.gratificacionPesos');
 
-  // Aplicar debounce para evitar loops infinitos durante escritura
-  const debouncedGratificacionDias = useDebounce(gratificacionDias, 300);
-  const debouncedGratificacionPesos = useDebounce(gratificacionPesos, 300);
-
   // Determinar el salario a usar (real si hay complemento, fiscal si no)
   const dailySalary = step1Data?.realDailySalary || step1Data?.fiscalDailySalary || 0;
 
-  // AUTO-CONVERSIÓN: Días → Pesos (con debounce)
+  // AUTO-CONVERSIÓN: Días → Pesos
   useEffect(() => {
-    if (debouncedGratificacionDias !== undefined && dailySalary > 0) {
-      const calculatedPesos = gratificationDaysToPesos(debouncedGratificacionDias, dailySalary);
+    if (gratificacionDias !== undefined && dailySalary > 0) {
+      const calculatedPesos = gratificationDaysToPesos(gratificacionDias, dailySalary);
       const currentPesos = form.getValues('configuracionAdicional.gratificacionPesos');
 
       // Solo actualizar si hay diferencia significativa (evitar loops)
@@ -111,12 +106,12 @@ export function Step2Factors() {
         form.setValue('configuracionAdicional.gratificacionPesos', calculatedPesos, { shouldValidate: false });
       }
     }
-  }, [debouncedGratificacionDias, dailySalary, form]);
+  }, [gratificacionDias, dailySalary, form]);
 
-  // AUTO-CONVERSIÓN: Pesos → Días (con debounce)
+  // AUTO-CONVERSIÓN: Pesos → Días
   useEffect(() => {
-    if (debouncedGratificacionPesos !== undefined && dailySalary > 0) {
-      const calculatedDias = gratificationPesosToDays(debouncedGratificacionPesos, dailySalary);
+    if (gratificacionPesos !== undefined && dailySalary > 0) {
+      const calculatedDias = gratificationPesosToDays(gratificacionPesos, dailySalary);
       const currentDias = form.getValues('configuracionAdicional.gratificacionDias');
 
       // Solo actualizar si hay diferencia significativa (evitar loops)
@@ -124,7 +119,7 @@ export function Step2Factors() {
         form.setValue('configuracionAdicional.gratificacionDias', calculatedDias, { shouldValidate: false });
       }
     }
-  }, [debouncedGratificacionPesos, dailySalary, form]);
+  }, [gratificacionPesos, dailySalary, form]);
 
   const onSubmit = (data: Step2FactorsType) => {
     updateStep2(data);
@@ -549,7 +544,7 @@ export function Step2Factors() {
                               <FormControl>
                                 <Input
                                   type="number"
-                                  step="0.01"
+                                  step="1"
                                   {...field}
                                   onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                                 />
@@ -597,16 +592,16 @@ export function Step2Factors() {
                           name="beneficiosFiscalesPendientes.pendingVacationPremium"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Prima Vacacional Pendiente (Días)</FormLabel>
+                              <FormLabel>Prima Vacacional Pendiente</FormLabel>
                               <FormControl>
                                 <Input
                                   type="number"
-                                  step="0.0001"
+                                  step="1"
                                   {...field}
                                   onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                                 />
                               </FormControl>
-                              <FormDescription>Días de prima vacacional pendiente (se aplicará el % configurado)</FormDescription>
+                              <FormDescription>Monto en pesos de prima vacacional pendiente</FormDescription>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -650,16 +645,16 @@ export function Step2Factors() {
                             name="beneficiosComplementoPendientes.complementPendingVacationPremium"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Prima Vacacional Pendiente de Complemento (Días)</FormLabel>
+                                <FormLabel>Prima Vacacional Pendiente de Complemento</FormLabel>
                                 <FormControl>
                                   <Input
                                     type="number"
-                                    step="0.0001"
+                                    step="1"
                                     {...field}
                                     onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                                   />
                                 </FormControl>
-                                <FormDescription>Días de prima vacacional pendiente del complemento (se aplicará el % configurado)</FormDescription>
+                                <FormDescription>Monto en pesos de prima vacacional pendiente del complemento</FormDescription>
                                 <FormMessage />
                               </FormItem>
                             )}

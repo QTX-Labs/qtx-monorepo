@@ -40,9 +40,9 @@ export function ContactTagsSection({
   const onSubmit: SubmitHandler<UpdateContactTagsSchema> = async (values) => {
     const result = await updateContactTags(values);
     if (!result?.serverError && !result?.validationErrors) {
-      toast.success('Tags updated');
+      toast.success('Etiquetas actualizadas');
     } else {
-      toast.error("Couldn't update tags");
+      toast.error("No se pudieron actualizar las etiquetas");
     }
   };
   return (
@@ -50,7 +50,7 @@ export function ContactTagsSection({
       <section {...other}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <div className="flex h-14 flex-row items-center p-6">
-            <h3 className="text-sm font-semibold tracking-tight">Tags</h3>
+            <h3 className="text-sm font-semibold tracking-tight">Etiquetas</h3>
           </div>
           <div className="p-6 pt-0">
             <FormField
@@ -62,7 +62,7 @@ export function ContactTagsSection({
                     <TagInput
                       {...field}
                       allowDuplicates={false}
-                      placeholder="Type your tag and press enter"
+                      placeholder="Escribe tu etiqueta y presiona enter"
                       tags={field.value}
                       onTagsChange={(values) => {
                         field.onChange(values);

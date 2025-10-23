@@ -22,7 +22,7 @@ enum Preset {
   ThreeDays = '3d',
   SevenDays = '7d',
   ThirtyDays = '30d',
-  Custom = 'Custom'
+  Custom = 'Personalizado'
 }
 
 const derivePresetFromDateRange = (range?: DateRange): string => {

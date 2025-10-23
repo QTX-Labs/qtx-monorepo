@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { BorderZone, SalaryFrequency } from '@workspace/database';
@@ -27,7 +27,7 @@ import { Separator } from '@workspace/ui/components/separator';
 
 import { step1BaseConfigSchema, type Step1BaseConfig as Step1BaseConfigType } from '~/lib/finiquitos/schemas/step1-base-config-schema';
 import { calculateFiniquitoComplete } from '~/lib/finiquitos/calculate-finiquito-complete';
-import { getEmployeeVacationDays, getEmployeeIntegrationFactor, applyUMALimit } from '~/lib/finiquitos/utils';
+import { getEmployeeVacationDays, getEmployeeIntegrationFactor } from '~/lib/finiquitos/utils';
 import { useWizard } from '../wizard-context';
 
 export function Step1BaseConfig() {
@@ -70,9 +70,7 @@ export function Step1BaseConfig() {
   const borderZone = form.watch('borderZone');
   const hireDate = form.watch('hireDate');
   const terminationDate = form.watch('terminationDate');
-  const fiscalDailySalary = form.watch('fiscalDailySalary');
   const aguinaldoDays = form.watch('aguinaldoDays');
-  const vacationDays = form.watch('vacationDays');
   const vacationPremiumPercentage = form.watch('vacationPremiumPercentage');
   const complementoActivado = form.watch('complementoActivado');
   const realSalary = form.watch('realSalary');
@@ -151,59 +149,32 @@ export function Step1BaseConfig() {
 
   // AUTO-CÁLCULO 2: Días de Vacaciones según Antigüedad (LFT 2023)
   // Usa getEmployeeVacationDays(hireDate, terminationDate)
-  // Solo recalcula si NO fue editado manualmente
   useEffect(() => {
     if (hireDate && terminationDate) {
       const calculatedVacationDays = getEmployeeVacationDays(hireDate, terminationDate);
-
-      // Si el usuario no ha editado manualmente, actualizar automáticamente
-      if (!vacationDaysManuallyEdited.current) {
-        form.setValue('vacationDays', calculatedVacationDays);
-        lastCalculatedVacationDays.current = calculatedVacationDays;
-      } else {
-        // Si las fechas cambiaron después de una edición manual, resetear el flag
-        // para permitir auto-cálculo en el siguiente cambio de fechas
-        vacationDaysManuallyEdited.current = false;
-        form.setValue('vacationDays', calculatedVacationDays);
-        lastCalculatedVacationDays.current = calculatedVacationDays;
-      }
+      form.setValue('vacationDays', calculatedVacationDays);
     }
   }, [hireDate, terminationDate, form]);
 
-  // Detectar edición manual de días de vacaciones
-  useEffect(() => {
-    if (vacationDays !== undefined && lastCalculatedVacationDays.current !== null) {
-      // Si el valor actual difiere del último calculado, fue editado manualmente
-      if (vacationDays !== lastCalculatedVacationDays.current) {
-        vacationDaysManuallyEdited.current = true;
-      }
-    }
-  }, [vacationDays]);
-
   // AUTO-CÁLCULO 3: Salario Diario Integrado y Factor de Integración
-  // SDI = Salario Fiscal × Factor de Integración (topado a 25 UMAs)
+  // SDI = Salario Fiscal × Factor de Integración
   // Factor de Integración considera: días aguinaldo, días vacaciones, prima vacacional
-  // IMPORTANTE: Usa vacationDays del formulario (puede ser editado manualmente)
+  const fiscalDailySalary = form.watch('fiscalDailySalary');
+
   useEffect(() => {
-    if (fiscalDailySalary && vacationDays !== undefined) {
-      // Calcular factor de integración manualmente usando vacationDays del formulario
-      // Fórmula: FI = (D_anio + D_ag + (D_vac * (PV/100))) / D_anio
-      const D_anio = 365;
-      const D_ag = aguinaldoDays;
-      const D_vac = vacationDays;
-      const PV = vacationPremiumPercentage;
+    if (hireDate && terminationDate && fiscalDailySalary && fiscalDailySalary > 0) {
+      const integrationFactor = getEmployeeIntegrationFactor(hireDate, {
+        terminationDate,
+        aguinaldo: aguinaldoDays,
+        vacationBonus: vacationPremiumPercentage,
+      });
 
-      const integrationFactor = parseFloat(
-        ((D_anio + D_ag + (D_vac * (PV / 100))) / D_anio).toFixed(4)
-      );
-
-      const calculatedSDI = fiscalDailySalary * integrationFactor;
-      const integratedSalary = parseFloat(applyUMALimit(calculatedSDI).toFixed(2));
+      const integratedSalary = parseFloat((fiscalDailySalary * integrationFactor).toFixed(2));
 
       form.setValue('integrationFactor', integrationFactor);
       form.setValue('integratedDailySalary', integratedSalary);
     }
-  }, [fiscalDailySalary, aguinaldoDays, vacationDays, vacationPremiumPercentage, form]);
+  }, [hireDate, terminationDate, aguinaldoDays, vacationPremiumPercentage, fiscalDailySalary, form]);
 
   // AUTO-COMPLETADO: Fecha de Ingreso Real cuando se activa Complemento
   // Si el complemento se activa y la fecha real está vacía, usar la fecha fiscal como default
@@ -247,38 +218,24 @@ export function Step1BaseConfig() {
   }, [complementoActivado, realSalary, salaryFrequency, form]);
 
   // AUTO-CÁLCULO 4: Salario Diario Integrado y Factor de Integración de Complemento
-  // SDI Complemento = Salario Real × Factor de Integración Complemento (topado a 25 UMAs)
+  // SDI Complemento = Salario Real × Factor de Integración Complemento
   // Factor de Integración considera: días aguinaldo, días vacaciones, prima vacacional
-  // IMPORTANTE: Usa vacationDays del formulario (puede ser editado manualmente)
   useEffect(() => {
-    if (complementoActivado && realDailySalary && vacationDays !== undefined) {
-      // Calcular factor de integración manualmente usando vacationDays del formulario
-      // Fórmula: FI = (D_anio + D_ag + (D_vac * (PV/100))) / D_anio
-      const D_anio = 365;
-      const D_ag = aguinaldoDays;
-      const D_vac = vacationDays;
-      const PV = vacationPremiumPercentage;
+    if (complementoActivado && realHireDate && terminationDate && realDailySalary) {
+      const complementIntegrationFactor = getEmployeeIntegrationFactor(realHireDate, {
+        terminationDate,
+        aguinaldo: aguinaldoDays,
+        vacationBonus: vacationPremiumPercentage,
+      });
 
-      const complementIntegrationFactor = parseFloat(
-        ((D_anio + D_ag + (D_vac * (PV / 100))) / D_anio).toFixed(4)
-      );
-
-      const calculatedComplementSDI = realDailySalary * complementIntegrationFactor;
-      const complementIntegratedSalary = parseFloat(applyUMALimit(calculatedComplementSDI).toFixed(2));
+      const complementIntegratedSalary = parseFloat((realDailySalary * complementIntegrationFactor).toFixed(2));
 
       form.setValue('complementIntegrationFactor', complementIntegrationFactor);
       form.setValue('complementIntegratedDailySalary', complementIntegratedSalary);
     }
-  }, [complementoActivado, realDailySalary, aguinaldoDays, vacationDays, vacationPremiumPercentage, form]);
+  }, [complementoActivado, realHireDate, terminationDate, realDailySalary, aguinaldoDays, vacationPremiumPercentage, form]);
 
   const onSubmit = (data: Step1BaseConfigType) => {
-    console.log('✅ Step 1 Form Validation PASSED');
-    console.log('📋 Step 1 Data:', data);
-    console.log('🔍 Complemento Activado:', data.complementoActivado);
-    console.log('🔍 Real Salary:', data.realSalary);
-    console.log('🔍 Real Daily Salary:', data.realDailySalary);
-    console.log('🔍 Real Hire Date:', data.realHireDate);
-
     // Guardar datos del paso 1
     updateStep1(data);
 
@@ -342,19 +299,9 @@ export function Step1BaseConfig() {
     goNext();
   };
 
-  const onError = (errors: any) => {
-    console.error('❌ Step 1 Form Validation FAILED');
-    console.error('🔴 Validation Errors:', errors);
-    console.log('📋 Current Form Values:', form.getValues());
-    console.log('🔍 Complemento Activado:', form.getValues('complementoActivado'));
-    console.log('🔍 Real Salary:', form.getValues('realSalary'));
-    console.log('🔍 Real Daily Salary:', form.getValues('realDailySalary'));
-    console.log('🔍 Real Hire Date:', form.getValues('realHireDate'));
-  };
-
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit, onError)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         {/* Datos Básicos */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Datos Básicos</h3>
@@ -530,7 +477,7 @@ export function Step1BaseConfig() {
               name="fiscalDailySalary"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Salario Diario Fiscal</FormLabel>
+                  <FormLabel>Salario Diario Fiscal *</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -540,7 +487,7 @@ export function Step1BaseConfig() {
                     />
                   </FormControl>
                   <FormDescription>
-                    Mínimo según zona: ${borderZone === BorderZone.FRONTERIZA ? '419.88' : '278.80'}
+                    Sugerido según zona: {borderZone === BorderZone.FRONTERIZA ? '419.88' : '278.80'}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -634,12 +581,14 @@ export function Step1BaseConfig() {
                     <Input
                       type="number"
                       step="1"
+                      disabled
+                      className="bg-muted"
                       {...field}
                       onChange={(e) => field.onChange(parseInt(e.target.value) || 12)}
                     />
                   </FormControl>
                   <FormDescription>
-                    Calculado según antigüedad (editable)
+                    Auto-calculado según antigüedad
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -774,7 +723,7 @@ export function Step1BaseConfig() {
                     <FormControl>
                       <Input
                         type="number"
-                        step="0.01"
+                        step="1"
                         {...field}
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                       />
