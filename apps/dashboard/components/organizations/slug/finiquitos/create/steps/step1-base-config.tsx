@@ -40,6 +40,7 @@ export function Step1BaseConfig() {
       employeePosition: '',
       employeeRFC: '',
       employeeCURP: '',
+      customFiniquitoIdentifier: '',
       empresaName: '',
       empresaRFC: '',
       empresaMunicipio: '',
@@ -378,6 +379,23 @@ export function Step1BaseConfig() {
                   <FormControl>
                     <Input {...field} placeholder="PEPE850101HDFRXN09" maxLength={18} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="customFiniquitoIdentifier"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Identificador Personalizado (Opcional)</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Ej: Finiquito-2024-001" maxLength={20} />
+                  </FormControl>
+                  <FormDescription>
+                    Máximo 20 caracteres. Ayuda a distinguir este finiquito en la lista.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

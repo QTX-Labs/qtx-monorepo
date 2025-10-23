@@ -5,14 +5,23 @@ import { PlusIcon, ChevronLeft } from 'lucide-react';
 import { type Finiquito, type User } from '@workspace/database';
 
 import { Button } from '@workspace/ui/components/button';
+import { toast } from '@workspace/ui/components/sonner';
+import { useAction } from 'next-safe-action/hooks';
 
 import { FiniquitoWizard } from './create/finiquito-wizard';
 import { FiniquitosList } from './finiquitos-list';
+import { duplicateFiniquito } from '~/actions/finiquitos/duplicate-finiquito';
+import { calculateFiniquitoComplete } from '~/lib/finiquitos/calculate-finiquito-complete';
+import type { Step1BaseConfig } from '~/lib/finiquitos/schemas/step1-base-config-schema';
+import type { Step2Factors } from '~/lib/finiquitos/schemas/step2-factors-schema';
+import type { Step3Deductions } from '~/lib/finiquitos/schemas/step3-deductions-schema';
+import type { CalculateFiniquitoOutput } from '~/lib/finiquitos/types/calculate-finiquito-types';
 
 type FiniquitoListItem = Pick<
   Finiquito,
   | 'id'
   | 'employeeName'
+  | 'customFiniquitoIdentifier'
   | 'empresaName'
   | 'clientName'
   | 'hireDate'
@@ -34,8 +43,55 @@ interface FiniquitosContentProps {
   isAdmin: boolean;
 }
 
+type WizardInitialData = {
+  step1?: Step1BaseConfig;
+  step2?: Step2Factors;
+  step3?: Step3Deductions;
+  liveCalculation?: CalculateFiniquitoOutput;
+} | undefined;
+
 export function FiniquitosContent({ finiquitos, isAdmin }: FiniquitosContentProps) {
   const [isCreating, setIsCreating] = useState(false);
+  const [wizardInitialData, setWizardInitialData] = useState<WizardInitialData>(undefined);
+
+  const { execute: executeDuplicate, isExecuting: isDuplicating } = useAction(duplicateFiniquito, {
+    onSuccess: ({ data }) => {
+      if (!data) return;
+
+      const { step1, step2, step3 } = data;
+
+      // Calculate initial live calculation with the mapped data
+      const liveCalculation = calculateFiniquitoComplete({
+        ...step1,
+        ...step2,
+        ...step3,
+      });
+
+      // Set wizard initial data
+      setWizardInitialData({
+        step1,
+        step2,
+        step3,
+        liveCalculation,
+      });
+
+      // Show wizard
+      setIsCreating(true);
+    },
+    onError: ({ error }) => {
+      console.error('Error duplicating finiquito:', error);
+      toast.error('Error al duplicar el finiquito');
+    },
+  });
+
+  const handleDuplicateClick = (finiquitoId: string) => {
+    executeDuplicate({ finiquitoId });
+  };
+
+  const handleCreateNew = () => {
+    setWizardInitialData(undefined); // Clear initial data for new finiquito
+    setIsCreating(true);
+  };
 
   return (
     <div className="space-y-6 py-6">
@@ -67,7 +123,7 @@ export function FiniquitosContent({ finiquitos, isAdmin }: FiniquitosContentProp
             </div>
           </div>
           {!isCreating && (
-            <Button onClick={() => setIsCreating(true)} size="default" className="gap-2 shrink-0 w-full sm:w-auto">
+            <Button onClick={handleCreateNew} size="default" className="gap-2 shrink-0 w-full sm:w-auto">
               <PlusIcon className="h-4 w-4" />
               Crear Finiquito
             </Button>
@@ -78,10 +134,10 @@ export function FiniquitosContent({ finiquitos, isAdmin }: FiniquitosContentProp
       {/* Content Section */}
       {isCreating ? (
         <div className="px-4 sm:px-6 lg:px-8">
-          <FiniquitoWizard />
+          <FiniquitoWizard initialData={wizardInitialData} />
         </div>
       ) : (
-        <FiniquitosList finiquitos={finiquitos} />
+        <FiniquitosList finiquitos={finiquitos} onDuplicateClick={handleDuplicateClick} />
       )}
     </div>
   );

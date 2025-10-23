@@ -113,9 +113,13 @@ function WizardContent() {
   );
 }
 
-export function FiniquitoWizard() {
+type FiniquitoWizardProps = {
+  initialData?: Parameters<typeof WizardProvider>[0]['initialData'];
+};
+
+export function FiniquitoWizard({ initialData }: FiniquitoWizardProps = {}) {
   return (
-    <WizardProvider>
+    <WizardProvider initialData={initialData}>
       <Card className="w-full">
         <CardHeader>
           <CardTitle>Crear Nuevo Finiquito</CardTitle>
