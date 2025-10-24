@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import {
@@ -71,6 +71,10 @@ export function Step2Factors() {
 
   const watchedData = form.watch();
 
+  // Refs para trackear cuál campo de gratificación fue editado último
+  const lastEditedField = useRef<'dias' | 'pesos' | null>(null);
+  const isInternalUpdate = useRef(false);
+
   // Determinar si liquidación y complemento están activados (ANTES de useEffects)
   const liquidacionActivada = step1Data?.liquidacionActivada;
   const complementoActivado = step1Data?.complementoActivado;
@@ -102,26 +106,32 @@ export function Step2Factors() {
 
   // AUTO-CONVERSIÓN: Días → Pesos (con debounce)
   useEffect(() => {
-    if (debouncedGratificacionDias !== undefined && dailySalary > 0) {
+    // Solo convertir si el usuario editó el campo de días
+    if (lastEditedField.current === 'dias' && debouncedGratificacionDias !== undefined && dailySalary > 0) {
       const calculatedPesos = gratificationDaysToPesos(debouncedGratificacionDias, dailySalary);
       const currentPesos = form.getValues('configuracionAdicional.gratificacionPesos');
 
       // Solo actualizar si hay diferencia significativa (evitar loops)
       if (Math.abs((currentPesos || 0) - calculatedPesos) > 0.01) {
+        isInternalUpdate.current = true;
         form.setValue('configuracionAdicional.gratificacionPesos', calculatedPesos, { shouldValidate: false });
+        isInternalUpdate.current = false;
       }
     }
   }, [debouncedGratificacionDias, dailySalary, form]);
 
   // AUTO-CONVERSIÓN: Pesos → Días (con debounce)
   useEffect(() => {
-    if (debouncedGratificacionPesos !== undefined && dailySalary > 0) {
+    // Solo convertir si el usuario editó el campo de pesos
+    if (lastEditedField.current === 'pesos' && debouncedGratificacionPesos !== undefined && dailySalary > 0) {
       const calculatedDias = gratificationPesosToDays(debouncedGratificacionPesos, dailySalary);
       const currentDias = form.getValues('configuracionAdicional.gratificacionDias');
 
       // Solo actualizar si hay diferencia significativa (evitar loops)
       if (Math.abs((currentDias || 0) - calculatedDias) > 0.0001) {
+        isInternalUpdate.current = true;
         form.setValue('configuracionAdicional.gratificacionDias', calculatedDias, { shouldValidate: false });
+        isInternalUpdate.current = false;
       }
     }
   }, [debouncedGratificacionPesos, dailySalary, form]);
@@ -531,7 +541,12 @@ export function Step2Factors() {
                                   type="number"
                                   step="0.0001"
                                   {...field}
-                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                  onChange={(e) => {
+                                    if (!isInternalUpdate.current) {
+                                      lastEditedField.current = 'dias';
+                                    }
+                                    field.onChange(parseFloat(e.target.value) || 0);
+                                  }}
                                 />
                               </FormControl>
                               <FormDescription>Días de gratificación adicional</FormDescription>
@@ -551,7 +566,12 @@ export function Step2Factors() {
                                   type="number"
                                   step="0.01"
                                   {...field}
-                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                  onChange={(e) => {
+                                    if (!isInternalUpdate.current) {
+                                      lastEditedField.current = 'pesos';
+                                    }
+                                    field.onChange(parseFloat(e.target.value) || 0);
+                                  }}
                                 />
                               </FormControl>
                               <FormDescription>Monto en pesos de gratificación</FormDescription>
