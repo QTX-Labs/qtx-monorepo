@@ -91,59 +91,82 @@ export function mapFiniquitoToStep2(finiquito: Finiquito): Step2Factors {
     // Factores de Liquidación (opcional)
     factoresLiquidacion: finiquito.liquidacionActivada
       ? {
-          indemnizacion90Dias: finiquito.factorIndemnizacion90Dias?.toNumber() || 0,
-          indemnizacion20Dias: finiquito.factorIndemnizacion20Dias?.toNumber() || 0,
-          primaAntiguedad: finiquito.factorPrimaAntiguedad?.toNumber() || 0,
-        }
-      : undefined,
+        indemnizacion90Dias: finiquito.factorIndemnizacion90Dias?.toNumber() || 0,
+        indemnizacion20Dias: finiquito.factorIndemnizacion20Dias?.toNumber() || 0,
+        primaAntiguedad: finiquito.factorPrimaAntiguedad?.toNumber() || 0,
+      }
+      : {
+        indemnizacion90Dias: 0,
+        indemnizacion20Dias: 0,
+        primaAntiguedad: 0,
+      },
 
     // Factores de Complemento (opcional)
     factoresComplemento: finiquito.complementoActivado
       ? {
-          diasTrabajados: finiquito.factorDiasTrabajadosComplemento?.toNumber() || 0,
-          septimoDia: finiquito.factorSeptimoDiaComplemento?.toNumber() || 0,
-          vacaciones: finiquito.factorVacacionesComplemento?.toNumber() || 0,
-          primaVacacional: finiquito.factorPrimaVacacionalComplemento?.toNumber() || 0,
-          aguinaldo: finiquito.factorAguinaldoComplemento?.toNumber() || 0,
-        }
-      : undefined,
+        diasTrabajados: finiquito.factorDiasTrabajadosComplemento?.toNumber() || 0,
+        septimoDia: finiquito.factorSeptimoDiaComplemento?.toNumber() || 0,
+        vacaciones: finiquito.factorVacacionesComplemento?.toNumber() || 0,
+        primaVacacional: finiquito.factorPrimaVacacionalComplemento?.toNumber() || 0,
+        aguinaldo: finiquito.factorAguinaldoComplemento?.toNumber() || 0,
+      }
+      : {
+        diasTrabajados: 0,
+        septimoDia: 0,
+        vacaciones: 0,
+        primaVacacional: 0,
+        aguinaldo: 0,
+      },
 
     // Factores de Liquidación Complemento (opcional)
     factoresLiquidacionComplemento:
       finiquito.liquidacionActivada && finiquito.complementoActivado
         ? {
-            indemnizacion90Dias: finiquito.factorIndemnizacion90DiasComplemento?.toNumber() || 0,
-            indemnizacion20Dias: finiquito.factorIndemnizacion20DiasComplemento?.toNumber() || 0,
-            primaAntiguedad: finiquito.factorPrimaAntiguedadComplemento?.toNumber() || 0,
-          }
-        : undefined,
+          indemnizacion90Dias: finiquito.factorIndemnizacion90DiasComplemento?.toNumber() || 0,
+          indemnizacion20Dias: finiquito.factorIndemnizacion20DiasComplemento?.toNumber() || 0,
+          primaAntiguedad: finiquito.factorPrimaAntiguedadComplemento?.toNumber() || 0,
+        }
+        : {
+          indemnizacion90Dias: 0,
+          indemnizacion20Dias: 0,
+          primaAntiguedad: 0,
+        },
 
     // Configuración adicional (gratificación)
     configuracionAdicional:
       finiquito.gratificationDays || finiquito.gratificationPesos
         ? {
-            gratificacionDias: finiquito.gratificationDays?.toNumber() || undefined,
-            gratificacionPesos: finiquito.gratificationPesos?.toNumber() || undefined,
-          }
-        : undefined,
+          gratificacionDias: finiquito.gratificationDays?.toNumber() || 0,
+          gratificacionPesos: finiquito.gratificationPesos?.toNumber() || 0,
+        }
+        : {
+          gratificacionDias: 0,
+          gratificacionPesos: 0,
+        },
 
     // Beneficios fiscales pendientes
     beneficiosFiscalesPendientes:
       finiquito.pendingVacationDays || finiquito.pendingVacationPremiumDays
         ? {
-            pendingVacationDays: finiquito.pendingVacationDays,
-            pendingVacationPremium: finiquito.pendingVacationPremiumDays || 0,
-          }
-        : undefined,
+          pendingVacationDays: finiquito.pendingVacationDays || 0,
+          pendingVacationPremium: finiquito.pendingVacationPremiumDays || 0,
+        }
+        : {
+          pendingVacationDays: 0,
+          pendingVacationPremium: 0,
+        },
 
     // Beneficios de complemento pendientes
     beneficiosComplementoPendientes:
       finiquito.complementPendingVacationDays || finiquito.complementPendingVacationPremiumDays
         ? {
-            complementPendingVacationDays: finiquito.complementPendingVacationDays || 0,
-            complementPendingVacationPremium: finiquito.complementPendingVacationPremiumDays || 0,
-          }
-        : undefined,
+          complementPendingVacationDays: finiquito.complementPendingVacationDays || 0,
+          complementPendingVacationPremium: finiquito.complementPendingVacationPremiumDays || 0,
+        }
+        : {
+          complementPendingVacationDays: 0,
+          complementPendingVacationPremium: 0,
+        }
   };
 
   return result;
