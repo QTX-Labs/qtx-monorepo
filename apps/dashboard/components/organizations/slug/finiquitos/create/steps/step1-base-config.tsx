@@ -64,11 +64,13 @@ export function Step1BaseConfig() {
       complementIntegrationFactor: 0,
       liquidacionActivada: false,
       daysFactorModified: false,
+      allowBelowMinimumSalary: false,
     },
   });
 
   // Watch relevant fields for auto-calculations
   const borderZone = form.watch('borderZone');
+  const allowBelowMinimumSalary = form.watch('allowBelowMinimumSalary');
   const hireDate = form.watch('hireDate');
   const terminationDate = form.watch('terminationDate');
   const fiscalDailySalary = form.watch('fiscalDailySalary');
@@ -93,7 +95,13 @@ export function Step1BaseConfig() {
   // AUTO-CÁLCULO 1: Salario Diario Fiscal según Zona Fronteriza (Default Value)
   // NO_FRONTERIZA: 278.80 | FRONTERIZA: 419.88
   // Solo recalcula si NO fue editado manualmente O si la zona fronteriza cambió realmente
+  // IMPORTANTE: NO ejecutar si el usuario permite salarios menores al mínimo
   useEffect(() => {
+    // Si el usuario permite salario menor al mínimo, saltar auto-ajuste
+    if (allowBelowMinimumSalary) {
+      return;
+    }
+
     const fiscalSalary = borderZone === BorderZone.FRONTERIZA ? 419.88 : 278.80;
 
     // Solo actualizar si:
@@ -105,7 +113,7 @@ export function Step1BaseConfig() {
       fiscalDailySalaryManuallyEdited.current = false;
       previousBorderZone.current = borderZone;
     }
-  }, [borderZone, form]);
+  }, [borderZone, allowBelowMinimumSalary, form]);
 
   // Detectar edición manual de salario diario fiscal
   useEffect(() => {
@@ -553,6 +561,27 @@ export function Step1BaseConfig() {
                     </SelectContent>
                   </Select>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="allowBelowMinimumSalary"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                  <div className="space-y-0.5">
+                    <FormLabel>Permitir salario menor al mínimo</FormLabel>
+                    <FormDescription>
+                      Activar para ingresar un salario diario fiscal por debajo del mínimo legal
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
                 </FormItem>
               )}
             />

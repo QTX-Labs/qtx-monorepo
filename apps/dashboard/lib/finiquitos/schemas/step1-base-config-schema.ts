@@ -101,6 +101,9 @@ export const step1BaseConfigSchema = z.object({
   // ===== MODIFICACIÓN DEL FACTOR DE DÍAS =====
   daysFactorModified: z.boolean().default(false),
   daysFactorModificationReason: z.string().optional(),
+
+  // ===== PERMITIR SALARIO MENOR AL MÍNIMO =====
+  allowBelowMinimumSalary: z.boolean().default(false),
 })
   // ===== VALIDACIONES CRUZADAS =====
   .refine(
@@ -166,6 +169,10 @@ export const step1BaseConfigSchema = z.object({
   )
   .refine(
     (data) => {
+      // Si el usuario permite salario menor al mínimo, omitir validación
+      if (data.allowBelowMinimumSalary) {
+        return true;
+      }
       // El salario diario fiscal debe ser al menos el mínimo según zona fronteriza
       const minimum = MINIMUM_SALARIES[data.borderZone];
       return data.fiscalDailySalary >= minimum;

@@ -58,6 +58,14 @@ export type CalculateFiniquitoInput = {
     liquidacionComplemento?: Partial<FactoresLiquidacion>;
     configuracionAdicional?: ConfiguracionAdicional;
   };
+
+  // ===== ISR MANUAL (OPCIONAL) =====
+  // Permite sobrescribir valores de ISR calculados automáticamente
+  manualISR?: {
+    isrFiniquito?: number;
+    isrArt174?: number;
+    isrIndemnizacion?: number;
+  };
 };
 
 /**

@@ -49,6 +49,8 @@ export const createFiniquito = authOrganizationActionClient
         liquidacionComplemento: parsedInput.factoresLiquidacionComplemento,
         configuracionAdicional: parsedInput.configuracionAdicional,
       },
+      // Pasar ISR manual si está presente
+      manualISR: parsedInput.manualISR,
     });
     console.log('[createFiniquito] Cálculo completado:', {
       totalAPagar: calculation.totales.totalAPagar,

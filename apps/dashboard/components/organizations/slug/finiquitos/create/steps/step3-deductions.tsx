@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from '@workspace/ui/components/form';
 import { Input } from '@workspace/ui/components/input';
+import { Switch } from '@workspace/ui/components/switch';
 import { Separator } from '@workspace/ui/components/separator';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@workspace/ui/components/card';
 
@@ -40,10 +41,17 @@ export function Step3Deductions() {
         fonacot: 0,
         otras: 0,
       },
+      enableManualISR: false,
+      manualISR: {
+        isrFiniquito: undefined,
+        isrArt174: undefined,
+        isrIndemnizacion: undefined,
+      },
     },
   });
 
   const watchedData = form.watch();
+  const enableManualISR = form.watch('enableManualISR');
 
   // Cálculo en vivo
   const liveCalculation = useLiveCalculation({
@@ -58,6 +66,22 @@ export function Step3Deductions() {
       updateLiveCalculation(liveCalculation);
     }
   }, [liveCalculation, updateLiveCalculation]);
+
+  // Auto-poblar valores de ISR cuando se activa el modo manual
+  useEffect(() => {
+    if (enableManualISR && liveCalculation) {
+      const currentValues = form.getValues('manualISR');
+
+      // Solo inicializar si los campos están vacíos
+      if (!currentValues?.isrFiniquito && !currentValues?.isrArt174 && !currentValues?.isrIndemnizacion) {
+        form.setValue('manualISR', {
+          isrFiniquito: liveCalculation.isr.isrFiniquito,
+          isrArt174: liveCalculation.isr.isrArt174,
+          isrIndemnizacion: liveCalculation.isr.isrIndemnizacion,
+        });
+      }
+    }
+  }, [enableManualISR, liveCalculation, form]);
 
   const onSubmit = (data: Step3DeductionsType) => {
     updateStep3(data);
@@ -151,6 +175,111 @@ export function Step3Deductions() {
                 </CardContent>
               </Card>
 
+              {/* Edición Manual de ISR */}
+              <Card className="mt-6">
+                <CardHeader>
+                  <CardTitle className="text-base">ISR (Impuesto Sobre la Renta)</CardTitle>
+                  <CardDescription>
+                    El ISR se calcula automáticamente. Active la edición manual solo si necesita ajustar los valores.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="enableManualISR"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>Editar valores de ISR manualmente</FormLabel>
+                          <FormDescription>
+                            Activar para modificar los valores calculados automáticamente
+                          </FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value || false}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  {enableManualISR && liveCalculation && (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+                      <FormField
+                        control={form.control}
+                        name="manualISR.isrFiniquito"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>ISR Finiquito</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                {...field}
+                                value={field.value ?? ''}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              Calculado: {formatCurrency(liveCalculation.isr.isrFiniquito)}
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="manualISR.isrArt174"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>ISR Art. 174</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                {...field}
+                                value={field.value ?? ''}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              Calculado: {formatCurrency(liveCalculation.isr.isrArt174)}
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="manualISR.isrIndemnizacion"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>ISR Indemnización</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                {...field}
+                                value={field.value ?? ''}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              Calculado: {formatCurrency(liveCalculation.isr.isrIndemnizacion)}
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
               {/* Resumen de Deducciones */}
               {liveCalculation && (
                 <Card className="mt-6 border-muted">
@@ -173,7 +302,7 @@ export function Step3Deductions() {
                       </div>
                       <Separator className="my-2" />
                       <div className="flex justify-between font-semibold">
-                        <span>Total ISR (automático):</span>
+                        <span>Total ISR{enableManualISR ? ' (editado)' : ' (automático)'}:</span>
                         <span className="font-mono">{formatCurrency(liveCalculation.deducciones.isrTotal)}</span>
                       </div>
                       <Separator className="my-2" />

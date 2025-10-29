@@ -64,6 +64,9 @@ export function mapFiniquitoToStep1(finiquito: Finiquito): Step1BaseConfig {
     // Modificación del factor de días
     daysFactorModified: false,
     daysFactorModificationReason: undefined,
+
+    // Permitir salario menor al mínimo
+    allowBelowMinimumSalary: false, // Default to false for duplicated finiquitos
   };
 }
 

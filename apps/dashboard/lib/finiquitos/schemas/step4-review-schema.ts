@@ -11,7 +11,7 @@ import { step3DeductionsSchema } from './step3-deductions-schema';
  * Incluye:
  * - Datos de Paso 1 (configuración base)
  * - Datos de Paso 2 (factores calculados)
- * - Datos de Paso 3 (deducciones manuales)
+ * - Datos de Paso 3 (deducciones manuales + ISR editable)
  *
  * Este es el schema que se usa en la server action `createFiniquito`.
  */

@@ -503,15 +503,17 @@ export function calculateFiniquitoComplete(
     },
 
     isr: {
-      isrFiniquito: resultCalculation.calculoISR.isrFiniquito.totalImpuesto,
-      isrArt174: resultCalculation.calculoISR.isrArt174?.totalImpuesto || 0,
-      isrIndemnizacion: resultCalculation.calculoISR.isrIndemnizacion.totalImpuesto,
+      // Usar ISR manual si está presente, sino usar valores calculados
+      isrFiniquito: input.manualISR?.isrFiniquito ?? resultCalculation.calculoISR.isrFiniquito.totalImpuesto,
+      isrArt174: input.manualISR?.isrArt174 ?? (resultCalculation.calculoISR.isrArt174?.totalImpuesto || 0),
+      isrIndemnizacion: input.manualISR?.isrIndemnizacion ?? resultCalculation.calculoISR.isrIndemnizacion.totalImpuesto,
     },
 
     deducciones: {
-      isrTotal: (resultCalculation.calculoISR.isrFiniquito.totalImpuesto || 0) +
-        (resultCalculation.calculoISR.isrArt174?.totalImpuesto || 0) +
-        (resultCalculation.calculoISR.isrIndemnizacion.totalImpuesto || 0),
+      // Calcular isrTotal usando valores manuales si están presentes
+      isrTotal: (input.manualISR?.isrFiniquito ?? (resultCalculation.calculoISR.isrFiniquito.totalImpuesto || 0)) +
+        (input.manualISR?.isrArt174 ?? (resultCalculation.calculoISR.isrArt174?.totalImpuesto || 0)) +
+        (input.manualISR?.isrIndemnizacion ?? (resultCalculation.calculoISR.isrIndemnizacion.totalImpuesto || 0)),
       infonavit: input.deduccionesManuales?.infonavit || 0,
       fonacot: input.deduccionesManuales?.fonacot || 0,
       otras: input.deduccionesManuales?.otras || 0,

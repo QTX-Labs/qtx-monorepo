@@ -48,7 +48,7 @@ export function Step4Review() {
     setIsSubmitting(true);
 
     try {
-      // Combinar todos los datos
+      // Combinar todos los datos de los 3 pasos
       const finiquitoData = {
         ...step1Data,
         ...step2Data,
