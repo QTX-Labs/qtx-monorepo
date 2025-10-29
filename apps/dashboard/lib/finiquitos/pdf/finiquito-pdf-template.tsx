@@ -250,7 +250,7 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
     (finiquito.liquidacionActivada ? toNumber(finiquito.totalDeduccionesLiquidacion) : 0);
 
   // Total neto final (percepciones - deducciones)
-  const totalNeto = toNumber(finiquito.totalAPagar);
+  const totalNeto = toNumber(finiquito.totalFiniquito || 0) + (finiquito.liquidacionActivada ? toNumber(finiquito.totalLiquidacion || 0) : 0);
 
   // Calcular número de líneas en la tabla de conceptos
   // Percepciones + 1 línea de total percepciones + deducciones + 1 línea de total deducciones + 1 línea de total neto
