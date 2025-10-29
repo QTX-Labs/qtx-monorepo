@@ -16,6 +16,7 @@ import type { Step1BaseConfig } from '~/lib/finiquitos/schemas/step1-base-config
 import type { Step2Factors } from '~/lib/finiquitos/schemas/step2-factors-schema';
 import type { Step3Deductions } from '~/lib/finiquitos/schemas/step3-deductions-schema';
 import type { CalculateFiniquitoOutput } from '~/lib/finiquitos/types/calculate-finiquito-types';
+import type { EmpresaSelectorDto } from '~/data/finiquitos/get-empresas-for-selector';
 
 type FiniquitoListItem = Pick<
   Finiquito,
@@ -40,6 +41,7 @@ type FiniquitoListItem = Pick<
 
 interface FiniquitosContentProps {
   finiquitos: FiniquitoListItem[];
+  empresas: EmpresaSelectorDto[];
   isAdmin: boolean;
 }
 
@@ -50,7 +52,7 @@ type WizardInitialData = {
   liveCalculation?: CalculateFiniquitoOutput;
 } | undefined;
 
-export function FiniquitosContent({ finiquitos, isAdmin }: FiniquitosContentProps) {
+export function FiniquitosContent({ finiquitos, empresas, isAdmin }: FiniquitosContentProps) {
   const [isCreating, setIsCreating] = useState(false);
   const [wizardInitialData, setWizardInitialData] = useState<WizardInitialData>(undefined);
 
@@ -134,7 +136,7 @@ export function FiniquitosContent({ finiquitos, isAdmin }: FiniquitosContentProp
       {/* Content Section */}
       {isCreating ? (
         <div className="px-4 sm:px-6 lg:px-8">
-          <FiniquitoWizard initialData={wizardInitialData} />
+          <FiniquitoWizard initialData={wizardInitialData} empresas={empresas} />
         </div>
       ) : (
         <FiniquitosList finiquitos={finiquitos} onDuplicateClick={handleDuplicateClick} />
