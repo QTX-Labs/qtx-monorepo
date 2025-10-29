@@ -205,9 +205,56 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
     toNumber(finiquito.totalPercepcionesFiniquito) +
     (finiquito.liquidacionActivada ? toNumber(finiquito.totalPercepcionesLiquidacion) : 0);
 
+  // Definir todos los conceptos posibles de deducciones
+  const allDeductions: Concepto[] = [
+    {
+      label: 'ISR FINIQUITO',
+      amount: toNumber(finiquito.isrFiniquito)
+    },
+    // ISR Liquidación (solo si está activada)
+    ...(finiquito.liquidacionActivada ? [
+      {
+        label: 'ISR ART. 174',
+        amount: toNumber(finiquito.isrArt174)
+      },
+      {
+        label: 'ISR INDEMNIZACIÓN',
+        amount: toNumber(finiquito.isrIndemnizacion)
+      }
+    ] : []),
+    // Deducciones manuales
+    {
+      label: 'INFONAVIT',
+      amount: toNumber(finiquito.montoDeduccionInfonavit)
+    },
+    {
+      label: 'FONACOT',
+      amount: toNumber(finiquito.montoDeduccionFonacot)
+    },
+    {
+      label: 'SUBSIDIO',
+      amount: toNumber(finiquito.montoDeduccionSubsidio)
+    },
+    {
+      label: 'OTRAS DEDUCCIONES',
+      amount: toNumber(finiquito.montoDeduccionOtrasDeducciones)
+    }
+  ];
+
+  // Filtrar solo las deducciones con monto > 0
+  const deductions = allDeductions.filter(d => d.amount > 0);
+
+  // Calcular total de deducciones fiscales
+  const totalDeduccionesFiscales =
+    toNumber(finiquito.totalDeduccionesFiniquito) +
+    (finiquito.liquidacionActivada ? toNumber(finiquito.totalDeduccionesLiquidacion) : 0);
+
+  // Total neto final (percepciones - deducciones)
+  const totalNeto = toNumber(finiquito.totalAPagar);
+
   // Calcular número de líneas en la tabla de conceptos
-  // Conceptos dinámicos + 1 línea de "TOTAL NETO DE PERCEPCIONES"
-  const conceptLines = concepts.length + 1;
+  // Percepciones + 1 línea de total percepciones + deducciones + 1 línea de total deducciones + 1 línea de total neto
+  const conceptLines = concepts.length + 1 + (deductions.length > 0 ? deductions.length + 1 : 0) + 1;
 
   // Si hay más de 4 líneas, reducir márgenes para evitar página extra
   const shouldReduceMargins = conceptLines > 4;
@@ -215,9 +262,13 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
   const verticalPaddingTop = shouldReduceMargins ? 36 : 52; // Reducir de ~2.4cm a ~1.27cm
   const verticalPaddingBottom = shouldReduceMargins ? 50 : 72; // Reducir de 2.54cm a ~1.76cm
 
-  // Si hay 10 o más líneas, reducir también el tamaño de letra
-  const shouldReduceFontSize = conceptLines >= 10;
-  const fontSize = shouldReduceFontSize ? 10 : 11; // Reducir de 11pt a 10pt
+  // Reducción progresiva del tamaño de letra según número de líneas
+  let fontSize = 11; // Tamaño base
+  if (conceptLines >= 15) {
+    fontSize = 9.5; // Reducir a 9.5pt si hay 15+ líneas
+  } else if (conceptLines >= 10) {
+    fontSize = 10; // Reducir a 10pt si hay 10-14 líneas
+  }
 
   // Estilos dinámicos de página con márgenes y fuente ajustados
   const dynamicPageStyle = {
@@ -325,15 +376,40 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
 
           {/* TABLA DE CONCEPTOS - RENDERIZADO DINÁMICO */}
           <View style={styles.table}>
+            {/* PERCEPCIONES */}
             {concepts.map((concepto, index) => (
               <View style={styles.tableRow} key={`concepto-${index}`}>
                 <Text style={styles.tableCell}>{concepto.label}</Text>
                 <Text style={styles.tableCellRight}>${formatCurrency(concepto.amount)}</Text>
               </View>
             ))}
-            <View style={[styles.tableRow, { marginTop: 12, marginBottom: 12 }]}>
-              <Text style={styles.tableCellBold}>TOTAL NETO DE PERCEPCIONES:</Text>
+            <View style={styles.tableRow}>
+              <Text style={styles.tableCellBold}>TOTAL DE PERCEPCIONES:</Text>
               <Text style={styles.tableCellRightBold}>${formatCurrency(totalPercepcionesFiscales)}</Text>
+            </View>
+
+            {/* DEDUCCIONES (solo si existen) */}
+            {deductions.length > 0 && (
+              <>
+                <View style={{ marginTop: 12 }}>
+                  {deductions.map((deduccion, index) => (
+                    <View style={styles.tableRow} key={`deduccion-${index}`}>
+                      <Text style={styles.tableCell}>{deduccion.label}</Text>
+                      <Text style={styles.tableCellRight}>${formatCurrency(deduccion.amount)}</Text>
+                    </View>
+                  ))}
+                  <View style={styles.tableRow}>
+                    <Text style={styles.tableCellBold}>TOTAL DE DEDUCCIONES:</Text>
+                    <Text style={styles.tableCellRightBold}>${formatCurrency(totalDeduccionesFiscales)}</Text>
+                  </View>
+                </View>
+              </>
+            )}
+
+            {/* TOTAL NETO FINAL */}
+            <View style={[styles.tableRow, { marginTop: 12, marginBottom: 12 }]}>
+              <Text style={styles.tableCellBold}>TOTAL NETO:</Text>
+              <Text style={styles.tableCellRightBold}>${formatCurrency(totalNeto)}</Text>
             </View>
           </View>
 
