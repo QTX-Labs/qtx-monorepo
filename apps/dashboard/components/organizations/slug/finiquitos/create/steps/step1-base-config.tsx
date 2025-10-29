@@ -497,6 +497,34 @@ export function Step1BaseConfig() {
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="empresaMunicipio"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Municipio de la Empresa *</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Municipio" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="empresaEstado"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Estado de la Empresa *</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Estado" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
         </div>
 
