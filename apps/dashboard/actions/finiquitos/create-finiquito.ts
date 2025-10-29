@@ -117,6 +117,15 @@ export const createFiniquito = authOrganizationActionClient
           daysFactorModified: parsedInput.daysFactorModified,
           daysFactorModificationReason: parsedInput.daysFactorModificationReason ?? null,
 
+          // Flags de edición manual
+          allowBelowMinimumSalary: parsedInput.allowBelowMinimumSalary ?? false,
+          enableManualISR: parsedInput.enableManualISR ?? false,
+
+          // ISR editado manualmente (opcional)
+          manualIsrFiniquito: parsedInput.manualISR?.isrFiniquito ?? null,
+          manualIsrArt174: parsedInput.manualISR?.isrArt174 ?? null,
+          manualIsrIndemnizacion: parsedInput.manualISR?.isrIndemnizacion ?? null,
+
           // Gratificación (configuración adicional)
           gratificationDays: parsedInput.configuracionAdicional?.gratificacionDias ?? null,
           gratificationPesos: parsedInput.configuracionAdicional?.gratificacionPesos ?? null,

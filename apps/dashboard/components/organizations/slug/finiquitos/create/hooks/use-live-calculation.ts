@@ -120,6 +120,10 @@ export function useLiveCalculation({
           liquidacionComplemento: debouncedStep2Data.factoresLiquidacionComplemento,
           configuracionAdicional: debouncedStep2Data.configuracionAdicional,
         } : undefined,
+        // Pasar ISR manual del Step 3 si está activado
+        manualISR: debouncedStep3Data?.enableManualISR && debouncedStep3Data?.manualISR
+          ? debouncedStep3Data.manualISR
+          : undefined,
       };
 
       const result = calculateFiniquitoComplete(calculationInput);

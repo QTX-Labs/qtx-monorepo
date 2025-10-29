@@ -790,6 +790,15 @@ model Finiquito {
   daysFactorModified          Boolean           @default(false)
   daysFactorModificationReason String?          @db.Text
 
+  // Flags de edición manual
+  allowBelowMinimumSalary     Boolean           @default(false)
+  enableManualISR             Boolean?          @default(false)
+
+  // ISR editado manualmente (opcional)
+  manualIsrFiniquito          Decimal?          @db.Decimal(12, 2)
+  manualIsrArt174             Decimal?          @db.Decimal(12, 2)
+  manualIsrIndemnizacion      Decimal?          @db.Decimal(12, 2)
+
   // PDF y archivos
   pdfUrl                      String?           @db.VarChar(2048)
   version                     Int               @default(2)

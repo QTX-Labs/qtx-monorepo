@@ -33,6 +33,9 @@ function formatCurrency(amount: number): string {
 export function Step3Deductions() {
   const { step1Data, step2Data, step3Data, updateStep3, updateLiveCalculation, goNext } = useWizard();
 
+  // Verificar si liquidación está activada para mostrar/ocultar campo ISR Indemnización
+  const liquidacionActivada = step1Data?.liquidacionActivada ?? false;
+
   const form = useForm<Step3DeductionsType>({
     resolver: zodResolver(step3DeductionsSchema) as any, // Type inference issue with .default() on nested object
     defaultValues: step3Data || {
@@ -206,7 +209,7 @@ export function Step3Deductions() {
                   />
 
                   {enableManualISR && liveCalculation && (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+                    <div className={`grid grid-cols-1 gap-4 pt-4 ${liquidacionActivada ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
                       <FormField
                         control={form.control}
                         name="manualISR.isrFiniquito"
@@ -253,28 +256,30 @@ export function Step3Deductions() {
                         )}
                       />
 
-                      <FormField
-                        control={form.control}
-                        name="manualISR.isrIndemnizacion"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>ISR Indemnización</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                step="0.01"
-                                {...field}
-                                value={field.value ?? ''}
-                                onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
-                              />
-                            </FormControl>
-                            <FormDescription>
-                              Calculado: {formatCurrency(liveCalculation.isr.isrIndemnizacion)}
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      {liquidacionActivada && (
+                        <FormField
+                          control={form.control}
+                          name="manualISR.isrIndemnizacion"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>ISR Indemnización</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  {...field}
+                                  value={field.value ?? ''}
+                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                                />
+                              </FormControl>
+                              <FormDescription>
+                                Calculado: {formatCurrency(liveCalculation.isr.isrIndemnizacion)}
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
                     </div>
                   )}
                 </CardContent>

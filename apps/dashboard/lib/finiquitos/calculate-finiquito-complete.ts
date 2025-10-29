@@ -509,44 +509,76 @@ export function calculateFiniquitoComplete(
       isrIndemnizacion: input.manualISR?.isrIndemnizacion ?? resultCalculation.calculoISR.isrIndemnizacion.totalImpuesto,
     },
 
-    deducciones: {
-      // Calcular isrTotal usando valores manuales si están presentes
-      isrTotal: (input.manualISR?.isrFiniquito ?? (resultCalculation.calculoISR.isrFiniquito.totalImpuesto || 0)) +
-        (input.manualISR?.isrArt174 ?? (resultCalculation.calculoISR.isrArt174?.totalImpuesto || 0)) +
-        (input.manualISR?.isrIndemnizacion ?? (resultCalculation.calculoISR.isrIndemnizacion.totalImpuesto || 0)),
-      infonavit: input.deduccionesManuales?.infonavit || 0,
-      fonacot: input.deduccionesManuales?.fonacot || 0,
-      otras: input.deduccionesManuales?.otras || 0,
-      subsidio: input.deduccionesManuales?.subsidio || 0,
-      total: resultCalculation.finiquito.totalDeduccionesFiscal + resultCalculation.liquidacion.totalDeduccionesFiscal,
-    },
+    deducciones: (() => {
+      // Calcular ISR usando valores manuales si están presentes
+      const isrFiniquito = input.manualISR?.isrFiniquito ?? (resultCalculation.calculoISR.isrFiniquito.totalImpuesto || 0);
+      const isrArt174 = input.manualISR?.isrArt174 ?? (resultCalculation.calculoISR.isrArt174?.totalImpuesto || 0);
+      const isrIndemnizacion = input.manualISR?.isrIndemnizacion ?? (resultCalculation.calculoISR.isrIndemnizacion.totalImpuesto || 0);
 
-    totales: {
-      finiquito: {
-        percepciones: resultCalculation.finiquito.totalPercepcionesFiscal,
-        deducciones: resultCalculation.finiquito.totalDeduccionesFiscal,
-        neto: resultCalculation.finiquito.netoFiscal,
-      },
-      liquidacion: conceptosLiquidacion ? {
-        percepciones: resultCalculation.liquidacion.totalPercepcionesFiscal,
-        deducciones: resultCalculation.liquidacion.totalDeduccionesFiscal,
-        neto: resultCalculation.liquidacion.netoFiscal,
-      } : undefined,
-      liquidacionComplemento: factoresComplemento?.conceptosLiquidacion ? {
-        percepciones: resultCalculation.liquidacion.totalPercepciones - resultCalculation.liquidacion.totalPercepcionesFiscal,
-        deducciones: resultCalculation.liquidacion.totalDeducciones - resultCalculation.liquidacion.totalDeduccionesFiscal,
-        neto: resultCalculation.liquidacion.netoComplemento,
-      } : undefined,
-      complemento: resultCalculation.percepcionesFiniquitoComplemento ? {
-        percepciones: resultCalculation.totalPercepcionesComplemento || 0,
-        deducciones: resultCalculation.totalDeduccionesComplemento || 0,
-        neto: resultCalculation.complementoNeto || 0,
-      } : undefined,
-      totalAPagar: resultCalculation.finiquito.netoFiscal +
-        resultCalculation.liquidacion.netoFiscal +
-        (resultCalculation.liquidacion.netoComplemento || 0) +
-        (resultCalculation.complementoNeto || 0),
-    },
+      const isrTotal = isrFiniquito + isrArt174 + isrIndemnizacion;
+      const infonavit = input.deduccionesManuales?.infonavit || 0;
+      const fonacot = input.deduccionesManuales?.fonacot || 0;
+      const otras = input.deduccionesManuales?.otras || 0;
+      const subsidio = input.deduccionesManuales?.subsidio || 0;
+
+      return {
+        isrTotal,
+        infonavit,
+        fonacot,
+        otras,
+        subsidio,
+        total: isrTotal + infonavit + fonacot + otras + subsidio,
+      };
+    })(),
+
+    totales: (() => {
+      // Calcular ISR usando valores manuales si están presentes
+      const isrFiniquito = input.manualISR?.isrFiniquito ?? (resultCalculation.calculoISR.isrFiniquito.totalImpuesto || 0);
+      const isrArt174 = input.manualISR?.isrArt174 ?? (resultCalculation.calculoISR.isrArt174?.totalImpuesto || 0);
+      const isrIndemnizacion = input.manualISR?.isrIndemnizacion ?? (resultCalculation.calculoISR.isrIndemnizacion.totalImpuesto || 0);
+
+      const infonavit = input.deduccionesManuales?.infonavit || 0;
+      const fonacot = input.deduccionesManuales?.fonacot || 0;
+      const otras = input.deduccionesManuales?.otras || 0;
+      const subsidio = input.deduccionesManuales?.subsidio || 0;
+
+      // Las deducciones manuales (infonavit, fonacot, otras) se aplican al finiquito
+      const deduccionesFiniquito = isrFiniquito + isrArt174 + infonavit + fonacot + otras + subsidio;
+      const deduccionesLiquidacion = isrIndemnizacion;
+
+      const percepcionesFiniquito = resultCalculation.finiquito.totalPercepcionesFiscal;
+      const percepcionesLiquidacion = resultCalculation.liquidacion.totalPercepcionesFiscal;
+
+      const netoFiniquito = percepcionesFiniquito - deduccionesFiniquito;
+      const netoLiquidacion = conceptosLiquidacion ? (percepcionesLiquidacion - deduccionesLiquidacion) : 0;
+
+      return {
+        finiquito: {
+          percepciones: percepcionesFiniquito,
+          deducciones: deduccionesFiniquito,
+          neto: netoFiniquito,
+        },
+        liquidacion: conceptosLiquidacion ? {
+          percepciones: percepcionesLiquidacion,
+          deducciones: deduccionesLiquidacion,
+          neto: netoLiquidacion,
+        } : undefined,
+        liquidacionComplemento: factoresComplemento?.conceptosLiquidacion ? {
+          percepciones: resultCalculation.liquidacion.totalPercepciones - resultCalculation.liquidacion.totalPercepcionesFiscal,
+          deducciones: resultCalculation.liquidacion.totalDeducciones - resultCalculation.liquidacion.totalDeduccionesFiscal,
+          neto: resultCalculation.liquidacion.netoComplemento,
+        } : undefined,
+        complemento: resultCalculation.percepcionesFiniquitoComplemento ? {
+          percepciones: resultCalculation.totalPercepcionesComplemento || 0,
+          deducciones: resultCalculation.totalDeduccionesComplemento || 0,
+          neto: resultCalculation.complementoNeto || 0,
+        } : undefined,
+        totalAPagar: netoFiniquito +
+          netoLiquidacion +
+          (resultCalculation.liquidacion.netoComplemento || 0) +
+          (resultCalculation.complementoNeto || 0),
+      };
+    })(),
 
     metadata: {
       daysWorked: diasTrabajados,
