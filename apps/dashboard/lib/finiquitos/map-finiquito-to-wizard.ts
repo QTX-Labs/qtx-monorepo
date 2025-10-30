@@ -65,8 +65,8 @@ export function mapFiniquitoToStep1(finiquito: Finiquito): Step1BaseConfig {
     daysFactorModified: false,
     daysFactorModificationReason: undefined,
 
-    // Permitir salario menor al mínimo
-    allowBelowMinimumSalary: false, // Default to false for duplicated finiquitos
+    // Permitir salario menor al mínimo (preservar del finiquito original)
+    allowBelowMinimumSalary: finiquito.allowBelowMinimumSalary || false,
   };
 }
 
@@ -181,6 +181,7 @@ export function mapFiniquitoToStep2(finiquito: Finiquito): Step2Factors {
  * Handles:
  * - Decimal to number conversions
  * - Version 2 deduction field mapping
+ * - Manual ISR flags and values
  */
 export function mapFiniquitoToStep3(finiquito: Finiquito): Step3Deductions {
   return {
@@ -189,5 +190,14 @@ export function mapFiniquitoToStep3(finiquito: Finiquito): Step3Deductions {
       fonacot: finiquito.montoDeduccionFonacot?.toNumber() || 0,
       otras: finiquito.montoDeduccionOtrasDeducciones?.toNumber() || 0,
     },
+    // ISR manual (preservar del finiquito original)
+    enableManualISR: finiquito.enableManualISR || false,
+    manualISR: finiquito.enableManualISR
+      ? {
+          isrFiniquito: finiquito.manualIsrFiniquito?.toNumber() || 0,
+          isrArt174: finiquito.manualIsrArt174?.toNumber() || 0,
+          isrIndemnizacion: finiquito.manualIsrIndemnizacion?.toNumber() || 0,
+        }
+      : undefined,
   };
 }

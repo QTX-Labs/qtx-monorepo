@@ -57,6 +57,24 @@ export const createFiniquito = authOrganizationActionClient
       isrTotal: calculation.deducciones.isrTotal,
     });
 
+    // Validar que el total a pagar no sea negativo
+    if (calculation.totales.totalAPagar < 0) {
+      const totalPercepciones =
+        calculation.totales.finiquito.percepciones +
+        (calculation.totales.liquidacion?.percepciones ?? 0) +
+        (calculation.totales.complemento?.percepciones ?? 0) +
+        (calculation.totales.liquidacionComplemento?.percepciones ?? 0);
+
+      const totalDeducciones = calculation.deducciones.total;
+
+      throw new Error(
+        `El total a pagar no puede ser negativo. ` +
+        `Total percepciones: $${totalPercepciones.toFixed(2)}, ` +
+        `Total deducciones: $${totalDeducciones.toFixed(2)}. ` +
+        `Por favor ajuste los valores de ISR manual o las deducciones manuales.`
+      );
+    }
+
     // Mapear resultados de cálculo a campos de Prisma
     const calculatedFields = mapCalculationToPrisma(calculation);
 
