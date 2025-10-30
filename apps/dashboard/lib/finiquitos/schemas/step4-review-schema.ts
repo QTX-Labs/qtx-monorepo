@@ -38,6 +38,7 @@ export const updateFiniquitoSchema = z.object({
   employeeRFC: z.string().optional(),
   employeeCURP: z.string().optional(),
   employeeId: z.string().optional(),
+  empresaId: z.string().optional(),
   empresaName: z.string().optional(),
   empresaRFC: z.string().optional(),
   empresaMunicipio: z.string().optional(),

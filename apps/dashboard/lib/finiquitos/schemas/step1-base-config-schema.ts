@@ -30,6 +30,7 @@ export const step1BaseConfigSchema = z.object({
     .optional(),
 
   // Datos de la Empresa
+  empresaId: z.string().optional(), // Si se selecciona desde lista de empresas
   empresaName: z.string().min(1, 'El nombre de la empresa es requerido'),
   empresaRFC: z.string()
     .min(1, 'El RFC de la empresa es requerido')

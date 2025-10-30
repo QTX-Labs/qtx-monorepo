@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { PlusIcon, ChevronLeft } from 'lucide-react';
-import { type Finiquito, type User } from '@workspace/database';
 
 import { Button } from '@workspace/ui/components/button';
 import { toast } from '@workspace/ui/components/sonner';
@@ -17,27 +16,7 @@ import type { Step2Factors } from '~/lib/finiquitos/schemas/step2-factors-schema
 import type { Step3Deductions } from '~/lib/finiquitos/schemas/step3-deductions-schema';
 import type { CalculateFiniquitoOutput } from '~/lib/finiquitos/types/calculate-finiquito-types';
 import type { EmpresaSelectorDto } from '~/data/finiquitos/get-empresas-for-selector';
-
-type FiniquitoListItem = Pick<
-  Finiquito,
-  | 'id'
-  | 'employeeName'
-  | 'customFiniquitoIdentifier'
-  | 'empresaName'
-  | 'clientName'
-  | 'hireDate'
-  | 'terminationDate'
-  | 'salary'
-  | 'salaryFrequency'
-  | 'borderZone'
-  | 'totalToPay'
-  | 'totalAPagar'
-  | 'version'
-  | 'createdAt'
-  | 'gratificationDays'
-> & {
-  user: Pick<User, 'name' | 'email'>;
-};
+import type { FiniquitoListItem } from '~/data/finiquitos/get-finiquitos';
 
 interface FiniquitosContentProps {
   finiquitos: FiniquitoListItem[];

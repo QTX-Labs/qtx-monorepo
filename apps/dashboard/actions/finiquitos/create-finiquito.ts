@@ -70,6 +70,7 @@ export const createFiniquito = authOrganizationActionClient
           organizationId: ctx.organization.id,
           userId: ctx.session.user.id,
           employeeId: parsedInput.employeeId ?? null,
+          empresaId: parsedInput.empresaId && parsedInput.empresaId !== '' ? parsedInput.empresaId : null,
 
           // Datos básicos del empleado (snapshot)
           // IMPORTANTE: employeeRFC y employeeCURP son requeridos para PDF y vista de detalle

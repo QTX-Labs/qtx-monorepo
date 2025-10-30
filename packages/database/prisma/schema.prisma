@@ -611,6 +611,7 @@ model Finiquito {
   id                          String            @id(map: "PK_Finiquito") @default(uuid()) @db.Uuid
   organizationId              String            @db.Uuid
   employeeId                  String?           @db.Uuid
+  empresaId                   String?           @db.Uuid
   userId                      String            @db.Uuid
 
   // Datos básicos del empleado (snapshot)

@@ -46,6 +46,7 @@ export function Step1BaseConfig({ empresas }: Step1BaseConfigProps) {
       employeeRFC: '',
       employeeCURP: '',
       customFiniquitoIdentifier: '',
+      empresaId: undefined,
       empresaName: '',
       empresaRFC: '',
       empresaMunicipio: '',
@@ -474,6 +475,9 @@ export function Step1BaseConfig({ empresas }: Step1BaseConfigProps) {
 
                       // Actualizar el nombre de la empresa
                       field.onChange(empresaSeleccionada?.name || '');
+
+                      // Auto-llenar el empresaId (undefined si no hay empresa)
+                      form.setValue('empresaId', empresaSeleccionada?.id || undefined);
 
                       // Auto-llenar el RFC si existe
                       if (empresaSeleccionada?.rfc) {
