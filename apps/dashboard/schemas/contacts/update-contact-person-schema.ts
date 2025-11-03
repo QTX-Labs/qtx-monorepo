@@ -40,7 +40,7 @@ export const updateContactPersonSchema = z.object({
     .max(32, 'Maximum 32 characters allowed.')
     .optional()
     .or(z.literal('')),
-  isPrimary: z.boolean().default(false)
+  isPrimary: z.boolean()
 });
 
 export type UpdateContactPersonSchema = z.infer<typeof updateContactPersonSchema>;

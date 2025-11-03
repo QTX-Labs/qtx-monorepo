@@ -80,6 +80,19 @@ export async function getMisEmpresasContacts(
                 id: true,
                 text: true
               }
+            },
+            contactPersons: {
+              select: {
+                id: true,
+                contactId: true,
+                name: true,
+                position: true,
+                email: true,
+                phone: true,
+                isPrimary: true,
+                createdAt: true,
+                updatedAt: true
+              }
             }
           },
           orderBy: {
@@ -123,7 +136,18 @@ export async function getMisEmpresasContacts(
         phone: contact.phone ? contact.phone : undefined,
         stage: contact.stage,
         createdAt: contact.createdAt,
-        tags: contact.tags
+        tags: contact.tags,
+        contactPersons: contact.contactPersons.map((cp) => ({
+          id: cp.id,
+          contactId: cp.contactId,
+          name: cp.name,
+          position: cp.position ?? undefined,
+          email: cp.email ?? undefined,
+          phone: cp.phone ?? undefined,
+          isPrimary: cp.isPrimary,
+          createdAt: cp.createdAt,
+          updatedAt: cp.updatedAt
+        }))
       }));
 
       return { contacts: mapped, filteredCount, totalCount };
