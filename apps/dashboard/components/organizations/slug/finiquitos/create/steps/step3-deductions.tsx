@@ -71,18 +71,31 @@ export function Step3Deductions() {
   }, [liveCalculation, updateLiveCalculation]);
 
   // Auto-poblar valores de ISR cuando se activa el modo manual
+  // Limpiar valores cuando se desactiva
   useEffect(() => {
     if (enableManualISR && liveCalculation) {
       const currentValues = form.getValues('manualISR');
 
-      // Solo inicializar si los campos están vacíos
-      if (!currentValues?.isrFiniquito && !currentValues?.isrArt174 && !currentValues?.isrIndemnizacion) {
+      // Solo inicializar si los campos están sin definir (undefined)
+      // Permitir valores explícitos de 0
+      if (
+        currentValues?.isrFiniquito === undefined &&
+        currentValues?.isrArt174 === undefined &&
+        currentValues?.isrIndemnizacion === undefined
+      ) {
         form.setValue('manualISR', {
           isrFiniquito: liveCalculation.isr.isrFiniquito,
           isrArt174: liveCalculation.isr.isrArt174,
           isrIndemnizacion: liveCalculation.isr.isrIndemnizacion,
         });
       }
+    } else if (!enableManualISR) {
+      // Limpiar valores cuando se desactiva el modo manual
+      form.setValue('manualISR', {
+        isrFiniquito: undefined,
+        isrArt174: undefined,
+        isrIndemnizacion: undefined,
+      });
     }
   }, [enableManualISR, liveCalculation, form]);
 
@@ -222,7 +235,10 @@ export function Step3Deductions() {
                                 step="0.01"
                                 {...field}
                                 value={field.value ?? ''}
-                                onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                                onChange={(e) => {
+                                  const parsed = parseFloat(e.target.value);
+                                  field.onChange(isNaN(parsed) ? undefined : parsed);
+                                }}
                               />
                             </FormControl>
                             <FormDescription>
@@ -245,7 +261,10 @@ export function Step3Deductions() {
                                 step="0.01"
                                 {...field}
                                 value={field.value ?? ''}
-                                onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                                onChange={(e) => {
+                                  const parsed = parseFloat(e.target.value);
+                                  field.onChange(isNaN(parsed) ? undefined : parsed);
+                                }}
                               />
                             </FormControl>
                             <FormDescription>
@@ -269,7 +288,10 @@ export function Step3Deductions() {
                                   step="0.01"
                                   {...field}
                                   value={field.value ?? ''}
-                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
+                                  onChange={(e) => {
+                                    const parsed = parseFloat(e.target.value);
+                                    field.onChange(isNaN(parsed) ? undefined : parsed);
+                                  }}
                                 />
                               </FormControl>
                               <FormDescription>
