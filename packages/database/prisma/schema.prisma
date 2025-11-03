@@ -188,6 +188,7 @@ model Contact {
   tags             ContactTag[]
   favorites        Favorite[]
   tasks            ContactTask[]
+  contactPersons   ContactPerson[]
 
   @@index([organizationId], map: "IX_Contact_organizationId")
 }
@@ -274,6 +275,21 @@ model ContactTask {
   contact     Contact           @relation(fields: [contactId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([contactId], map: "IX_ContactTask_contactId")
+}
+
+model ContactPerson {
+  id        String   @id(map: "PK_ContactPerson") @default(uuid()) @db.Uuid
+  contactId String   @db.Uuid
+  name      String   @db.VarChar(255)
+  position  String?  @db.VarChar(255)
+  email     String?  @db.VarChar(255)
+  phone     String?  @db.VarChar(32)
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  contact   Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([contactId], map: "IX_ContactPerson_contactId")
 }
 
 model Favorite {
@@ -595,6 +611,7 @@ model Finiquito {
   id                          String            @id(map: "PK_Finiquito") @default(uuid()) @db.Uuid
   organizationId              String            @db.Uuid
   employeeId                  String?           @db.Uuid
+  empresaId                   String?           @db.Uuid
   userId                      String            @db.Uuid
 
   // Datos básicos del empleado (snapshot)

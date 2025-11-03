@@ -29,6 +29,7 @@ export function mapFiniquitoToStep1(finiquito: Finiquito): Step1BaseConfig {
     customFiniquitoIdentifier: duplicatedIdentifier,
 
     // Datos de la empresa
+    empresaId: finiquito.empresaId || undefined,
     empresaName: finiquito.empresaName,
     empresaRFC: finiquito.empresaRFC || '',
     empresaMunicipio: finiquito.empresaMunicipio || undefined,

@@ -12,6 +12,7 @@ import { isCurrentUserAdminOrOwner } from '@workspace/auth/permissions';
 import { FiniquitosContent } from '~/components/organizations/slug/finiquitos/finiquitos-content';
 import { OrganizationPageTitle } from '~/components/organizations/slug/organization-page-title';
 import { getFiniquitos } from '~/data/finiquitos/get-finiquitos';
+import { getEmpresasForSelector } from '~/data/finiquitos/get-empresas-for-selector';
 import { TransitionProvider } from '~/hooks/use-transition-context';
 import { createTitle } from '~/lib/formatters';
 
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
 
 export default async function FiniquitosPage(): Promise<React.JSX.Element> {
   const finiquitos = await getFiniquitos();
+  const empresas = await getEmpresasForSelector();
   const isAdmin = await isCurrentUserAdminOrOwner();
 
   return (
@@ -35,7 +37,7 @@ export default async function FiniquitosPage(): Promise<React.JSX.Element> {
           </PagePrimaryBar>
         </PageHeader>
         <PageBody>
-          <FiniquitosContent finiquitos={finiquitos} isAdmin={isAdmin} />
+          <FiniquitosContent finiquitos={finiquitos} empresas={empresas} isAdmin={isAdmin} />
         </PageBody>
       </Page>
     </TransitionProvider>

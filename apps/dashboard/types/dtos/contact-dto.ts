@@ -5,6 +5,7 @@ import {
 } from '@workspace/database';
 
 import type { TagDto } from '~/types/dtos/tag-dto';
+import type { ContactPersonDto } from '~/types/dtos/contact-person-dto';
 
 export type ContactDto = {
   id: string;
@@ -24,4 +25,5 @@ export type ContactDto = {
   stage: ContactStage;
   createdAt: Date;
   tags: TagDto[];
+  contactPersons: ContactPersonDto[];
 };

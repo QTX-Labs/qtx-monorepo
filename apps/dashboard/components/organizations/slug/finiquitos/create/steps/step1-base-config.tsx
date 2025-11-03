@@ -29,8 +29,13 @@ import { step1BaseConfigSchema, type Step1BaseConfig as Step1BaseConfigType } fr
 import { calculateFiniquitoComplete } from '~/lib/finiquitos/calculate-finiquito-complete';
 import { getEmployeeVacationDays, getEmployeeIntegrationFactor, applyUMALimit } from '~/lib/finiquitos/utils';
 import { useWizard } from '../wizard-context';
+import type { EmpresaSelectorDto } from '~/data/finiquitos/get-empresas-for-selector';
 
-export function Step1BaseConfig() {
+type Step1BaseConfigProps = {
+  empresas: EmpresaSelectorDto[];
+};
+
+export function Step1BaseConfig({ empresas }: Step1BaseConfigProps) {
   const { step1Data, step2Data, updateStep1, updateStep2, updateLiveCalculation, goNext } = useWizard();
 
   const form = useForm<Step1BaseConfigType>({
@@ -41,6 +46,7 @@ export function Step1BaseConfig() {
       employeeRFC: '',
       employeeCURP: '',
       customFiniquitoIdentifier: '',
+      empresaId: undefined,
       empresaName: '',
       empresaRFC: '',
       empresaMunicipio: '',
@@ -462,9 +468,37 @@ export function Step1BaseConfig() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nombre de la Empresa *</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Mi Empresa SA de CV" />
-                  </FormControl>
+                  <Select
+                    onValueChange={(value) => {
+                      // Buscar la empresa seleccionada
+                      const empresaSeleccionada = empresas.find(e => e.id === value);
+
+                      // Actualizar el nombre de la empresa
+                      field.onChange(empresaSeleccionada?.name || '');
+
+                      // Auto-llenar el empresaId (undefined si no hay empresa)
+                      form.setValue('empresaId', empresaSeleccionada?.id || undefined);
+
+                      // Auto-llenar el RFC si existe
+                      if (empresaSeleccionada?.rfc) {
+                        form.setValue('empresaRFC', empresaSeleccionada.rfc);
+                      }
+                    }}
+                    value={empresas.find(e => e.name === field.value)?.id || ''}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar empresa" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {empresas.map((empresa) => (
+                        <SelectItem key={empresa.id} value={empresa.id}>
+                          {empresa.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

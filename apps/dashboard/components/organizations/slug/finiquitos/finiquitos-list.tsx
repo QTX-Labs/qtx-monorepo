@@ -5,7 +5,6 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { MoreHorizontal, Download, Trash2, Loader2, Search, ArrowUp, ArrowDown, Copy } from 'lucide-react';
 import { useDebounce } from '@workspace/ui/hooks/use-debounce';
-import { type Finiquito, type User } from '@workspace/database';
 import { useAction } from 'next-safe-action/hooks';
 import { toast } from 'sonner';
 import { useRouter, useParams } from 'next/navigation';
@@ -47,27 +46,7 @@ import {
 } from '@workspace/ui/components/table';
 
 import { deleteFiniquito } from '~/actions/finiquitos/delete-finiquito';
-
-type FiniquitoListItem = Pick<
-  Finiquito,
-  | 'id'
-  | 'employeeName'
-  | 'customFiniquitoIdentifier'
-  | 'empresaName'
-  | 'clientName'
-  | 'hireDate'
-  | 'terminationDate'
-  | 'salary'
-  | 'salaryFrequency'
-  | 'borderZone'
-  | 'totalToPay'
-  | 'totalAPagar'
-  | 'version'
-  | 'createdAt'
-  | 'gratificationDays'
-> & {
-  user: Pick<User, 'name' | 'email'>;
-};
+import type { FiniquitoListItem } from '~/data/finiquitos/get-finiquitos';
 
 interface FiniquitosListProps {
   finiquitos: FiniquitoListItem[];

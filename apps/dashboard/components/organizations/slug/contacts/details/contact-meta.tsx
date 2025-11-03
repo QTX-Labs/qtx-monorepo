@@ -6,6 +6,7 @@ import { ResponsiveScrollArea } from '@workspace/ui/components/scroll-area';
 import { MediaQueries } from '@workspace/ui/lib/media-queries';
 
 import { ContactDetailsSection } from '~/components/organizations/slug/contacts/details/contact-details-section';
+import { ContactPersonsSection } from '~/components/organizations/slug/contacts/details/contact-persons-section';
 import { ContactStageSection } from '~/components/organizations/slug/contacts/details/contact-stage-section';
 import { ContactTagsSection } from '~/components/organizations/slug/contacts/details/contact-tags-section';
 import type { ContactDto } from '~/types/dtos/contact-dto';
@@ -21,10 +22,11 @@ export function ContactMeta({ contact }: ContactMetaProps): React.JSX.Element {
       mediaQueryOptions={{ ssr: true }}
       className="sm:h-full"
     >
-      <div className="size-full divide-y border-b md:w-[360px] md:min-w-[360px]">
+      <div className="size-full space-y-4 border-b p-4 md:w-[360px] md:min-w-[360px]">
         <ContactDetailsSection contact={contact} />
         <ContactStageSection contact={contact} />
         <ContactTagsSection contact={contact} />
+        <ContactPersonsSection contact={contact} />
       </div>
     </ResponsiveScrollArea>
   );

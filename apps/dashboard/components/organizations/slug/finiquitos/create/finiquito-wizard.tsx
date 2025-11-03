@@ -9,6 +9,7 @@ import { Step1BaseConfig } from './steps/step1-base-config';
 import { Step2Factors } from './steps/step2-factors';
 import { Step3Deductions } from './steps/step3-deductions';
 import { Step4Review } from './steps/step4-review';
+import type { EmpresaSelectorDto } from '~/data/finiquitos/get-empresas-for-selector';
 
 const STEPS = [
   { number: 1, title: 'Configuración', description: 'Datos básicos y prestaciones' },
@@ -100,12 +101,16 @@ function StepIndicator() {
   );
 }
 
-function WizardContent() {
+type WizardContentProps = {
+  empresas: EmpresaSelectorDto[];
+};
+
+function WizardContent({ empresas }: WizardContentProps) {
   const { currentStep } = useWizard();
 
   return (
     <div className="mt-6">
-      {currentStep === 1 && <Step1BaseConfig />}
+      {currentStep === 1 && <Step1BaseConfig empresas={empresas} />}
       {currentStep === 2 && <Step2Factors />}
       {currentStep === 3 && <Step3Deductions />}
       {currentStep === 4 && <Step4Review />}
@@ -115,9 +120,10 @@ function WizardContent() {
 
 type FiniquitoWizardProps = {
   initialData?: Parameters<typeof WizardProvider>[0]['initialData'];
+  empresas: EmpresaSelectorDto[];
 };
 
-export function FiniquitoWizard({ initialData }: FiniquitoWizardProps = {}) {
+export function FiniquitoWizard({ initialData, empresas }: FiniquitoWizardProps) {
   return (
     <WizardProvider initialData={initialData}>
       <Card className="w-full">
@@ -129,7 +135,7 @@ export function FiniquitoWizard({ initialData }: FiniquitoWizardProps = {}) {
         </CardHeader>
         <CardContent>
           <StepIndicator />
-          <WizardContent />
+          <WizardContent empresas={empresas} />
         </CardContent>
       </Card>
     </WizardProvider>
