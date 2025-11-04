@@ -194,18 +194,67 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
         label: 'PRIMA DE ANTIGÜEDAD',
         amount: toNumber(finiquito.montoPrimaAntiguedad)
       }
+    ] : []),
+    // Conceptos de Complemento (solo si está activado)
+    ...(finiquito.complementoActivado ? [
+      {
+        label: 'SALARIOS DEVENGADOS (COMPLEMENTO)',
+        amount: toNumber(finiquito.montoDiasTrabajadosComplemento)
+      },
+      {
+        label: 'SÉPTIMO DÍA (COMPLEMENTO)',
+        amount: toNumber(finiquito.montoSeptimoDiaComplemento)
+      },
+      {
+        label: 'PRIMA VACACIONAL (COMPLEMENTO)',
+        amount: toNumber(finiquito.montoPrimaVacacionalComplemento)
+      },
+      {
+        label: 'PARTE PROPORCIONAL DE VACACIONES (COMPLEMENTO)',
+        amount: toNumber(finiquito.montoVacacionesComplemento)
+      },
+      {
+        label: 'VACACIONES PENDIENTES (COMPLEMENTO)',
+        amount: toNumber(finiquito.realPendingVacationAmount)
+      },
+      {
+        label: 'PRIMA VACACIONAL PENDIENTE (COMPLEMENTO)',
+        amount: toNumber(finiquito.realPendingPremiumAmount)
+      },
+      {
+        label: 'PARTE PROPORCIONAL DE AGUINALDO (COMPLEMENTO)',
+        amount: toNumber(finiquito.montoAguinaldoComplemento)
+      }
+    ] : []),
+    // Conceptos de Liquidación Complemento (solo si ambos están activados)
+    ...((finiquito.liquidacionActivada && finiquito.complementoActivado) ? [
+      {
+        label: 'INDEMNIZACIÓN CONSTITUCIONAL (90 DÍAS) (COMPLEMENTO)',
+        amount: toNumber(finiquito.montoIndemnizacion90DiasComplemento)
+      },
+      {
+        label: 'INDEMNIZACIÓN ADICIONAL (20 DÍAS) (COMPLEMENTO)',
+        amount: toNumber(finiquito.montoIndemnizacion20DiasComplemento)
+      },
+      {
+        label: 'PRIMA DE ANTIGÜEDAD (COMPLEMENTO)',
+        amount: toNumber(finiquito.montoPrimaAntiguedadComplemento)
+      }
     ] : [])
   ];
 
   // Filtrar solo los conceptos con monto > 0
   const concepts = allConcepts.filter(c => c.amount > 0);
 
-  // Calcular total neto de percepciones fiscales
+  // Calcular total neto de percepciones fiscales (incluyendo complemento y liquidación complemento)
   const totalPercepcionesFiscales =
     toNumber(finiquito.totalPercepcionesFiniquito) +
-    (finiquito.liquidacionActivada ? toNumber(finiquito.totalPercepcionesLiquidacion) : 0);
+    (finiquito.liquidacionActivada ? toNumber(finiquito.totalPercepcionesLiquidacion) : 0) +
+    (finiquito.complementoActivado ? toNumber(finiquito.totalPercepcionesComplemento) : 0) +
+    ((finiquito.liquidacionActivada && finiquito.complementoActivado) ? toNumber(finiquito.totalPercepcionesLiquidacionComplemento) : 0);
 
   // Definir todos los conceptos posibles de deducciones
+  // NOTA: El ISR se calcula globalmente para fiscal + complemento (no hay campos separados de ISR para complemento)
   const allDeductions: Concepto[] = [
     {
       label: 'ISR FINIQUITO',
@@ -245,12 +294,14 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
   const deductions = allDeductions.filter(d => d.amount > 0);
 
   // Calcular total de deducciones fiscales
+  // NOTA: El ISR es global (cubre fiscal + complemento), pero totalDeduccionesFiniquito y totalDeduccionesLiquidacion
+  // ya incluyen el ISR correspondiente más las deducciones manuales
   const totalDeduccionesFiscales =
     toNumber(finiquito.totalDeduccionesFiniquito) +
     (finiquito.liquidacionActivada ? toNumber(finiquito.totalDeduccionesLiquidacion) : 0);
 
-  // Total neto final (percepciones - deducciones)
-  const totalNeto = toNumber(finiquito.totalFiniquito || 0) + (finiquito.liquidacionActivada ? toNumber(finiquito.totalLiquidacion || 0) : 0);
+  // Total neto final (usar totalAPagar que incluye finiquito + liquidación + complemento + liquidación complemento)
+  const totalNeto = toNumber(finiquito.totalAPagar || 0);
 
   // Calcular número de líneas en la tabla de conceptos
   // Percepciones + 1 línea de total percepciones + deducciones + 1 línea de total deducciones + 1 línea de total neto
@@ -264,8 +315,10 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
 
   // Reducción progresiva del tamaño de letra según número de líneas
   let fontSize = 11; // Tamaño base
-  if (conceptLines >= 15) {
-    fontSize = 9.5; // Reducir a 9.5pt si hay 15+ líneas
+  if (conceptLines > 20) {
+    fontSize = 9; // Reducir a 9pt si hay más de 20 líneas
+  } else if (conceptLines >= 15) {
+    fontSize = 9.5; // Reducir a 9.5pt si hay 15-20 líneas
   } else if (conceptLines >= 10) {
     fontSize = 10; // Reducir a 10pt si hay 10-14 líneas
   }
