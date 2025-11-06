@@ -10,6 +10,7 @@ import numeral from 'numeral';
 import type { Finiquito } from '@workspace/database';
 import { numeroALetra } from './numero-a-letra';
 import { formatDateLong } from '../utils';
+import _ from 'lodash';
 
 // Utilidad opcional para convertir cm a puntos
 // const cm = (cmValue: number) => (cmValue * 72) / 2.54;
@@ -198,48 +199,28 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
     // Conceptos de Complemento (solo si está activado)
     ...(finiquito.complementoActivado ? [
       {
-        label: 'SALARIOS DEVENGADOS (COMPLEMENTO)',
-        amount: toNumber(finiquito.montoDiasTrabajadosComplemento)
+        label: "BONOS",
+        amount: _.sum([
+          toNumber(finiquito.montoDiasTrabajadosComplemento),
+          toNumber(finiquito.montoSeptimoDiaComplemento),
+          toNumber(finiquito.montoPrimaVacacionalComplemento),
+          toNumber(finiquito.montoVacacionesComplemento),
+          toNumber(finiquito.realPendingVacationAmount),
+          toNumber(finiquito.realPendingPremiumAmount),
+          toNumber(finiquito.montoAguinaldoComplemento)
+        ])
       },
-      {
-        label: 'SÉPTIMO DÍA (COMPLEMENTO)',
-        amount: toNumber(finiquito.montoSeptimoDiaComplemento)
-      },
-      {
-        label: 'PRIMA VACACIONAL (COMPLEMENTO)',
-        amount: toNumber(finiquito.montoPrimaVacacionalComplemento)
-      },
-      {
-        label: 'PARTE PROPORCIONAL DE VACACIONES (COMPLEMENTO)',
-        amount: toNumber(finiquito.montoVacacionesComplemento)
-      },
-      {
-        label: 'VACACIONES PENDIENTES (COMPLEMENTO)',
-        amount: toNumber(finiquito.realPendingVacationAmount)
-      },
-      {
-        label: 'PRIMA VACACIONAL PENDIENTE (COMPLEMENTO)',
-        amount: toNumber(finiquito.realPendingPremiumAmount)
-      },
-      {
-        label: 'PARTE PROPORCIONAL DE AGUINALDO (COMPLEMENTO)',
-        amount: toNumber(finiquito.montoAguinaldoComplemento)
-      }
     ] : []),
     // Conceptos de Liquidación Complemento (solo si ambos están activados)
     ...((finiquito.liquidacionActivada && finiquito.complementoActivado) ? [
       {
-        label: 'INDEMNIZACIÓN CONSTITUCIONAL (90 DÍAS) (COMPLEMENTO)',
-        amount: toNumber(finiquito.montoIndemnizacion90DiasComplemento)
+        label: "GRATIFICACIÓN",
+        amount: _.sum([
+          toNumber(finiquito.montoIndemnizacion90DiasComplemento),
+          toNumber(finiquito.montoIndemnizacion20DiasComplemento),
+          toNumber(finiquito.montoPrimaAntiguedadComplemento)
+        ])
       },
-      {
-        label: 'INDEMNIZACIÓN ADICIONAL (20 DÍAS) (COMPLEMENTO)',
-        amount: toNumber(finiquito.montoIndemnizacion20DiasComplemento)
-      },
-      {
-        label: 'PRIMA DE ANTIGÜEDAD (COMPLEMENTO)',
-        amount: toNumber(finiquito.montoPrimaAntiguedadComplemento)
-      }
     ] : [])
   ];
 
