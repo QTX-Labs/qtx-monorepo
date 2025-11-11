@@ -12,14 +12,14 @@ const conceptGroupSchema = z.object({
   label: z
     .string()
     .min(1, 'El nombre del grupo es requerido')
-    .max(50, 'El nombre del grupo no puede exceder 50 caracteres')
-    .regex(/^[^\x00-\x1F\x7F]+$/, 'El nombre no puede contener caracteres de control'),
+    .max(50, 'El nombre del grupo no puede exceder 50 caracteres'),
+  // .regex(/^[^\x00-\x1F\x7F]+$/, 'El nombre no puede contener caracteres de control'),
   conceptFields: z
     .array(
       z
         .string()
-        .max(30, 'El nombre del campo no puede exceder 30 caracteres')
-        .regex(/^[^\x00-\x1F\x7F]+$/, 'El campo no puede contener caracteres de control')
+      // .max(30, 'El nombre del campo no puede exceder 30 caracteres')
+      // .regex(/^[^\x00-\x1F\x7F]+$/, 'El campo no puede contener caracteres de control')
     )
     .min(1, 'Debe seleccionar al menos un concepto para el grupo'),
 });
