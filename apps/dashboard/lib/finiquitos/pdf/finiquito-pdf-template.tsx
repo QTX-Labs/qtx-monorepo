@@ -136,6 +136,10 @@ export function FiniquitoPDF({ finiquito, pdfConfig }: FiniquitoPDFProps) {
     return numeral(num).format('0,0.00');
   };
 
+  // Determine which hire date to display in PDF (fallback logic)
+  const displayHireDate = finiquito.printedHireDate ??
+    (finiquito.complementoActivado ? (finiquito.realHireDate ?? finiquito.hireDate) : finiquito.hireDate);
+
   const salarioDiario = toNumber(finiquito.fiscalDailySalary);
   const salarioLetra = numeroALetra(salarioDiario);
 
@@ -354,7 +358,7 @@ export function FiniquitoPDF({ finiquito, pdfConfig }: FiniquitoPDFProps) {
         {/* CUERPO PRINCIPAL */}
         <Text style={styles.paragraph}>
           POR MEDIO DEL PRESENTE OCURSO, ES MI DESEO RENUNCIAR VOLUNTARIAMENTE A MI EMPLEO, Y AL PUESTO DE{' '}
-          <Text style={styles.bold}>{puesto}</Text> QUE VENIA DESEMPEÑANDO DESDE EL {formatDateLong(finiquito.hireDate)},
+          <Text style={styles.bold}>{puesto}</Text> QUE VENIA DESEMPEÑANDO DESDE EL {formatDateLong(displayHireDate)},
           ASIMISMO EN ESTE ACTO RENUNCIO VOLUNTARIAMENTE A MI ULTIMO SALARIO DE ${formatCurrency(finiquito.fiscalDailySalary)}{' '}
           ({salarioLetra} PESOS 00/100 M.N.), DIARIOS, MISMO SALARIO QUE PERCIBÍ DURANTE EL TIEMPO QUE EXISTIÓ LA RELACIÓN LABORAL;
           DE IGUAL FORMA RENUNCIO DE MANERA VOLUNTARIA AL HORARIO QUE VENIA DESEMPEÑANDO ACLARANDO QUE ÚNICAMENTE LABORÉ LA JORNADA
@@ -407,7 +411,7 @@ export function FiniquitoPDF({ finiquito, pdfConfig }: FiniquitoPDFProps) {
             <Text style={styles.bold}>RFC:</Text> {finiquito.employeeRFC}{'\n'}
             <Text style={styles.bold}>CURP:</Text> {finiquito.employeeCURP}{'\n'}
             <Text style={styles.bold}>Empresa:</Text> {finiquito.empresaName}{'\n'}
-            <Text style={styles.bold}>Fecha de ingreso:</Text> {formatDateLong(finiquito.hireDate)}{'\n'}
+            <Text style={styles.bold}>Fecha de ingreso:</Text> {formatDateLong(displayHireDate)}{'\n'}
             <Text style={styles.bold}>Fecha de baja:</Text> {formatDateLong(finiquito.terminationDate)}{'\n'}
             <Text style={styles.bold}>Puesto:</Text> {puesto}{'\n'}
             <Text style={styles.bold}>Salario diario:</Text> ${formatCurrency(finiquito.fiscalDailySalary)}{'\n'}

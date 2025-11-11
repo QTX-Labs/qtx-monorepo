@@ -117,6 +117,7 @@ export const createFiniquito = authOrganizationActionClient
           complementIntegrationFactor: parsedInput.complementIntegrationFactor ?? null,
           complementIntegratedDailySalary: parsedInput.complementIntegratedDailySalary ?? null,
           realHireDate: parsedInput.realHireDate ?? null,
+          printedHireDate: parsedInput.printedHireDate ?? null,
           pendingWorkDays: 0, // No se usa en nueva estructura
 
           // Prestaciones

@@ -68,6 +68,7 @@ export function Step1BaseConfig({ empresas }: Step1BaseConfigProps) {
       daysFactor: 30.4,
       complementIntegratedDailySalary: 0,
       complementIntegrationFactor: 0,
+      printedHireDate: undefined,
       liquidacionActivada: false,
       daysFactorModified: false,
       allowBelowMinimumSalary: false,
@@ -456,6 +457,27 @@ export function Step1BaseConfig({ empresas }: Step1BaseConfigProps) {
                   </FormControl>
                   <FormDescription>
                     Máximo 20 caracteres. Ayuda a distinguir este finiquito en la lista.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="printedHireDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Fecha de Ingreso Impresa (Opcional)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="date"
+                      value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''}
+                      onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Fecha que aparecerá en el PDF. Si está vacío, se usa la fecha de ingreso fiscal o real según corresponda.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

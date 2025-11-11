@@ -274,6 +274,13 @@ The dashboard app includes a comprehensive finiquito calculator system for Mexic
    - **Custom Identifier**: Optional field (max 20 chars) to help distinguish finiquitos in list view
      - Displayed below employee name in stacked layout on list page
      - When duplicating: original truncated to 15 chars, "-copy" appended
+   - **Printed Hire Date**: Optional field to specify custom hire date for PDF display
+     - Independent of fiscal/real hire dates used for calculations
+     - Located in "Datos Básicos" section after terminationDate field (corrected placement as of Nov 2025)
+     - Purely cosmetic for PDF documentation purposes
+     - No validation constraints (can be any date, past/future/present)
+     - Fallback logic when null: `complementoActivado ? realHireDate : fiscalHireDate` (with nested null safety)
+     - Display includes fallback indicators in Step 4 Review and Detail View
    - **Vacation Days Editing**: Field is editable with smart auto-recalculation
      - When hire/termination dates change: recalculates vacation days automatically
      - When user manually edits vacation days: preserves manual value, only recalculates integration factor
@@ -360,6 +367,10 @@ The dashboard app includes a comprehensive finiquito calculator system for Mexic
 - Total to pay: `totalAPagar`
 - Employee identification: `employeeRFC`, `employeeCURP` (both required)
 - Custom identifier: `customFiniquitoIdentifier` (optional, max 20 chars) - helps distinguish finiquitos in list view
+- Hire dates:
+  - `hireDate DateTime @db.Date` (required) - Fiscal hire date used for calculations
+  - `realHireDate DateTime? @db.Date` (optional) - Real hire date for complemento calculations
+  - `printedHireDate DateTime? @db.Date` (optional) - Custom hire date for PDF display, independent of calculation dates
 
 **V1 Field Names (DEPRECATED - DO NOT USE):**
 - Legacy amounts: `realWorkedDaysAmount`, `realVacationAmount`, `realVacationPremiumAmount`, `realAguinaldoAmount`
@@ -375,6 +386,16 @@ See `/apps/dashboard/actions/finiquitos/helpers/map-calculation.ts` for the comp
 - Input preservation fields (integration factors, pending concepts)
 
 #### PDF Generation
+
+**Hire Date Display** (`finiquito-pdf-template.tsx` lines 140-141, 361, 414):
+The PDF template uses smart fallback logic to determine which hire date to display:
+- **Primary**: Uses `printedHireDate` if provided (custom date specified by user in Step 1 "Datos Básicos")
+- **Fallback when null**:
+  - If `complementoActivado === true`: Uses `realHireDate` (or `hireDate` if `realHireDate` is also null)
+  - If `complementoActivado === false`: Uses `hireDate` (fiscal hire date)
+- Implementation: `const displayHireDate = printedHireDate ?? (complementoActivado ? (realHireDate ?? hireDate) : hireDate)`
+- Displayed in two locations: resignation letter body (line 361) and receipt metadata section (line 414)
+- Transparent to user: Step 4 Review and Detail View both show which date will be used with clear fallback indicators
 
 **Dynamic Layout Optimization** (`finiquito-pdf-template.tsx`):
 The PDF template dynamically adjusts margins and font size based on the number of concepts to prevent overflow to a third page:
@@ -493,11 +514,12 @@ The system supports duplicating existing finiquitos to streamline the creation o
 **Technical Implementation:**
 
 **Data Mapping Layer** (`/apps/dashboard/lib/finiquitos/map-finiquito-to-wizard.ts`):
-- `mapFiniquitoToStep1()`: Maps all 29 Step 1 fields including employee info, dates, salaries, and toggles
+- `mapFiniquitoToStep1()`: Maps all 31 Step 1 fields including employee info, dates (hireDate, realHireDate, printedHireDate), salaries, and toggles
 - `mapFiniquitoToStep2()`: Maps all 22 factor groups (finiquito, liquidación, complemento, gratification, pending benefits)
 - `mapFiniquitoToStep3()`: Maps all 3 manual deductions (Infonavit, Fonacot, Otras)
 - Handles Prisma Decimal to number conversions throughout
 - Implements custom identifier truncation logic
+- Preserves `printedHireDate` when duplicating via `|| undefined` pattern (line 56)
 
 **Server Action** (`/apps/dashboard/actions/finiquitos/duplicate-finiquito.ts`):
 - Uses `authOrganizationActionClient` for proper authorization
@@ -568,26 +590,26 @@ Only version 2 finiquitos can be duplicated. This avoids complexity with legacy 
 - Duplicate action: `/apps/dashboard/actions/finiquitos/duplicate-finiquito.ts` (fetches and transforms finiquito for duplication)
 - Field mapping: `/apps/dashboard/actions/finiquitos/helpers/map-calculation.ts` (calculation to Prisma)
 - Wizard mapping: `/apps/dashboard/lib/finiquitos/map-finiquito-to-wizard.ts` (Prisma to wizard format for duplication)
-- PDF template: `/apps/dashboard/lib/finiquitos/pdf/finiquito-pdf-template.tsx`
+- PDF template: `/apps/dashboard/lib/finiquitos/pdf/finiquito-pdf-template.tsx` (hire date fallback logic lines 140-141)
 - List components: `/apps/dashboard/components/organizations/slug/finiquitos/`
   - `finiquitos-list.tsx` (displays custom identifier, includes "Duplicar" action)
   - `finiquitos-content.tsx` (handles duplication click, manages wizard state)
 - Detail sections: `/apps/dashboard/components/organizations/slug/finiquitos/detail/`
-  - `general-info-section.tsx`
+  - `general-info-section.tsx` (displays printed hire date with fallback indicator in Fechas section)
   - `finiquito-section.tsx` (displays pending concepts)
   - `complemento-section.tsx` (displays pending concepts)
   - `liquidacion-complemento-section.tsx` (displays liquidación complemento)
   - `total-section.tsx` (includes liquidación complemento in totals)
 - Live calc hook: `/apps/dashboard/components/organizations/slug/finiquitos/create/hooks/use-live-calculation.ts`
 - Wizard context: `/apps/dashboard/components/organizations/slug/finiquitos/create/wizard-context.tsx`
-- Step 1: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step1-base-config.tsx` (vacation days editing, custom identifier field)
+- Step 1: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step1-base-config.tsx` (vacation days editing, custom identifier field, printed hire date field in "Datos Básicos" section)
 - Step 2: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step2-factors.tsx` (label corrections)
-- Step 4: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step4-review/finiquito-breakdown.tsx`
+- Step 4: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step4-review.tsx` (displays printed hire date with fallback indicator)
 - Live panel: `/apps/dashboard/components/organizations/slug/finiquitos/shared/live-calculation-panel.tsx`
 - Data fetching: `/apps/dashboard/data/finiquitos/get-finiquitos.ts` (includes customFiniquitoIdentifier in query)
 
 **Schemas:**
-- Step 1: `/apps/dashboard/lib/finiquitos/schemas/step1-base-config-schema.ts` (includes customFiniquitoIdentifier validation)
+- Step 1: `/apps/dashboard/lib/finiquitos/schemas/step1-base-config-schema.ts` (includes customFiniquitoIdentifier, printedHireDate validation)
 - Step 2: `/apps/dashboard/lib/finiquitos/schemas/step2-factors-schema.ts`
 - Step 3: `/apps/dashboard/lib/finiquitos/schemas/step3-deductions-schema.ts`
 - PDF Config: `/apps/dashboard/lib/finiquitos/schemas/pdf-complemento-config-schema.ts` (complemento display configuration)
@@ -628,3 +650,7 @@ Only version 2 finiquitos can be duplicated. This avoids complexity with legacy 
 - **Complemento concepts missing from dialog**: In detail view, only concepts with amount > 0 are shown (active concepts filtering). In list view, all concept fields are passed (PDF API filters during rendering). If concept should appear but doesn't, verify database field has non-zero value and field name matches `ALL_COMPLEMENTO_CONCEPTS` array.
 - **Configuration not persisting between downloads**: By design - configuration is per-download only, not saved to database. Each PDF download shows fresh dialog with default configuration. To implement persistence, add `pdfConfig` field to Finiquito model and pre-populate modal with saved config.
 - **Security validation errors in PDF config**: Schema enforces security constraints to prevent attacks. "No puede crear más de 20 grupos" means you've exceeded the DoS protection limit - reduce number of groups. Control character errors ("no puede contener caracteres de control") indicate invalid input - remove special characters from labels or field names. These limits protect against prototype pollution, injection attacks, and resource exhaustion.
+- **PDF showing wrong hire date**: The PDF uses 3-tier fallback logic for displaying hire dates. Priority order: (1) `printedHireDate` if set by user (2) `realHireDate` if complemento is active and realHireDate exists (3) `hireDate` (fiscal) as final fallback. If wrong date appears, verify `printedHireDate` field is saved in database (nullable DateTime @db.Date). For existing finiquitos without `printedHireDate`, ensure fallback logic in PDF template (lines 140-141, 361, 414) properly checks complemento activation state and handles null values with nested nullish coalescing.
+- **Printed hire date not preserving during duplication**: Verify that `mapFiniquitoToStep1()` includes `printedHireDate: finiquito.printedHireDate || undefined` mapping (line 56 in `map-finiquito-to-wizard.ts`). Also check that `create-finiquito.ts` saves the field: `printedHireDate: parsedInput.printedHireDate ?? null` (line 120). The field accepts any date without validation - no past/future restrictions.
+- **Printed hire date field not showing in Step 1**: The field is located in "Datos Básicos" section (not "Factores Fiscales" as initially planned). Check that schema includes `printedHireDate: z.coerce.date().optional()` and form uses conditional onChange to support clearing: `onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}`. Default value should be `undefined` not null.
+- **Step 4 or Detail View not showing printed hire date fallback**: Both views should display the printed hire date field with clear indicators of which date will be used. Check for proper conditional rendering that shows italicized fallback text when `printedHireDate` is null. Implementation pattern: `{printedHireDate ? formatDate(printedHireDate) : <span className="italic">Usando fecha [real/fiscal]: {date}</span>}`

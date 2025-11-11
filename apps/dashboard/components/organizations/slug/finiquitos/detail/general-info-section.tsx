@@ -112,6 +112,20 @@ export function GeneralInfoSection({ finiquito }: GeneralInfoSectionProps) {
                   <p className="font-medium">{formatDate(finiquito.realHireDate)}</p>
                 </div>
               )}
+              <div>
+                <span className="text-sm text-muted-foreground">Fecha Impresa en PDF:</span>
+                <p className="font-medium">
+                  {finiquito.printedHireDate ? (
+                    formatDate(finiquito.printedHireDate)
+                  ) : (
+                    <span className="text-muted-foreground italic">
+                      {finiquito.complementoActivado && finiquito.realHireDate
+                        ? `Usando fecha real: ${formatDate(finiquito.realHireDate)}`
+                        : `Usando fecha fiscal: ${formatDate(finiquito.hireDate)}`}
+                    </span>
+                  )}
+                </p>
+              </div>
             </div>
           </div>
 
