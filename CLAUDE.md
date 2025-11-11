@@ -314,6 +314,20 @@ The dashboard app includes a comprehensive finiquito calculator system for Mexic
   4. Maps result to structured output with `factores`, `montos`, `isr`, `deducciones`, `totales`
 - When creating finiquito: `create-finiquito.ts` must pass `step2Data` as `manualFactors` to preserve user edits
 
+**Complemento Calculation - Net Differences** (Fixed Nov 2025):
+- **Complemento represents a DIFFERENCE, not an addition**: When an employee's real salary exceeds their fiscal salary, the complemento pays only the net difference between the two amounts
+- **Formula**: `Net Complemento = Complemento Amount - Fiscal Amount`
+- **Example**: If aguinaldo fiscal = $1,200 and aguinaldo complemento = $1,600, the net complemento stored is $400 (not $1,600)
+- **Applies to all perception concepts**:
+  - Finiquito: días trabajados, séptimo día, vacaciones, vacaciones pendientes, prima vacacional, prima vacacional pendiente, aguinaldo
+  - Liquidación complemento: 90-day indemnification, 20-day indemnification, seniority premium
+- **Implementation**:
+  - `implementation.ts` lines 265-278: Subtracts fiscal amounts from complemento amounts during summation
+  - `calculate-finiquito-complete.ts` lines 489-502: Uses `mapNetComplementoPercept()` helper to map net values to output
+  - Helper subtracts fiscal values from complemento for: `totalAmount`, `totalTaxBase`, `totalExemptBase`
+- **Database storage**: Complemento fields (`montoDiasTrabajadosComplemento`, etc.) store NET differences, not full amounts
+- **Total to pay calculation**: `totalAPagar = netoFiniquito + netoLiquidacion + netoLiquidacionComplemento + netoComplemento` (all net values)
+
 **Important Data Distinctions:**
 - **Prima Vacacional Factor vs Value**:
   - In `Step2Factors.primaVacacional`: stored as percentage factor (e.g., 0.24 for 24%)
@@ -432,10 +446,48 @@ The system supports duplicating existing finiquitos to streamline the creation o
 **Version Requirement:**
 Only version 2 finiquitos can be duplicated. This avoids complexity with legacy v1 field mappings and ensures all duplicated finiquitos use current field structure.
 
+#### Known Edge Cases and Limitations
+
+**Complemento Calculation Edge Cases:**
+
+1. **Negative Net Complemento** (Not yet handled):
+   - **Scenario**: When fiscal amount exceeds complemento amount (e.g., fiscal aguinaldo $1,600 vs complemento aguinaldo $1,200)
+   - **Current behavior**: Subtraction produces negative value ($-400) which is included in totals
+   - **Impact**: Can corrupt total to pay calculation if negative values aren't properly accounted for
+   - **Status**: Edge case identified in code review (Nov 2025), validation layer not yet implemented
+   - **Mitigation**: Unusual scenario (typically fiscal < real salary), likely indicates data entry error or retroactive adjustment
+   - **Future work**: Add validation to prevent or warn when complemento < fiscal for any concept
+
+2. **Tax Base Relationship Integrity** (Not yet validated):
+   - **Invariant**: `totalAmount = totalTaxBase + totalExemptBase` must hold for each concept
+   - **Current behavior**: Net complemento independently subtracts fiscal from complemento for all three fields
+   - **Risk**: If fiscal and complemento have different tax exempt calculations, subtraction can violate the invariant (e.g., produce negative exempt base)
+   - **Example**:
+     - Fiscal: totalAmount=$100, taxBase=$75, exemptBase=$25
+     - Complemento: totalAmount=$150, taxBase=$150, exemptBase=$0
+     - Net: totalAmount=$50, taxBase=$75, exemptBase=$-25 (INVALID)
+   - **Status**: Edge case identified in code review (Nov 2025), deeper analysis needed
+   - **Mexican labor law context**: Tax exempt rules for severance concepts have specific thresholds (UMA-based) that may differ between fiscal and real salary calculations
+   - **Future work**: Research correct tax base handling for net complemento, potentially require complemento tax bases to inherit fiscal exempt amounts
+
+3. **Total Mismatch Between Layers** (Monitoring needed):
+   - **Scenario**: Net complemento total calculated using `BigCalculatorImpl` may not exactly match sum of individual concept net amounts
+   - **Cause**: If negative clamping or rounding differs between calculation layers
+   - **Impact**: Minor discrepancies in cents between detail breakdown and summary totals
+   - **Status**: Warning raised in code review, requires real-world testing
+   - **Future work**: Add integration tests with complemento scenarios, monitor for user-reported discrepancies
+
+**General Notes:**
+- Edge cases primarily affect complemento (salary complement) feature, which is optional
+- Most finiquitos use fiscal-only calculation without these risks
+- Code review completed Nov 11, 2025 - follow-up task recommended for validation layer
+- See task file `/sessions/tasks/h-fix-complemento-neto-calculation.md` for full technical analysis
+
 #### File Reference
 
 **Key Files:**
-- Entry point: `/apps/dashboard/lib/finiquitos/calculate-finiquito-complete.ts`
+- Entry point: `/apps/dashboard/lib/finiquitos/calculate-finiquito-complete.ts` (orchestration, includes `mapNetComplementoPercept()` helper)
+- Core calculator: `/apps/dashboard/lib/finiquitos/calculadora-finiquitos/implementation.ts` (monetary calculations, net complemento summation)
 - Create action: `/apps/dashboard/actions/finiquitos/create-finiquito.ts` (includes manualFactors parameter, saves customFiniquitoIdentifier)
 - Duplicate action: `/apps/dashboard/actions/finiquitos/duplicate-finiquito.ts` (fetches and transforms finiquito for duplication)
 - Field mapping: `/apps/dashboard/actions/finiquitos/helpers/map-calculation.ts` (calculation to Prisma)
@@ -483,3 +535,6 @@ Only version 2 finiquitos can be duplicated. This avoids complexity with legacy 
 - **Duplicated identifier exceeds 20 chars**: The mapping function truncates to 15 chars before appending "-copy". If still exceeding limit, check truncation logic in `mapFiniquitoToStep1()`.
 - **Wizard not opening with duplicated data**: Verify that `handleDuplicateClick()` in `FiniquitosContent` properly updates all wizard context (step1, step2, step3, liveCalculation) before setting `isCreating=true`.
 - **Step 2 values overwritten when duplicating**: FIXED - The Step 1 submit handler now checks if `step2Data` exists and preserves values during duplication. If Step 2 values are still being lost, verify that `step2Data` is properly set in wizard context before advancing from Step 1, and that the conditional logic in `step1-base-config.tsx` (lines 253-297) properly passes `manualFactors` when `step2Data` is present.
+- **Complemento amounts appearing doubled in totals**: FIXED (Nov 2025) - Complemento now correctly calculates NET differences (complemento - fiscal) instead of full amounts. If totals still seem incorrect, verify that `implementation.ts` lines 265-278 and 245-251 subtract fiscal amounts, and that `mapNetComplementoPercept()` helper is used in output mapping.
+- **Negative complemento values in display**: This can occur when fiscal amounts exceed complemento amounts (unusual but possible with data entry errors or retroactive adjustments). Known edge case - validation not yet implemented. See task notes for details on future tax base integrity validation.
+- **Complemento concepts showing zero when they shouldn't**: Verify that both fiscal and complemento toggles are enabled in Step 1. Check that `manualFactors` parameter includes complemento data when calling `calculateFiniquitoComplete()`. Confirm that real daily salary differs from fiscal daily salary.
