@@ -394,6 +394,82 @@ The PDF filters and displays only concepts with non-zero amounts, supporting:
 - Pending concepts (vacaciones pendientes, prima vacacional pendiente)
 - Gratification (if present)
 
+**Complemento Configuration Dialog** (Added Nov 2025):
+When downloading a finiquito PDF with complemento activated, users can customize how complemento concepts are displayed through a pre-download configuration dialog. This provides flexibility in grouping concepts for different business needs.
+
+**User Flow:**
+1. User clicks "Descargar PDF" button (from list or detail view)
+2. If `complementoActivado === true`, configuration dialog appears automatically
+3. If complemento inactive, PDF generates directly (no dialog shown)
+4. Dialog presents two display modes:
+   - **Desglosados (Itemized)**: Each complemento concept shows individually with its actual name
+   - **Agrupados (Grouped)**: User creates custom groups with custom labels to sum selected concepts
+5. For grouped mode:
+   - Custom groups can be created (e.g., "BONOS", "AYUDA DE SUELDO", "GRATIFICACIÓN")
+   - Maximum 20 groups allowed (security constraint to prevent DoS attacks)
+   - Each group has an editable label (max 50 chars)
+   - User selects which concepts belong to each group via checkboxes
+   - Strict validation prevents concept reuse (each concept can only belong to one group)
+   - Groups display summed amounts in PDF
+6. Default configuration matches previous hardcoded behavior:
+   - Finiquito-complemento concepts → "BONOS" group
+   - Liquidación-complemento concepts → "GRATIFICACIÓN" group
+7. User confirms configuration or cancels
+8. PDF generates with selected configuration
+
+**Technical Architecture:**
+
+**Configuration Data Flow:**
+- Dialog modal managed via NiceModal integration (`PDFComplementoConfigModal`)
+- Configuration encoded as JSON and passed to API via URL query parameter
+- API route validates configuration against Zod schema (`pdfComplementoConfigSchema`)
+- PDF template receives optional `pdfConfig` prop for dynamic rendering
+- Backward compatible: defaults to current grouping when no config provided
+
+**Modal Component** (`pdf-complemento-config-modal.tsx`):
+- Responsive design: Dialog for desktop (>= md breakpoint), Drawer for mobile
+- Form validation with React Hook Form + Zod
+- Dynamic group management via `useFieldArray` hook
+- Smart checkbox disabling: concepts assigned to one group are disabled in others
+- Visual feedback for assigned concepts ("ya asignado" label)
+- Resolves with configuration object on submit, null on cancel
+
+**Validation Layer** (`pdf-complemento-config-schema.ts`):
+- Display mode validation: enum `['itemized', 'grouped']`
+- Group validation: label required (1-50 chars), at least one concept per group
+- Custom refinements:
+  - Grouped mode must have at least one group
+  - Strict duplicate prevention: no concept can appear in multiple groups
+- TypeScript type inference for `PDFComplementoConfig`, `ConceptGroup`
+- **Security Constraints:**
+  - Maximum 20 groups (prevents DoS attacks via excessive group creation)
+  - Concept field names limited to 30 characters with control character blocking
+  - Group labels limited to 50 characters with control character blocking
+  - Control character regex validation: `/^[^\x00-\x1F\x7F]+$/` prevents injection attacks
+
+**Concept Definitions** (`pdf-complemento-config-defaults.ts`):
+- `FINIQUITO_COMPLEMENTO_CONCEPTS`: 7 finiquito-complemento field mappings
+- `LIQUIDACION_COMPLEMENTO_CONCEPTS`: 3 liquidación-complemento field mappings
+- `ALL_COMPLEMENTO_CONCEPTS`: Combined array of all 10 concepts
+- `DEFAULT_COMPLEMENTO_CONFIG`: Preserves previous behavior (BONOS + GRATIFICACIÓN)
+
+**API Integration** (`/api/finiquitos/[id]/pdf/route.tsx`):
+- Extracts `config` query parameter via `request.nextUrl.searchParams`
+- Decodes URI component and parses JSON string
+- Validates against schema, returns 400 error if invalid
+- Passes validated config to PDF template component
+- Null config when parameter absent (backward compatibility)
+- Structured error logging with context (error message, truncated payload, finiquito ID, user ID) for security monitoring
+
+**PDF Template Rendering** (`finiquito-pdf-template.tsx`):
+- New `renderComplementoConcepts(config)` helper function
+- Accepts optional `PDFComplementoConfig` parameter
+- Itemized mode: filters concepts with amount > 0, maps to uppercase labels
+- Grouped mode: sums concept amounts by group, filters out zero-amount groups
+- Uses lodash `_.sum()` for robust summation
+- Handles Prisma Decimal conversion via existing `toNumber()` utility
+- Replaces previous hardcoded "BONOS" and "GRATIFICACIÓN" sections
+
 #### Finiquito Duplication
 
 The system supports duplicating existing finiquitos to streamline the creation of similar records. This feature is accessible from the finiquitos list view via the Actions dropdown menu.
@@ -514,7 +590,14 @@ Only version 2 finiquitos can be duplicated. This avoids complexity with legacy 
 - Step 1: `/apps/dashboard/lib/finiquitos/schemas/step1-base-config-schema.ts` (includes customFiniquitoIdentifier validation)
 - Step 2: `/apps/dashboard/lib/finiquitos/schemas/step2-factors-schema.ts`
 - Step 3: `/apps/dashboard/lib/finiquitos/schemas/step3-deductions-schema.ts`
+- PDF Config: `/apps/dashboard/lib/finiquitos/schemas/pdf-complemento-config-schema.ts` (complemento display configuration)
 - Types: `/apps/dashboard/lib/finiquitos/types/calculate-finiquito-types.ts`
+
+**PDF Files:**
+- Template: `/apps/dashboard/lib/finiquitos/pdf/finiquito-pdf-template.tsx` (includes `renderComplementoConcepts()` helper)
+- Config defaults: `/apps/dashboard/lib/finiquitos/pdf/pdf-complemento-config-defaults.ts` (concept mappings, default config)
+- Config modal: `/apps/dashboard/components/organizations/slug/finiquitos/pdf-complemento-config-modal.tsx` (configuration dialog)
+- API route: `/apps/dashboard/app/api/finiquitos/[id]/pdf/route.tsx` (query param parsing, validation)
 
 ## Troubleshooting
 
@@ -538,3 +621,10 @@ Only version 2 finiquitos can be duplicated. This avoids complexity with legacy 
 - **Complemento amounts appearing doubled in totals**: FIXED (Nov 2025) - Complemento now correctly calculates NET differences (complemento - fiscal) instead of full amounts. If totals still seem incorrect, verify that `implementation.ts` lines 265-278 and 245-251 subtract fiscal amounts, and that `mapNetComplementoPercept()` helper is used in output mapping.
 - **Negative complemento values in display**: This can occur when fiscal amounts exceed complemento amounts (unusual but possible with data entry errors or retroactive adjustments). Known edge case - validation not yet implemented. See task notes for details on future tax base integrity validation.
 - **Complemento concepts showing zero when they shouldn't**: Verify that both fiscal and complemento toggles are enabled in Step 1. Check that `manualFactors` parameter includes complemento data when calling `calculateFiniquitoComplete()`. Confirm that real daily salary differs from fiscal daily salary.
+- **PDF complemento configuration dialog not appearing**: Ensure `complementoActivado === true` in the finiquito data. Check that `handleDownloadPDF()` in list/detail view properly checks this flag before showing modal. Verify modal import: `PDFComplementoConfigModal` from correct path.
+- **Configuration modal validation errors**: "Debe crear al menos un grupo" means grouped mode requires at least one group - click "Agregar Grupo" button. "Un concepto no puede pertenecer a múltiples grupos" means a concept is assigned to multiple groups - uncheck duplicates. "Debe seleccionar al menos un concepto" means a group has no concepts selected - select at least one checkbox per group.
+- **PDF showing wrong complemento grouping**: If PDF doesn't match configuration, check that query parameter is properly encoded in fetch URL. Verify API route successfully parses and validates config (check server logs for parsing errors). Confirm `pdfConfig` prop is passed to `FiniquitoPDF` component. Test with direct API access to verify default config still works.
+- **URL too long error when downloading PDF**: Occurs when configuration JSON exceeds ~2000 char query param limit (rare, requires many groups with long labels). Reduce number of groups, shorten group labels, or migrate to POST endpoint approach. Typical configurations (5-10 groups) fit comfortably within limit.
+- **Complemento concepts missing from dialog**: In detail view, only concepts with amount > 0 are shown (active concepts filtering). In list view, all concept fields are passed (PDF API filters during rendering). If concept should appear but doesn't, verify database field has non-zero value and field name matches `ALL_COMPLEMENTO_CONCEPTS` array.
+- **Configuration not persisting between downloads**: By design - configuration is per-download only, not saved to database. Each PDF download shows fresh dialog with default configuration. To implement persistence, add `pdfConfig` field to Finiquito model and pre-populate modal with saved config.
+- **Security validation errors in PDF config**: Schema enforces security constraints to prevent attacks. "No puede crear más de 20 grupos" means you've exceeded the DoS protection limit - reduce number of groups. Control character errors ("no puede contener caracteres de control") indicate invalid input - remove special characters from labels or field names. These limits protect against prototype pollution, injection attacks, and resource exhaustion.

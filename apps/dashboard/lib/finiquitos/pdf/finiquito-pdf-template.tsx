@@ -11,6 +11,8 @@ import type { Finiquito } from '@workspace/database';
 import { numeroALetra } from './numero-a-letra';
 import { formatDateLong } from '../utils';
 import _ from 'lodash';
+import type { PDFComplementoConfig } from '../schemas/pdf-complemento-config-schema';
+import { DEFAULT_COMPLEMENTO_CONFIG, ALL_COMPLEMENTO_CONCEPTS } from './pdf-complemento-config-defaults';
 
 // Utilidad opcional para convertir cm a puntos
 // const cm = (cmValue: number) => (cmValue * 72) / 2.54;
@@ -98,6 +100,7 @@ interface FiniquitoPDFProps {
   finiquito: Finiquito & {
     user: { name: string; email: string | null };
   };
+  pdfConfig?: PDFComplementoConfig;
 }
 
 /**
@@ -121,7 +124,7 @@ interface FiniquitoPDFProps {
  *
  * @see /apps/dashboard/actions/finiquitos/helpers/map-calculation.ts - Mapeo de cálculos a campos Prisma
  */
-export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
+export function FiniquitoPDF({ finiquito, pdfConfig }: FiniquitoPDFProps) {
   const toNumber = (value: number | null | { toNumber?: () => number }): number => {
     if (value === null) return 0;
     return typeof value === 'number' ? value : value?.toNumber?.() ?? 0;
@@ -145,6 +148,50 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
   type Concepto = {
     label: string;
     amount: number;
+  };
+
+  /**
+   * Helper function to render complemento concepts dynamically based on configuration
+   * @param config - Optional PDF configuration (defaults to DEFAULT_COMPLEMENTO_CONFIG)
+   * @returns Array of concept objects with label and amount
+   */
+  const renderComplementoConcepts = (config?: PDFComplementoConfig): Concepto[] => {
+    if (!finiquito.complementoActivado) return [];
+
+    // Use default config if none provided (backward compatibility)
+    const finalConfig = config || DEFAULT_COMPLEMENTO_CONFIG;
+
+    // Itemized mode: show each concept individually with its actual label
+    if (finalConfig.displayMode === 'itemized') {
+      return ALL_COMPLEMENTO_CONCEPTS
+        .filter(c => {
+          const fieldValue = finiquito[c.field as keyof Finiquito];
+          const amount = toNumber(fieldValue as number | null | { toNumber?: () => number });
+          return amount > 0;
+        })
+        .map(c => {
+          const fieldValue = finiquito[c.field as keyof Finiquito];
+          return {
+            label: c.label.toUpperCase(),
+            amount: toNumber(fieldValue as number | null | { toNumber?: () => number }),
+          };
+        });
+    }
+
+    // Grouped mode: sum concepts by group
+    if (!finalConfig.groups) return [];
+
+    return finalConfig.groups
+      .map(group => ({
+        label: group.label,
+        amount: _.sum(
+          group.conceptFields.map(field => {
+            const fieldValue = finiquito[field as keyof Finiquito];
+            return toNumber(fieldValue as number | null | { toNumber?: () => number });
+          })
+        ),
+      }))
+      .filter(group => group.amount > 0); // Filter out groups with zero amount
   };
 
   const allConcepts: Concepto[] = [
@@ -196,32 +243,8 @@ export function FiniquitoPDF({ finiquito }: FiniquitoPDFProps) {
         amount: toNumber(finiquito.montoPrimaAntiguedad)
       }
     ] : []),
-    // Conceptos de Complemento (solo si está activado)
-    ...(finiquito.complementoActivado ? [
-      {
-        label: "BONOS",
-        amount: _.sum([
-          toNumber(finiquito.montoDiasTrabajadosComplemento),
-          toNumber(finiquito.montoSeptimoDiaComplemento),
-          toNumber(finiquito.montoPrimaVacacionalComplemento),
-          toNumber(finiquito.montoVacacionesComplemento),
-          toNumber(finiquito.realPendingVacationAmount),
-          toNumber(finiquito.realPendingPremiumAmount),
-          toNumber(finiquito.montoAguinaldoComplemento)
-        ])
-      },
-    ] : []),
-    // Conceptos de Liquidación Complemento (solo si ambos están activados)
-    ...((finiquito.liquidacionActivada && finiquito.complementoActivado) ? [
-      {
-        label: "GRATIFICACIÓN",
-        amount: _.sum([
-          toNumber(finiquito.montoIndemnizacion90DiasComplemento),
-          toNumber(finiquito.montoIndemnizacion20DiasComplemento),
-          toNumber(finiquito.montoPrimaAntiguedadComplemento)
-        ])
-      },
-    ] : [])
+    // Conceptos de Complemento (dinámicos basados en configuración)
+    ...renderComplementoConcepts(pdfConfig)
   ];
 
   // Filtrar solo los conceptos con monto > 0

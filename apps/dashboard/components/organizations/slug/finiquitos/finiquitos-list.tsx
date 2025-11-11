@@ -9,6 +9,7 @@ import { useAction } from 'next-safe-action/hooks';
 import { toast } from 'sonner';
 import { useRouter, useParams } from 'next/navigation';
 import numeral from 'numeral';
+import NiceModal from '@ebay/nice-modal-react';
 
 import { Button } from '@workspace/ui/components/button';
 import { Input } from '@workspace/ui/components/input';
@@ -47,6 +48,8 @@ import {
 
 import { deleteFiniquito } from '~/actions/finiquitos/delete-finiquito';
 import type { FiniquitoListItem } from '~/data/finiquitos/get-finiquitos';
+import { PDFComplementoConfigModal } from './pdf-complemento-config-modal';
+import { ALL_COMPLEMENTO_CONCEPTS } from '~/lib/finiquitos/pdf/pdf-complemento-config-defaults';
 
 interface FiniquitosListProps {
   finiquitos: FiniquitoListItem[];
@@ -99,7 +102,35 @@ export function FiniquitosList({ finiquitos, onDuplicateClick }: FiniquitosListP
   const handleDownloadPDF = async (id: string) => {
     try {
       setIsDownloading(true);
-      const response = await fetch(`/api/finiquitos/${id}/pdf`);
+
+      // Find the finiquito to check if complemento is active
+      const finiquito = finiquitos.find(f => f.id === id);
+
+      let configParam = '';
+
+      // If complemento is active, show configuration dialog
+      if (finiquito?.complementoActivado) {
+        // For list view, we pass all possible concept fields
+        // The PDF API will filter based on actual amounts when rendering
+        const allConceptFields = ALL_COMPLEMENTO_CONCEPTS.map(c => c.field);
+
+        // Show configuration modal
+        const config = await NiceModal.show(PDFComplementoConfigModal, {
+          activeConcepts: allConceptFields
+        });
+
+        // User cancelled
+        if (!config) {
+          setIsDownloading(false);
+          return;
+        }
+
+        // Encode config as query parameter
+        configParam = `?config=${encodeURIComponent(JSON.stringify(config))}`;
+      }
+
+      // Generate PDF with configuration
+      const response = await fetch(`/api/finiquitos/${id}/pdf${configParam}`);
 
       if (!response.ok) {
         throw new Error('Error al generar PDF');

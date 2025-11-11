@@ -6,6 +6,7 @@ import { NotFoundError, ForbiddenError } from '@workspace/common/errors';
 import { prisma } from '@workspace/database/client';
 
 import { FiniquitoPDF } from '~/lib/finiquitos/pdf/finiquito-pdf-template';
+import { pdfComplementoConfigSchema, type PDFComplementoConfig } from '~/lib/finiquitos/schemas/pdf-complemento-config-schema';
 
 export async function GET(
   request: NextRequest,
@@ -47,8 +48,33 @@ export async function GET(
       throw new ForbiddenError('No tienes acceso a este finiquito');
     }
 
-    // Generar PDF
-    const pdfBuffer = await renderToBuffer(<FiniquitoPDF finiquito={finiquito} />);
+    // Parse and validate PDF configuration from query params
+    const searchParams = request.nextUrl.searchParams;
+    const configParam = searchParams.get('config');
+    let pdfConfig: PDFComplementoConfig | undefined;
+
+    if (configParam) {
+      try {
+        const parsed = JSON.parse(decodeURIComponent(configParam));
+        pdfConfig = pdfComplementoConfigSchema.parse(parsed);
+      } catch (error) {
+        console.error('Invalid PDF configuration:', {
+          error: error instanceof Error ? error.message : String(error),
+          configParam: configParam.slice(0, 200), // Log truncated payload
+          finiquitoId: id,
+          userId: session.user.id,
+        });
+        return NextResponse.json(
+          { error: 'Configuración de PDF inválida' },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Generar PDF with optional configuration
+    const pdfBuffer = await renderToBuffer(
+      <FiniquitoPDF finiquito={finiquito} pdfConfig={pdfConfig} />
+    );
 
     // Retornar PDF
     return new NextResponse(pdfBuffer, {

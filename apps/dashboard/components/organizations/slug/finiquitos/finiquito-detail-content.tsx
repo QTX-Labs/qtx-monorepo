@@ -8,6 +8,7 @@ import { useAction } from 'next-safe-action/hooks';
 import { toast } from 'sonner';
 import { useRouter, useParams } from 'next/navigation';
 import { useState } from 'react';
+import NiceModal from '@ebay/nice-modal-react';
 
 import { Button } from '@workspace/ui/components/button';
 import { Alert, AlertDescription, AlertTitle } from '@workspace/ui/components/alert';
@@ -26,6 +27,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@work
 import { deleteFiniquito } from '~/actions/finiquitos/delete-finiquito';
 import { toLocalDate } from '~/lib/finiquitos/utils';
 import { formatDate } from '~/lib/finiquitos/format-helpers';
+import { PDFComplementoConfigModal } from './pdf-complemento-config-modal';
+import { ALL_COMPLEMENTO_CONCEPTS } from '~/lib/finiquitos/pdf/pdf-complemento-config-defaults';
 
 // Nuevos componentes
 import { GeneralInfoSection } from './detail/general-info-section';
@@ -64,7 +67,36 @@ export function FiniquitoDetailContent({ finiquito }: FiniquitoDetailContentProp
   const handleDownloadPDF = async () => {
     try {
       setIsDownloading(true);
-      const response = await fetch(`/api/finiquitos/${finiquito.id}/pdf`);
+
+      let configParam = '';
+
+      // If complemento is active, show configuration dialog
+      if (finiquito.complementoActivado) {
+        // Get active complemento concepts (with amount > 0)
+        const activeConcepts = ALL_COMPLEMENTO_CONCEPTS
+          .map(c => c.field)
+          .filter(field => {
+            const amount = finiquito[field as keyof Finiquito];
+            return amount && Number(amount) > 0;
+          });
+
+        // Show configuration modal
+        const config = await NiceModal.show(PDFComplementoConfigModal, {
+          activeConcepts
+        });
+
+        // User cancelled
+        if (!config) {
+          setIsDownloading(false);
+          return;
+        }
+
+        // Encode config as query parameter
+        configParam = `?config=${encodeURIComponent(JSON.stringify(config))}`;
+      }
+
+      // Generate PDF with configuration
+      const response = await fetch(`/api/finiquitos/${finiquito.id}/pdf${configParam}`);
 
       if (!response.ok) {
         throw new Error('Error al generar PDF');
