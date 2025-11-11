@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import NiceModal, { type NiceModalHocProps } from '@ebay/nice-modal-react';
 import { type SubmitHandler, useFieldArray } from 'react-hook-form';
 import { Plus, Trash2 } from 'lucide-react';
