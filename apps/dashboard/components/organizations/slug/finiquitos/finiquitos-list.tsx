@@ -343,6 +343,7 @@ export function FiniquitosList({ finiquitos, onDuplicateClick }: FiniquitosListP
                     <TableHead>Empresa</TableHead>
                     <TableHead>Cliente</TableHead>
                     <TableHead>Fecha de Baja</TableHead>
+                    <TableHead className="w-[160px]">Conceptos Extras</TableHead>
                     <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -386,6 +387,31 @@ export function FiniquitosList({ finiquitos, onDuplicateClick }: FiniquitosListP
                       <TableCell className="text-sm text-muted-foreground">{finiquito.clientName || '-'}</TableCell>
                       <TableCell className="text-sm">
                         {format(toLocalDate(finiquito.terminationDate), 'yyyy-MM-dd')}
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {(() => {
+                          const hasLiquidacion = finiquito.liquidacionActivada;
+                          const hasComplemento = finiquito.complementoActivado;
+
+                          if (hasLiquidacion && hasComplemento) {
+                            return (
+                              <div className="flex flex-col gap-0.5">
+                                <span className="text-xs">Liquidación</span>
+                                <span className="text-xs">Complemento</span>
+                              </div>
+                            );
+                          }
+
+                          if (hasLiquidacion) {
+                            return <span className="text-xs">Liquidación</span>;
+                          }
+
+                          if (hasComplemento) {
+                            return <span className="text-xs">Complemento</span>;
+                          }
+
+                          return '-';
+                        })()}
                       </TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
