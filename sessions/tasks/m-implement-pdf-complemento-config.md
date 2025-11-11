@@ -14,7 +14,8 @@ When downloading a finiquito PDF with complemento activated, users currently hav
 - [ ] When clicking "Descargar PDF" on a finiquito with complemento, a configuration dialog appears
 - [ ] Dialog shows all complemento concepts that have value > 0
 - [ ] User can choose to display concepts individually (desglosados) or grouped (agrupados)
-- [ ] User can create custom groupings with custom labels and select which concepts to include
+- [ ] User can create unlimited custom groupings with custom labels and select which concepts to include
+- [ ] Strict validation prevents reusing a concept field across multiple groups (each concept can only belong to one group)
 - [ ] Default template matches current behavior: "BONOS" for finiquito-complemento, "GRATIFICACIÓN" for liquidación-complemento
 - [ ] PDF is generated with the selected configuration
 - [ ] Same functionality works from both detail view and list view
