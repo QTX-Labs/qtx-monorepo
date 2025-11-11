@@ -242,13 +242,13 @@ export class ImplementationV1 implements CalculadoraFiniquitoLiquidacion {
         result.percepcionesLiquidacionComplemento =
           percepcionesLiquidacionComplemento;
 
-        for (const perception in percepcionesLiquidacionComplemento) {
-          const percepcion =
-            percepcionesLiquidacionComplemento[
-            perception as keyof PercepcionesLiquidacion
-            ];
-          totalPercepcionesLiquidacion.add(percepcion.totalAmount);
-        }
+        // Calculate net liquidación complemento by subtracting fiscal amounts from complemento amounts
+        const netLiquidacionComplemento =
+          (percepcionesLiquidacionComplemento.indemnizacionNoventaDias.totalAmount - percepcionesLiquidacion.indemnizacionNoventaDias.totalAmount) +
+          (percepcionesLiquidacionComplemento.indemnizacionVeinteDias.totalAmount - percepcionesLiquidacion.indemnizacionVeinteDias.totalAmount) +
+          (percepcionesLiquidacionComplemento.primaAntiguedad.totalAmount - percepcionesLiquidacion.primaAntiguedad.totalAmount);
+
+        totalPercepcionesLiquidacion.add(netLiquidacionComplemento);
 
         result.liquidacion.totalPercepciones =
           totalPercepcionesLiquidacion.result;
@@ -262,18 +262,19 @@ export class ImplementationV1 implements CalculadoraFiniquitoLiquidacion {
       result.otrasDeduccionesComplemento =
         input.factoresComplemento.otrasDeducciones;
 
+      // Calculate net complemento by subtracting fiscal amounts from complemento amounts
       totalPercepcionesComplemento
-        .add(percepcionesFiniquitoComplemento.aguinaldo.totalAmount)
-        .add(percepcionesFiniquitoComplemento.primaVacacional.totalAmount)
+        .add(percepcionesFiniquitoComplemento.aguinaldo.totalAmount - percepcionesFiniquito.aguinaldo.totalAmount)
+        .add(percepcionesFiniquitoComplemento.primaVacacional.totalAmount - percepcionesFiniquito.primaVacacional.totalAmount)
         .add(
-          percepcionesFiniquitoComplemento.primaVacacionalPendiente.totalAmount
+          percepcionesFiniquitoComplemento.primaVacacionalPendiente.totalAmount - percepcionesFiniquito.primaVacacionalPendiente.totalAmount
         )
-        .add(percepcionesFiniquitoComplemento.vacaciones.totalAmount)
-        .add(percepcionesFiniquitoComplemento.vacacionesPendientes.totalAmount)
-        .add(percepcionesFiniquitoComplemento.diasTrabajados.totalAmount)
-        .add(percepcionesFiniquitoComplemento.septimoDia.totalAmount)
+        .add(percepcionesFiniquitoComplemento.vacaciones.totalAmount - percepcionesFiniquito.vacaciones.totalAmount)
+        .add(percepcionesFiniquitoComplemento.vacacionesPendientes.totalAmount - percepcionesFiniquito.vacacionesPendientes.totalAmount)
+        .add(percepcionesFiniquitoComplemento.diasTrabajados.totalAmount - percepcionesFiniquito.diasTrabajados.totalAmount)
+        .add(percepcionesFiniquitoComplemento.septimoDia.totalAmount - percepcionesFiniquito.septimoDia.totalAmount)
         .add(
-          percepcionesFiniquitoComplemento.diasRetroactivosSueldo.totalAmount
+          percepcionesFiniquitoComplemento.diasRetroactivosSueldo.totalAmount - percepcionesFiniquito.diasRetroactivosSueldo.totalAmount
         );
 
       input.factoresComplemento.otrasPercepciones.forEach((otraPercepcion) => {

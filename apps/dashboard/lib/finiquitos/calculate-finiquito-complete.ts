@@ -487,18 +487,18 @@ export function calculateFiniquitoComplete(
         primaAntiguedad: mapPercept(resultCalculation.percepcionesLiquidacion.primaAntiguedad),
       } : undefined,
       complemento: resultCalculation.percepcionesFiniquitoComplemento ? {
-        diasTrabajados: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.diasTrabajados),
-        septimoDia: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.septimoDia),
-        vacaciones: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.vacaciones),
-        vacacionesPendientes: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.vacacionesPendientes),
-        primaVacacional: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.primaVacacional),
-        primaVacacionalPendiente: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.primaVacacionalPendiente),
-        aguinaldo: mapPercept(resultCalculation.percepcionesFiniquitoComplemento.aguinaldo),
+        diasTrabajados: mapNetComplementoPercept(resultCalculation.percepcionesFiniquitoComplemento.diasTrabajados, resultCalculation.percepcionesFiniquito.diasTrabajados),
+        septimoDia: mapNetComplementoPercept(resultCalculation.percepcionesFiniquitoComplemento.septimoDia, resultCalculation.percepcionesFiniquito.septimoDia),
+        vacaciones: mapNetComplementoPercept(resultCalculation.percepcionesFiniquitoComplemento.vacaciones, resultCalculation.percepcionesFiniquito.vacaciones),
+        vacacionesPendientes: mapNetComplementoPercept(resultCalculation.percepcionesFiniquitoComplemento.vacacionesPendientes, resultCalculation.percepcionesFiniquito.vacacionesPendientes),
+        primaVacacional: mapNetComplementoPercept(resultCalculation.percepcionesFiniquitoComplemento.primaVacacional, resultCalculation.percepcionesFiniquito.primaVacacional),
+        primaVacacionalPendiente: mapNetComplementoPercept(resultCalculation.percepcionesFiniquitoComplemento.primaVacacionalPendiente, resultCalculation.percepcionesFiniquito.primaVacacionalPendiente),
+        aguinaldo: mapNetComplementoPercept(resultCalculation.percepcionesFiniquitoComplemento.aguinaldo, resultCalculation.percepcionesFiniquito.aguinaldo),
       } : undefined,
       liquidacionComplemento: resultCalculation.percepcionesLiquidacionComplemento ? {
-        indemnizacion90Dias: mapPercept(resultCalculation.percepcionesLiquidacionComplemento.indemnizacionNoventaDias),
-        indemnizacion20Dias: mapPercept(resultCalculation.percepcionesLiquidacionComplemento.indemnizacionVeinteDias),
-        primaAntiguedad: mapPercept(resultCalculation.percepcionesLiquidacionComplemento.primaAntiguedad),
+        indemnizacion90Dias: mapNetComplementoPercept(resultCalculation.percepcionesLiquidacionComplemento.indemnizacionNoventaDias, resultCalculation.percepcionesLiquidacion.indemnizacionNoventaDias),
+        indemnizacion20Dias: mapNetComplementoPercept(resultCalculation.percepcionesLiquidacionComplemento.indemnizacionVeinteDias, resultCalculation.percepcionesLiquidacion.indemnizacionVeinteDias),
+        primaAntiguedad: mapNetComplementoPercept(resultCalculation.percepcionesLiquidacionComplemento.primaAntiguedad, resultCalculation.percepcionesLiquidacion.primaAntiguedad),
       } : undefined,
     },
 
@@ -599,5 +599,18 @@ function mapPercept(p: Perception): PerceptionDetail {
     totalTaxBase: p.totalTaxBase || 0,
     totalExemptBase: p.totalExemptBase || 0,
     totalQuantity: p.totalQuantity || 0,
+  };
+}
+
+/**
+ * Helper to calculate NET complemento perception by subtracting fiscal amount from complemento amount
+ * Complemento should be the difference, not the full amount
+ */
+function mapNetComplementoPercept(complemento: Perception, fiscal: Perception): PerceptionDetail {
+  return {
+    totalAmount: (complemento.totalAmount || 0) - (fiscal.totalAmount || 0),
+    totalTaxBase: (complemento.totalTaxBase || 0) - (fiscal.totalTaxBase || 0),
+    totalExemptBase: (complemento.totalExemptBase || 0) - (fiscal.totalExemptBase || 0),
+    totalQuantity: complemento.totalQuantity || 0,
   };
 }
