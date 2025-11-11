@@ -23,7 +23,7 @@ description: Tasks related to the finiquito calculation system, including calcul
 ## Completed Tasks
 
 ### 2025-11-11
-- `m-implement-fecha-ingreso-impresa` - Add optional "Fecha de Ingreso Impresa" field for custom PDF display date independent of fiscal/real hire dates
+- `m-implement-fecha-ingreso-impresa` - Added optional "Fecha de Ingreso Impresa" field for custom PDF display date independent of fiscal/real hire dates. Features: No validation constraints, 3-tier fallback logic (printed → real → fiscal), transparent display with fallback indicators in Step 4 Review and Detail View, preserved during duplication.
 - `m-implement-pdf-complemento-config` - Add configuration dialog for customizing complemento concept grouping and labeling in PDF downloads
 - `h-fix-complemento-neto-calculation` - Fix complemento calculation to subtract fiscal amounts from complemento amounts (net = complemento - fiscal) instead of adding full complemento on top of fiscal
 
