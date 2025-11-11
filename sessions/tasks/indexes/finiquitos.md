@@ -13,7 +13,7 @@ description: Tasks related to the finiquito calculation system, including calcul
 
 ### Medium Priority
 - `m-refactor-finiquito-table-step1-pdf` - Fix visual problems in finiquitos table, enable manual editing of Salario Diario Fiscal with border zone validation, and add dynamic concepts to PDF
-- `m-implement-pdf-complemento-config` - Add configuration dialog for customizing complemento concept grouping and labeling in PDF downloads
+- `m-implement-fecha-ingreso-impresa` - Add optional "Fecha de Ingreso Impresa" field for custom PDF display date independent of fiscal/real hire dates
 
 ### Low Priority
 <!-- No low priority tasks yet -->
@@ -24,6 +24,7 @@ description: Tasks related to the finiquito calculation system, including calcul
 ## Completed Tasks
 
 ### 2025-11-11
+- `m-implement-pdf-complemento-config` - Add configuration dialog for customizing complemento concept grouping and labeling in PDF downloads
 - `h-fix-complemento-neto-calculation` - Fix complemento calculation to subtract fiscal amounts from complemento amounts (net = complemento - fiscal) instead of adding full complemento on top of fiscal
 
 ### 2025-10-23
