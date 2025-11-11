@@ -78,6 +78,7 @@ export const step1BaseConfigSchema = z.object({
   // ===== FACTORES DE COMPLEMENTO (OPCIONAL) =====
   complementoActivado: z.boolean().default(false),
   realHireDate: z.coerce.date().optional(),
+  printedHireDate: z.coerce.date().optional(),
 
   // Salario Real (según frecuencia de pago) - El usuario ingresa este valor
   realSalary: z.coerce.number().min(0, 'El salario real no puede ser negativo').optional(),

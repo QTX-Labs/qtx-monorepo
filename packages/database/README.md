@@ -16,6 +16,10 @@ The Finiquito model uses version 2 field naming convention for all new records. 
 - `montoVacacionesFiniquito`, `montoPrimaVacacionalFiniquito`, `montoAguinaldoFiniquito`, `montoDiasTrabajadosFiniquito`
 - `totalAPagar`
 - `employeeRFC`, `employeeCURP` (both required)
+- Date fields:
+  - `hireDate` (required) - Fiscal hire date for calculations
+  - `realHireDate` (nullable) - Real hire date for complemento calculations
+  - `printedHireDate` (nullable) - Custom hire date for PDF display, independent of calculation dates
 
 **Avoid v1 fields** (deprecated, nullable):
 - `realVacationAmount`, `realVacationPremiumAmount`, `realAguinaldoAmount`, `realWorkedDaysAmount`

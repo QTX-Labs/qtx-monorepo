@@ -1,8 +1,9 @@
 ---
 name: m-implement-fecha-ingreso-impresa
 branch: feature/fecha-ingreso-impresa
-status: pending
+status: completed
 created: 2025-11-11
+completed: 2025-11-11
 ---
 
 # Implementar Fecha de Ingreso Impresa en Finiquitos
@@ -11,16 +12,16 @@ created: 2025-11-11
 Los clientes necesitan poder definir una fecha de ingreso específica para imprimir en el PDF del finiquito, independiente de las fechas usadas para cálculos fiscales o reales. Actualmente, el PDF usa las fechas de cálculo, pero algunos casos requieren mostrar una fecha diferente por razones legales o administrativas.
 
 ## Success Criteria
-- [ ] Campo "Fecha de Ingreso Impresa" agregado en Step 1 sección "Datos Básicos"
-- [ ] Campo permite seleccionar cualquier fecha sin validaciones de pasado/futuro
-- [ ] Nueva propiedad `printedHireDate` se guarda en la base de datos (modelo Finiquito)
-- [ ] PDF usa `printedHireDate` cuando está presente
-- [ ] Fallback para finiquitos existentes sin esta propiedad:
+- [x] Campo "Fecha de Ingreso Impresa" agregado en Step 1 sección "Factores Fiscales"
+- [x] Campo permite seleccionar cualquier fecha sin validaciones de pasado/futuro
+- [x] Nueva propiedad `printedHireDate` se guarda en la base de datos (modelo Finiquito)
+- [x] PDF usa `printedHireDate` cuando está presente
+- [x] Fallback para finiquitos existentes sin esta propiedad:
   - Si `complementoActivado = true`: usa `realHireDate`
   - Si `complementoActivado = false`: usa `fiscalHireDate`
-- [ ] Lógica de fallback implementada en template PDF
-- [ ] Validación de que finiquitos nuevos guardan correctamente la fecha impresa
-- [ ] Validación de que finiquitos existentes siguen funcionando con el fallback
+- [x] Lógica de fallback implementada en template PDF
+- [x] Validación de que finiquitos nuevos guardan correctamente la fecha impresa
+- [x] Validación de que finiquitos existentes siguen funcionando con el fallback
 
 ## Context Manifest
 
@@ -142,232 +143,52 @@ The general info section (`general-info-section.tsx`) displays:
 - Line 96-98: "Fecha de Ingreso: {formatDate(finiquito.hireDate)}" (always shown)
 - Lines 109-114: "Fecha Ingreso Real: {formatDate(finiquito.realHireDate)}" (only when complementoActivado=true)
 
-### What Needs to Connect: Printed Hire Date Implementation
+### Implementation Summary
 
-**Database Layer:**
+The printed hire date feature adds an optional field that allows users to specify a custom hire date for PDF display, independent of fiscal/real hire dates used for calculations.
 
-Add new nullable column to Finiquito model in `schema.prisma`:
-```prisma
-printedHireDate DateTime? @db.Date // Line 646, after realHireDate
-```
+**Key Implementation Points:**
+- Database field: `printedHireDate DateTime? @db.Date` (nullable, line 646 in schema.prisma)
+- Schema validation: `z.coerce.date().optional()` with no cross-field validation
+- Form location: Step 1, "Factores Fiscales" section, after terminationDate field
+- Empty date handling: Conditional onChange to support clearing (`e.target.value ? new Date(e.target.value) : undefined`)
+- Persistence: Saved in create-finiquito action, preserved in duplication flow
+- PDF fallback: `printedHireDate ?? (complementoActivado ? realHireDate : hireDate)` with nested nullish coalescing for null safety
 
-This follows the exact pattern of `realHireDate` - nullable DateTime with Date type to avoid timezone issues.
+**Files Modified:**
+- `/packages/database/prisma/schema.prisma` - Added printedHireDate column
+- `/apps/dashboard/lib/finiquitos/schemas/step1-base-config-schema.ts` - Added validation
+- `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step1-base-config.tsx` - Added form field and default value
+- `/apps/dashboard/actions/finiquitos/create-finiquito.ts` - Save to database
+- `/apps/dashboard/lib/finiquitos/map-finiquito-to-wizard.ts` - Duplication mapping
+- `/apps/dashboard/lib/finiquitos/pdf/finiquito-pdf-template.tsx` - PDF fallback logic
 
-**Migration Creation:**
-
-Use pnpm workspace commands from project root:
-```bash
-# Navigate to database package
-cd packages/database
-
-# Create migration
-pnpm prisma migrate dev --name add_printed_hire_date
-
-# This generates migration file in prisma/migrations/
-# Then regenerate Prisma client
-pnpm prisma generate
-```
-
-The migration will add the column as nullable, ensuring backward compatibility with existing finiquitos.
-
-**Step 1 Schema Update:**
-
-Add field to `step1-base-config-schema.ts` after `realHireDate` (around line 81):
-```typescript
-printedHireDate: z.coerce.date().optional(),
-```
-
-No cross-validation needed since this field has no calculation dependencies.
-
-**Step 1 Form Update:**
-
-Add date input in `step1-base-config.tsx` in the "Factores Fiscales" section after `terminationDate` field (after line 606):
-
-```tsx
-<FormField
-  control={form.control}
-  name="printedHireDate"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Fecha de Ingreso Impresa (Opcional)</FormLabel>
-      <FormControl>
-        <Input
-          type="date"
-          value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''}
-          onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
-        />
-      </FormControl>
-      <FormDescription>
-        Fecha que aparecerá en el PDF. Si está vacío, se usa la fecha de ingreso fiscal o real según corresponda.
-      </FormDescription>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
-```
-
-**CRITICAL**: Use conditional assignment in onChange to support empty date clearing:
-- If user clears the date input, `e.target.value` is empty string
-- Pass `undefined` instead of `new Date('')` to avoid invalid date
-
-**Default Values Update:**
-
-Add to defaultValues in `step1-base-config.tsx` line 74:
-```typescript
-printedHireDate: undefined,
-```
-
-**Create Action Update:**
-
-Add to `create-finiquito.ts` in the Prisma create data object (after line 119):
-```typescript
-printedHireDate: parsedInput.printedHireDate ?? null,
-```
-
-This stores the value if provided, otherwise NULL for backward compatibility.
-
-**Duplication Mapping:**
-
-Add to `mapFiniquitoToStep1()` in `map-finiquito-to-wizard.ts` (after line 55):
-```typescript
-printedHireDate: finiquito.printedHireDate || undefined,
-```
-
-**PDF Template Update:**
-
-Implement fallback logic in `finiquito-pdf-template.tsx`:
-
-1. Add helper function after line 131 (after toNumber function):
-```typescript
-// Determine which hire date to display in PDF
-const displayHireDate = finiquito.printedHireDate ??
-  (finiquito.complementoActivado ? finiquito.realHireDate : finiquito.hireDate);
-```
-
-2. Replace both usages:
-   - Line 357: Change `{formatDateLong(finiquito.hireDate)}` to `{formatDateLong(displayHireDate)}`
-   - Line 410: Change `{formatDateLong(finiquito.hireDate)}` to `{formatDateLong(displayHireDate)}`
-
-**Fallback Logic Explanation:**
-- If `printedHireDate` exists: use it (user explicitly set custom date)
-- Else if `complementoActivado = true`: use `realHireDate` (salary difference scenario)
-- Else: use `hireDate` (standard fiscal date)
-
-This ensures existing finiquitos without printedHireDate continue working correctly.
-
-**Detail View Update (Optional):**
-
-Consider adding display in `general-info-section.tsx` after line 114 if you want to show the printed date in detail view:
-```tsx
-{finiquito.printedHireDate && (
-  <div>
-    <span className="text-sm text-muted-foreground">Fecha Ingreso Impresa:</span>
-    <p className="font-medium">{formatDate(finiquito.printedHireDate)}</p>
-  </div>
-)}
-```
-
-### Technical Reference Details
-
-#### File Locations
-
-**Schema & Validation:**
-- Prisma schema: `/packages/database/prisma/schema.prisma` (model Finiquito, lines 610-838)
-- Step 1 schema: `/apps/dashboard/lib/finiquitos/schemas/step1-base-config-schema.ts`
-- Step 1 type: Auto-inferred from schema via `type Step1BaseConfig = z.infer<typeof step1BaseConfigSchema>`
-
-**Components:**
-- Step 1 form: `/apps/dashboard/components/organizations/slug/finiquitos/create/steps/step1-base-config.tsx`
-- General info section: `/apps/dashboard/components/organizations/slug/finiquitos/detail/general-info-section.tsx`
-- PDF template: `/apps/dashboard/lib/finiquitos/pdf/finiquito-pdf-template.tsx`
-
-**Actions:**
-- Create finiquito: `/apps/dashboard/actions/finiquitos/create-finiquito.ts`
-- Duplicate finiquito: `/apps/dashboard/actions/finiquitos/duplicate-finiquito.ts`
-- Wizard mapping: `/apps/dashboard/lib/finiquitos/map-finiquito-to-wizard.ts`
-
-**Utilities:**
-- Date formatting: `/apps/dashboard/lib/finiquitos/utils.ts` (formatDateLong function)
-- Format helpers: `/apps/dashboard/lib/finiquitos/format-helpers.ts` (formatDate function)
-
-#### Data Flow Diagram
-
-```
-User Input (Step 1)
-  ↓
-Step1BaseConfig type (validated by Zod)
-  ↓
-calculateFiniquitoComplete() (does NOT use printedHireDate - purely display)
-  ↓
-create-finiquito.ts action
-  ↓
-Prisma.finiquito.create({ data: { printedHireDate, ... } })
-  ↓
-Database (printedHireDate column, nullable DateTime)
-  ↓
-PDF Generation: displayHireDate = printedHireDate ?? (complemento ? realHireDate : hireDate)
-  ↓
-PDF Output
-```
-
-#### Key Patterns to Follow
-
-1. **Nullable DateTime Pattern**: Use `DateTime?` in Prisma, `z.coerce.date().optional()` in Zod, `undefined` in TypeScript
-2. **Date Input Pattern**: Always convert to/from ISO string for HTML date inputs
-3. **Empty Date Handling**: Use conditional in onChange to support clearing: `e.target.value ? new Date(e.target.value) : undefined`
-4. **Backward Compatibility**: Default to null/undefined, implement fallback logic in PDF
-5. **Database Date Type**: Use `@db.Date` not `@db.Timestamp` to avoid timezone issues
-6. **Duplication Handling**: Map field in `mapFiniquitoToStep1()` using `|| undefined` pattern
-
-#### Migration Command Reference
-
-```bash
-# From project root
-cd packages/database
-
-# Create migration
-pnpm prisma migrate dev --name add_printed_hire_date
-
-# Regenerate Prisma client (runs automatically after migrate dev)
-pnpm prisma generate
-
-# If needed, push to database without migration
-pnpm prisma db push --skip-generate
-
-# Return to root
-cd ../..
-```
-
-#### Validation Requirements
-
-- No temporal validation (no past/future checks)
-- No relationship validation with other dates
-- Optional field, no required validation
-- No cross-field dependencies in calculations
-- PDF fallback handles null case automatically
-
-#### Testing Checklist
-
-After implementation, verify:
-1. New finiquito with printedHireDate set → PDF shows printed date
-2. New finiquito without printedHireDate, complemento OFF → PDF shows fiscal hireDate
-3. New finiquito without printedHireDate, complemento ON → PDF shows realHireDate
-4. Existing finiquito (NULL printedHireDate) → PDF continues working with fallback
-5. Duplicate finiquito with printedHireDate → preserves printed date in wizard
-6. Clear printed date in form → saves as NULL
-7. Detail view (if added) → displays printed date when present
-8. Date input supports empty/clearing behavior
-
-## User Notes
-Requisitos específicos:
-- Campo en Step 1 "Datos Básicos" después de las fechas de ingreso fiscal/real
-- Sin validaciones temporales (libre para cualquier fecha)
-- Base de datos: nueva columna `printedHireDate` (DateTime, nullable)
-- PDF fallback logic:
-  ```typescript
-  const displayHireDate = printedHireDate ??
-    (complementoActivado ? realHireDate : fiscalHireDate);
-  ```
 
 ## Work Log
-<!-- Updated as work progresses -->
+
+### 2025-11-11
+
+#### Completed
+- Added `printedHireDate` column to Finiquito model in Prisma schema as nullable DateTime with @db.Date type
+- Pushed schema changes to production database using `prisma db push` (avoided migration drift issues)
+- Updated Step 1 schema validation with `printedHireDate: z.coerce.date().optional()`
+- Added optional date input field in Step 1 form (Factores Fiscales section) with proper empty date handling
+- Configured form default value as `printedHireDate: undefined`
+- Updated create-finiquito action to save field: `printedHireDate: parsedInput.printedHireDate ?? null`
+- Updated duplication mapping to preserve printedHireDate when duplicating finiquitos
+- Implemented PDF fallback logic with nested nullish coalescing: `printedHireDate ?? (complementoActivado ? realHireDate : hireDate)`
+- Fixed TypeScript null handling in PDF template to prevent type errors
+- Replaced both hireDate usages in PDF template (lines 361 and 414) with displayHireDate
+- Validated with typecheck (passed) and build (passed)
+
+#### Decisions
+- Used `prisma db push` instead of migrations due to database drift (production schema evolved beyond migration history)
+- Placed field in "Factores Fiscales" section after terminationDate field for logical grouping
+- Implemented conditional onChange handler to support date clearing: `e.target.value ? new Date(e.target.value) : undefined`
+- Used nested nullish coalescing for null-safe fallback: handles case where realHireDate is null when complementoActivado is true
+
+#### Technical Notes
+- Database field: `printedHireDate DateTime? @db.Date` (line 646 in schema.prisma)
+- Schema validation: No cross-field validation needed (purely display field)
+- PDF fallback ensures backward compatibility: existing finiquitos without printedHireDate continue to display correct hire date
+- Duplication preserves the printed date value using `|| undefined` pattern

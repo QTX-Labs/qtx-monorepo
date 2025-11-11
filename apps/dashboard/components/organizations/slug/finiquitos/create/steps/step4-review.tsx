@@ -139,6 +139,20 @@ export function Step4Review() {
                       <p className="font-medium">{formatDate(step1Data.realHireDate)}</p>
                     </div>
                   )}
+                  <div>
+                    <span className="text-muted-foreground">Fecha Impresa en PDF:</span>
+                    <p className="font-medium">
+                      {step1Data.printedHireDate ? (
+                        formatDate(step1Data.printedHireDate)
+                      ) : (
+                        <span className="text-muted-foreground italic">
+                          {step1Data.complementoActivado && step1Data.realHireDate
+                            ? `Usando fecha real: ${formatDate(step1Data.realHireDate)}`
+                            : `Usando fecha fiscal: ${formatDate(step1Data.hireDate)}`}
+                        </span>
+                      )}
+                    </p>
+                  </div>
                 </CardContent>
               </Card>
 

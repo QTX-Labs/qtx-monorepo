@@ -643,6 +643,7 @@ model Finiquito {
   complementIntegratedDailySalary Decimal?      @db.Decimal(12, 2) // SDI del complemento
   pendingWorkDays             Int               @default(0)
   realHireDate                DateTime?         @db.Date // Fecha de ingreso real para complemento
+  printedHireDate             DateTime?         @db.Date // Fecha de ingreso para imprimir en PDF
 
   // Prestaciones
   aguinaldoDays               Int               @default(15)

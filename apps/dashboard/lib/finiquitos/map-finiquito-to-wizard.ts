@@ -53,6 +53,7 @@ export function mapFiniquitoToStep1(finiquito: Finiquito): Step1BaseConfig {
     // Complemento (opcional)
     complementoActivado: finiquito.complementoActivado,
     realHireDate: finiquito.realHireDate || undefined,
+    printedHireDate: finiquito.printedHireDate || undefined,
     realSalary: finiquito.realSalary?.toNumber() || undefined,
     realDailySalary: finiquito.realDailySalary?.toNumber() || 0,
     daysFactor: 30.4, // Default value
