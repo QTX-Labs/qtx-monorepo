@@ -564,8 +564,8 @@ export function calculateFiniquitoComplete(
           neto: netoLiquidacion,
         } : undefined,
         liquidacionComplemento: factoresComplemento?.conceptosLiquidacion ? {
-          percepciones: resultCalculation.liquidacion.totalPercepciones - resultCalculation.liquidacion.totalPercepcionesFiscal,
-          deducciones: resultCalculation.liquidacion.totalDeducciones - resultCalculation.liquidacion.totalDeduccionesFiscal,
+          percepciones: resultCalculation.liquidacion.totalPercepciones,
+          deducciones: resultCalculation.liquidacion.totalDeducciones,
           neto: resultCalculation.liquidacion.netoComplemento,
         } : undefined,
         complemento: resultCalculation.percepcionesFiniquitoComplemento ? {
