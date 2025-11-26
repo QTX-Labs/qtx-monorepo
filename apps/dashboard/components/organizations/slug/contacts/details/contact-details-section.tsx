@@ -172,15 +172,15 @@ function Properties(contact: ContactDto): React.JSX.Element {
       record: contact.record,
       type: contact.type,
       name: contact.name,
-      businessName: contact.businessName,
-      email: contact.email,
-      phone: contact.phone,
-      address: contact.address,
-      fiscalAddress: contact.fiscalAddress,
-      fiscalPostalCode: contact.fiscalPostalCode,
-      rfc: contact.rfc,
-      businessActivity: contact.businessActivity,
-      taxRegime: contact.taxRegime
+      businessName: contact.businessName ?? '',
+      email: contact.email ?? '',
+      phone: contact.phone ?? '',
+      address: contact.address ?? '',
+      fiscalAddress: contact.fiscalAddress ?? '',
+      fiscalPostalCode: contact.fiscalPostalCode ?? '',
+      rfc: contact.rfc ?? '',
+      businessActivity: contact.businessActivity ?? '',
+      taxRegime: contact.taxRegime ?? ''
     }
   });
   const canSubmit = !methods.formState.isSubmitting;
@@ -248,7 +248,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
             </Button>
           )}
         </div>
-        <dl className="space-y-1 text-sm">
+        <dl className="divide-y divide-border/50 [&>*]:py-3 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
           <Property
             icon={<SquareDashedKanbanIcon className="size-3 shrink-0" />}
             term="Record"
@@ -266,7 +266,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
                           onValueChange={field.onChange}
                           disabled={methods.formState.isSubmitting}
                         >
-                          <SelectTrigger className="h-7! w-full">
+                          <SelectTrigger className="h-9 w-full">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -306,7 +306,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
                           type="text"
                           maxLength={70}
                           required
-                          className="h-7"
+                          className="h-9"
                           disabled={methods.formState.isSubmitting}
                           {...field}
                         />
@@ -336,7 +336,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
                           type="email"
                           maxLength={255}
                           required
-                          className="h-7"
+                          className="h-9"
                           disabled={methods.formState.isSubmitting}
                           {...field}
                         />
@@ -366,7 +366,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
                           type="tel"
                           maxLength={70}
                           required
-                          className="h-7"
+                          className="h-9"
                           disabled={methods.formState.isSubmitting}
                           {...field}
                         />
@@ -395,7 +395,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
                         <Input
                           type="text"
                           maxLength={255}
-                          className="h-7"
+                          className="h-9"
                           disabled={methods.formState.isSubmitting}
                           {...field}
                         />
@@ -426,7 +426,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
                           onValueChange={field.onChange}
                           disabled={methods.formState.isSubmitting}
                         >
-                          <SelectTrigger className="h-7! w-full">
+                          <SelectTrigger className="h-9 w-full">
                             <SelectValue placeholder="Seleccionar" />
                           </SelectTrigger>
                           <SelectContent>
@@ -459,7 +459,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
                         <Input
                           type="text"
                           maxLength={255}
-                          className="h-7"
+                          className="h-9"
                           disabled={methods.formState.isSubmitting}
                           {...field}
                         />
@@ -488,7 +488,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
                         <Input
                           type="text"
                           maxLength={13}
-                          className="h-7"
+                          className="h-9"
                           disabled={methods.formState.isSubmitting}
                           {...field}
                         />
@@ -516,7 +516,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
                       <FormControl>
                         <Textarea
                           maxLength={500}
-                          className="min-h-[60px]"
+                          className="min-h-[80px] resize-none"
                           disabled={methods.formState.isSubmitting}
                           {...field}
                         />
@@ -545,7 +545,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
                         <Input
                           type="text"
                           maxLength={16}
-                          className="h-7"
+                          className="h-9"
                           disabled={methods.formState.isSubmitting}
                           {...field}
                         />
@@ -572,7 +572,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
                     <FormItem className="flex w-full flex-col">
                       <FormControl>
                         <Textarea
-                          className="min-h-[60px]"
+                          className="min-h-[80px] resize-none"
                           disabled={methods.formState.isSubmitting}
                           {...field}
                         />
@@ -601,7 +601,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
                         <Input
                           type="text"
                           maxLength={255}
-                          className="h-7"
+                          className="h-9"
                           disabled={methods.formState.isSubmitting}
                           {...field}
                         />
@@ -635,17 +635,23 @@ function Property({
   details,
   placeholder
 }: PropertyProps): React.JSX.Element {
+  const isTextContent = typeof details === 'string';
+
   return (
-    <div className="flex h-7 flex-row items-center whitespace-nowrap">
-      <dt className="flex h-7 min-w-24 flex-row items-center gap-2 text-muted-foreground">
+    <div className="flex flex-col gap-1.5">
+      <dt className="flex flex-row items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
         {icon}
         {term}
       </dt>
-      <dd className="flex h-7 w-full max-w-[196px] flex-row items-center overflow-hidden text-ellipsis">
+      <dd className="flex min-h-[28px] w-full flex-row items-start">
         {details ? (
-          details
+          isTextContent ? (
+            <p className="text-sm leading-relaxed break-words">{details}</p>
+          ) : (
+            <div className="w-full">{details}</div>
+          )
         ) : (
-          <p className="text-muted-foreground opacity-65">{placeholder}</p>
+          <p className="text-sm italic text-muted-foreground opacity-50">{placeholder}</p>
         )}
       </dd>
     </div>

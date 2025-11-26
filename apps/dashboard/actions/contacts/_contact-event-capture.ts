@@ -8,10 +8,17 @@ import { prisma } from '@workspace/database/client';
 
 const fieldsToCheck = [
   'record',
+  'type',
   'image',
   'name',
+  'businessName',
   'email',
   'address',
+  'fiscalAddress',
+  'fiscalPostalCode',
+  'rfc',
+  'businessActivity',
+  'taxRegime',
   'phone',
   'stage',
   'tags'
