@@ -327,11 +327,10 @@ export class ImplementationV1 implements CalculadoraFiniquitoLiquidacion {
       }
 
       if (result.liquidacion.totalPercepciones > 0) {
+        // totalPercepciones and totalDeducciones are already NET complemento values (complemento - fiscal)
+        // No need to subtract fiscal amounts again
         result.liquidacion.netoComplemento =
-          result.liquidacion.totalPercepciones -
-          (result.liquidacion.totalDeducciones +
-            result.liquidacion.totalDeduccionesFiscal +
-            result.liquidacion.netoFiscal);
+          result.liquidacion.totalPercepciones - result.liquidacion.totalDeducciones;
         result.liquidacion.neto =
           result.liquidacion.netoComplemento + result.liquidacion.netoFiscal;
       }

@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import NiceModal from '@ebay/nice-modal-react';
 import { BorderZone, SalaryFrequency } from '@workspace/database';
 import { Button } from '@workspace/ui/components/button';
 import {
@@ -28,7 +29,9 @@ import { Separator } from '@workspace/ui/components/separator';
 import { step1BaseConfigSchema, type Step1BaseConfig as Step1BaseConfigType } from '~/lib/finiquitos/schemas/step1-base-config-schema';
 import { calculateFiniquitoComplete } from '~/lib/finiquitos/calculate-finiquito-complete';
 import { getEmployeeVacationDays, getEmployeeIntegrationFactor, applyUMALimit } from '~/lib/finiquitos/utils';
+import { hasStep1DataChanged } from '~/lib/finiquitos/utils/has-step1-data-changed';
 import { useWizard } from '../wizard-context';
+import { Step1ChangesWarningModal } from '../step1-changes-warning-modal';
 import type { EmpresaSelectorDto } from '~/data/finiquitos/get-empresas-for-selector';
 
 type Step1BaseConfigProps = {
@@ -254,7 +257,7 @@ export function Step1BaseConfig({ empresas }: Step1BaseConfigProps) {
     }
   }, [complementoActivado, realDailySalary, aguinaldoDays, vacationDays, vacationPremiumPercentage, form]);
 
-  const onSubmit = (data: Step1BaseConfigType) => {
+  const onSubmit = async (data: Step1BaseConfigType) => {
     console.log('✅ Step 1 Form Validation PASSED');
     console.log('📋 Step 1 Data:', data);
     console.log('🔍 Complemento Activado:', data.complementoActivado);
@@ -262,12 +265,30 @@ export function Step1BaseConfig({ empresas }: Step1BaseConfigProps) {
     console.log('🔍 Real Daily Salary:', data.realDailySalary);
     console.log('🔍 Real Hire Date:', data.realHireDate);
 
-    // Guardar datos del paso 1
-    updateStep1(data);
+    // Detect if critical fields have changed
+    const hasChanges = hasStep1DataChanged(data, step1Data);
 
-    // Check if step2Data already exists (duplication scenario)
-    if (step2Data && step2Data.factoresFiniquito) {
-      // DUPLICATION SCENARIO: Preserve Step 2 values by passing them as manualFactors
+    // If changes detected AND Step 2 data exists → show warning dialog
+    if (hasChanges && step2Data && step2Data.factoresFiniquito) {
+      const shouldRecalculate = await NiceModal.show(Step1ChangesWarningModal);
+
+      if (shouldRecalculate === null) {
+        // User cancelled, do nothing
+        return;
+      }
+
+      if (shouldRecalculate === false) {
+        // User wants to maintain Step 2 edits: revert Step 1 changes and advance
+        if (step1Data) {
+          form.reset(step1Data);
+        }
+        goNext();
+        return;
+      }
+
+      // shouldRecalculate === true: User wants to recalculate factors
+      // Save new Step 1 data and recalculate Step 2 (do NOT pass manualFactors)
+      updateStep1(data);
 
       const calculation = calculateFiniquitoComplete({
         employeeId: data.employeeId,
@@ -293,26 +314,52 @@ export function Step1BaseConfig({ empresas }: Step1BaseConfigProps) {
           otras: 0,
           subsidio: 0,
         },
-        // Pass existing Step 2 values as manualFactors to preserve them
-        // Only pass sections that match current toggle states to prevent inconsistencies
-        manualFactors: {
-          finiquito: step2Data.factoresFiniquito,
-          liquidacion: data.liquidacionActivada ? step2Data.factoresLiquidacion : undefined,
-          complemento: data.complementoActivado ? step2Data.factoresComplemento : undefined,
-          liquidacionComplemento: (data.liquidacionActivada && data.complementoActivado)
-            ? step2Data.factoresLiquidacionComplemento
-            : undefined,
-          configuracionAdicional: step2Data.configuracionAdicional,
+        // NO pass manualFactors - recalculate everything
+      });
+
+      // Update Step 2 with new calculated factors
+      updateStep2({
+        factoresFiniquito: {
+          ...calculation.factores.finiquito,
+          diasTrabajados: 0,
+          septimoDia: 0,
+        },
+        factoresLiquidacion: calculation.factores.liquidacion,
+        factoresComplemento: calculation.factores.complemento ? {
+          ...calculation.factores.complemento,
+          diasTrabajados: 0,
+          septimoDia: 0,
+        } : undefined,
+        factoresLiquidacionComplemento: calculation.factores.liquidacionComplemento,
+        configuracionAdicional: calculation.factores.configuracionAdicional,
+        beneficiosFiscalesPendientes: {
+          pendingVacationDays: 0,
+          pendingVacationPremium: 0,
+        },
+        beneficiosComplementoPendientes: {
+          complementPendingVacationDays: 0,
+          complementPendingVacationPremium: 0,
         },
       });
 
-      // Do NOT call updateStep2() - preserve existing step2Data
-      // Only update live calculation and advance
       updateLiveCalculation(calculation);
       goNext();
-    } else {
-      // NEW FINIQUITO SCENARIO: Auto-populate Step 2 with calculated factors
-      const calculation = calculateFiniquitoComplete({
+      return;
+    }
+
+    // Guardar datos del paso 1
+    updateStep1(data);
+
+    // Check if step2Data already exists (no changes detected)
+    if (step2Data && step2Data.factoresFiniquito) {
+      // NO CHANGES DETECTED: Simply advance without recalculating
+      // Step 2 data and live calculation remain intact from previous edits
+      goNext();
+      return;
+    }
+
+    // NEW FINIQUITO SCENARIO: Auto-populate Step 2 with calculated factors
+    const calculation = calculateFiniquitoComplete({
         employeeId: data.employeeId,
         hireDate: data.hireDate,
         terminationDate: data.terminationDate,
@@ -364,12 +411,11 @@ export function Step1BaseConfig({ empresas }: Step1BaseConfigProps) {
         },
       });
 
-      // Guardar cálculo en context
-      updateLiveCalculation(calculation);
+    // Guardar cálculo en context
+    updateLiveCalculation(calculation);
 
-      // Avanzar al paso 2
-      goNext();
-    }
+    // Avanzar al paso 2
+    goNext();
   };
 
   const onError = (errors: any) => {

@@ -30,7 +30,7 @@ import { LiveCalculationPanel } from '../../shared/live-calculation-panel';
 import { useLiveCalculation } from '../hooks/use-live-calculation';
 
 export function Step2Factors() {
-  const { step1Data, step2Data, step3Data, updateStep2, updateLiveCalculation, goNext } = useWizard();
+  const { step1Data, step2Data, step3Data, updateStep2, updateLiveCalculation, goNext, goPrevious } = useWizard();
 
   const form = useForm<Step2FactorsType>({
     resolver: zodResolver(step2FactorsSchema),
@@ -139,6 +139,12 @@ export function Step2Factors() {
   const onSubmit = (data: Step2FactorsType) => {
     updateStep2(data);
     goNext();
+  };
+
+  const onPrevious = () => {
+    // Save current form state before navigating back
+    updateStep2(form.getValues());
+    goPrevious();
   };
 
   return (
@@ -697,6 +703,7 @@ export function Step2Factors() {
             <WizardNavigation
               nextLabel="Continuar a Deducciones"
               onNext={form.handleSubmit(onSubmit)}
+              onPrevious={onPrevious}
               nextDisabled={!form.formState.isValid}
             />
           </form>
