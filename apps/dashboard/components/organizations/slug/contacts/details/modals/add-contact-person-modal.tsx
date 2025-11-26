@@ -1,7 +1,7 @@
 'use client';
 
 import NiceModal, { type NiceModalHocProps } from '@ebay/nice-modal-react';
-import { type SubmitHandler } from 'react-hook-form';
+import { z } from 'zod';
 
 import { Button } from '@workspace/ui/components/button';
 import {
@@ -38,10 +38,7 @@ import { cn } from '@workspace/ui/lib/utils';
 import { addContactPerson } from '~/actions/contacts/add-contact-person';
 import { useEnhancedModal } from '~/hooks/use-enhanced-modal';
 import { useZodForm } from '~/hooks/use-zod-form';
-import {
-  addContactPersonSchema,
-  type AddContactPersonSchema
-} from '~/schemas/contacts/add-contact-person-schema';
+import { addContactPersonSchema } from '~/schemas/contacts/add-contact-person-schema';
 
 export type AddContactPersonModalProps = NiceModalHocProps & {
   contactId: string;
@@ -68,7 +65,7 @@ export const AddContactPersonModal = NiceModal.create<AddContactPersonModalProps
     const canSubmit =
       !methods.formState.isSubmitting &&
       (!methods.formState.isSubmitted || methods.formState.isDirty);
-    const onSubmit: SubmitHandler<AddContactPersonSchema> = async (values) => {
+    const onSubmit = async (values: z.input<typeof addContactPersonSchema>) => {
       if (!canSubmit) {
         return;
       }

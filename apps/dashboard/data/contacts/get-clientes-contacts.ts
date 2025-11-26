@@ -121,7 +121,8 @@ export async function getClientesContacts(input: GetContactsSchema): Promise<{
         phone: contact.phone ? contact.phone : undefined,
         stage: contact.stage,
         createdAt: contact.createdAt,
-        tags: contact.tags
+        tags: contact.tags,
+        contactPersons: []
       }));
 
       return { contacts: mapped, filteredCount, totalCount };

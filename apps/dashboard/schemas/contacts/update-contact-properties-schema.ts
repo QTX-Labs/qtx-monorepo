@@ -33,8 +33,6 @@ export const updateContactPropertiesSchema = z.object({
     })
     .trim()
     .max(255, 'Maximum 255 characters allowed.')
-    .optional()
-    .or(z.literal(''))
     .default(''),
   email: z
     .string({
@@ -43,8 +41,6 @@ export const updateContactPropertiesSchema = z.object({
     .trim()
     .max(255, 'Maximum 255 characters allowed.')
     .email('Enter a valid email address.')
-    .optional()
-    .or(z.literal(''))
     .default(''),
   phone: z
     .string({
@@ -52,8 +48,6 @@ export const updateContactPropertiesSchema = z.object({
     })
     .trim()
     .max(16, 'Maximum 16 characters allowed.')
-    .optional()
-    .or(z.literal(''))
     .default(''),
   address: z
     .string({
@@ -61,8 +55,6 @@ export const updateContactPropertiesSchema = z.object({
     })
     .trim()
     .max(255, 'Maximum 255 characters allowed.')
-    .optional()
-    .or(z.literal(''))
     .default(''),
   fiscalAddress: z
     .string({
@@ -70,8 +62,6 @@ export const updateContactPropertiesSchema = z.object({
     })
     .trim()
     .max(500, 'Maximum 500 characters allowed.')
-    .optional()
-    .or(z.literal(''))
     .default(''),
   fiscalPostalCode: z
     .string({
@@ -79,8 +69,6 @@ export const updateContactPropertiesSchema = z.object({
     })
     .trim()
     .max(16, 'Maximum 16 characters allowed.')
-    .optional()
-    .or(z.literal(''))
     .default(''),
   rfc: z
     .string({
@@ -88,16 +76,12 @@ export const updateContactPropertiesSchema = z.object({
     })
     .trim()
     .max(13, 'Maximum 13 characters allowed.')
-    .optional()
-    .or(z.literal(''))
     .default(''),
   businessActivity: z
     .string({
       invalid_type_error: 'Business activity must be a string.'
     })
     .trim()
-    .optional()
-    .or(z.literal(''))
     .default(''),
   taxRegime: z
     .string({
@@ -105,8 +89,6 @@ export const updateContactPropertiesSchema = z.object({
     })
     .trim()
     .max(255, 'Maximum 255 characters allowed.')
-    .optional()
-    .or(z.literal(''))
     .default('')
 });
 

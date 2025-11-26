@@ -2,7 +2,7 @@
 
 import NiceModal, { type NiceModalHocProps } from '@ebay/nice-modal-react';
 import { Trash2Icon } from 'lucide-react';
-import { type SubmitHandler } from 'react-hook-form';
+import { z } from 'zod';
 
 import { Button } from '@workspace/ui/components/button';
 import {
@@ -41,10 +41,7 @@ import { updateContactPerson } from '~/actions/contacts/update-contact-person';
 import { DeleteContactPersonModal } from '~/components/organizations/slug/contacts/details/modals/delete-contact-person-modal';
 import { useEnhancedModal } from '~/hooks/use-enhanced-modal';
 import { useZodForm } from '~/hooks/use-zod-form';
-import {
-  updateContactPersonSchema,
-  type UpdateContactPersonSchema
-} from '~/schemas/contacts/update-contact-person-schema';
+import { updateContactPersonSchema } from '~/schemas/contacts/update-contact-person-schema';
 import type { ContactPersonDto } from '~/types/dtos/contact-person-dto';
 
 export type EditContactPersonModalProps = NiceModalHocProps & {
@@ -86,7 +83,7 @@ export const EditContactPersonModal = NiceModal.create<EditContactPersonModalPro
       }
     };
 
-    const onSubmit: SubmitHandler<UpdateContactPersonSchema> = async (values) => {
+    const onSubmit = async (values: z.input<typeof updateContactPersonSchema>) => {
       if (!canSubmit) {
         return;
       }
