@@ -11,7 +11,8 @@ import {
   TrashIcon,
   UploadIcon
 } from 'lucide-react';
-import { FormProvider, type SubmitHandler } from 'react-hook-form';
+import { FormProvider } from 'react-hook-form';
+import { z } from 'zod';
 
 import { ContactRecord, ContactType } from '@workspace/database';
 import { Avatar, AvatarFallback } from '@workspace/ui/components/avatar';
@@ -191,9 +192,7 @@ function Properties(contact: ContactDto): React.JSX.Element {
     methods.reset(methods.formState.defaultValues);
     setEditMode(false);
   };
-  const onSubmit: SubmitHandler<UpdateContactPropertiesSchema> = async (
-    values
-  ) => {
+  const onSubmit = async (values: z.input<typeof updateContactPropertiesSchema>) => {
     if (!canSubmit) {
       return;
     }
@@ -335,7 +334,6 @@ function Properties(contact: ContactDto): React.JSX.Element {
                         <Input
                           type="email"
                           maxLength={255}
-                          required
                           className="h-9"
                           disabled={methods.formState.isSubmitting}
                           {...field}
@@ -365,7 +363,6 @@ function Properties(contact: ContactDto): React.JSX.Element {
                         <Input
                           type="tel"
                           maxLength={70}
-                          required
                           className="h-9"
                           disabled={methods.formState.isSubmitting}
                           {...field}
