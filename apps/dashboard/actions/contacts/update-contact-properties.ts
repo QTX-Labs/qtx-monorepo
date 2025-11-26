@@ -30,15 +30,15 @@ export const updateContactProperties = authOrganizationActionClient
         record: parsedInput.record,
         type: parsedInput.type,
         name: parsedInput.name,
-        businessName: parsedInput.businessName,
-        email: parsedInput.email,
-        address: parsedInput.address,
-        fiscalAddress: parsedInput.fiscalAddress,
-        fiscalPostalCode: parsedInput.fiscalPostalCode,
-        rfc: parsedInput.rfc,
-        businessActivity: parsedInput.businessActivity,
-        taxRegime: parsedInput.taxRegime,
-        phone: parsedInput.phone
+        businessName: parsedInput.businessName || null,
+        email: parsedInput.email || null,
+        address: parsedInput.address || null,
+        fiscalAddress: parsedInput.fiscalAddress || null,
+        fiscalPostalCode: parsedInput.fiscalPostalCode || null,
+        rfc: parsedInput.rfc || null,
+        businessActivity: parsedInput.businessActivity || null,
+        taxRegime: parsedInput.taxRegime || null,
+        phone: parsedInput.phone || null
       },
       ctx.session.user.id
     );

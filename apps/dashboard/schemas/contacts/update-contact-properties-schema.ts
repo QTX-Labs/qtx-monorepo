@@ -18,7 +18,7 @@ export const updateContactPropertiesSchema = z.object({
   }),
   type: z.nativeEnum(ContactType, {
     invalid_type_error: 'Type must be a valid ContactType'
-  }).optional(),
+  }).nullable().optional(),
   name: z
     .string({
       required_error: 'Name is required.',
@@ -34,7 +34,8 @@ export const updateContactPropertiesSchema = z.object({
     .trim()
     .max(255, 'Maximum 255 characters allowed.')
     .optional()
-    .or(z.literal('')),
+    .or(z.literal(''))
+    .default(''),
   email: z
     .string({
       invalid_type_error: 'Email must be a string.'
@@ -43,7 +44,8 @@ export const updateContactPropertiesSchema = z.object({
     .max(255, 'Maximum 255 characters allowed.')
     .email('Enter a valid email address.')
     .optional()
-    .or(z.literal('')),
+    .or(z.literal(''))
+    .default(''),
   phone: z
     .string({
       invalid_type_error: 'Phone must be a string.'
@@ -51,7 +53,8 @@ export const updateContactPropertiesSchema = z.object({
     .trim()
     .max(16, 'Maximum 16 characters allowed.')
     .optional()
-    .or(z.literal('')),
+    .or(z.literal(''))
+    .default(''),
   address: z
     .string({
       invalid_type_error: 'Address must be a string.'
@@ -59,7 +62,8 @@ export const updateContactPropertiesSchema = z.object({
     .trim()
     .max(255, 'Maximum 255 characters allowed.')
     .optional()
-    .or(z.literal('')),
+    .or(z.literal(''))
+    .default(''),
   fiscalAddress: z
     .string({
       invalid_type_error: 'Fiscal address must be a string.'
@@ -67,7 +71,8 @@ export const updateContactPropertiesSchema = z.object({
     .trim()
     .max(500, 'Maximum 500 characters allowed.')
     .optional()
-    .or(z.literal('')),
+    .or(z.literal(''))
+    .default(''),
   fiscalPostalCode: z
     .string({
       invalid_type_error: 'Fiscal postal code must be a string.'
@@ -75,7 +80,8 @@ export const updateContactPropertiesSchema = z.object({
     .trim()
     .max(16, 'Maximum 16 characters allowed.')
     .optional()
-    .or(z.literal('')),
+    .or(z.literal(''))
+    .default(''),
   rfc: z
     .string({
       invalid_type_error: 'RFC must be a string.'
@@ -83,14 +89,16 @@ export const updateContactPropertiesSchema = z.object({
     .trim()
     .max(13, 'Maximum 13 characters allowed.')
     .optional()
-    .or(z.literal('')),
+    .or(z.literal(''))
+    .default(''),
   businessActivity: z
     .string({
       invalid_type_error: 'Business activity must be a string.'
     })
     .trim()
     .optional()
-    .or(z.literal('')),
+    .or(z.literal(''))
+    .default(''),
   taxRegime: z
     .string({
       invalid_type_error: 'Tax regime must be a string.'
@@ -99,6 +107,7 @@ export const updateContactPropertiesSchema = z.object({
     .max(255, 'Maximum 255 characters allowed.')
     .optional()
     .or(z.literal(''))
+    .default('')
 });
 
 export type UpdateContactPropertiesSchema = z.infer<
