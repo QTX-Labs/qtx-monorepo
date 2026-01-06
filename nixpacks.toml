@@ -1,0 +1,22 @@
+# Nixpacks configuration for Railway deployments
+# This ensures pnpm is available for monorepo builds
+#
+# Each Railway service can override build/start commands via:
+#   - NIXPACKS_BUILD_CMD (e.g., "pnpm --filter dashboard build")
+#   - NIXPACKS_START_CMD (e.g., "pnpm --filter dashboard start")
+
+[phases.setup]
+nixPkgs = ["nodejs_20", "openssl"]
+cmds = ["corepack enable", "corepack prepare pnpm@9.12.0 --activate"]
+
+[phases.install]
+cmds = ["pnpm install --frozen-lockfile"]
+
+[phases.build]
+# Generate Prisma client first, then build the specific app
+# Override with NIXPACKS_BUILD_CMD env var per Railway service
+cmds = ["pnpm --filter database generate", "pnpm --filter public-api build"]
+
+[start]
+# Override with NIXPACKS_START_CMD env var per Railway service
+cmd = "pnpm --filter public-api start"
