@@ -9,8 +9,8 @@ import { BorderZone } from '@workspace/database';
  * Salarios mínimos 2025 según zona
  */
 export const MINIMUM_SALARIES: Record<BorderZone, number> = {
-    [BorderZone.FRONTERIZA]: 419.88,
-    [BorderZone.NO_FRONTERIZA]: 278.8
+    [BorderZone.FRONTERIZA]: 440.87,
+    [BorderZone.NO_FRONTERIZA]: 315.04
 };
 
 /**
