@@ -214,8 +214,8 @@ const MINIMUM_SALARY_VALUES = [
   },
   {
     effectiveDate: '2025-01-01T06:00:00.000Z',
-    generalSalary: 278.8,
-    borderZoneSalary: 419.88,
+    generalSalary: 315.04,
+    borderZoneSalary: 440.87,
   },
 ];
 

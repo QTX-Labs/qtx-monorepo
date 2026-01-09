@@ -134,7 +134,7 @@ export class ImplementationV1 implements CalculadoraFiniquitoLiquidacion {
           date: new Date(),
           affiliateMovementAction: AffiliateMovementAction.Alta,
           umiValue: 100.81,
-          minimumSalary: 278.8,
+          minimumSalary: 315.04, // Salario mínimo general 2025
           variableSalary: 0,
           dailySalary: input.factoresCalculo.salarioDiario,
           integratedDailySalary: input.factoresCalculo.salarioDiarioIntegrado,
