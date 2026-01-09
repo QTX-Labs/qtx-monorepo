@@ -1,5 +1,7 @@
+import { BorderZone } from '@workspace/database';
 import { InfonavitCalculatorImp } from "../calculadora-infonavit/calculadora-infonavit";
 import { InfonavitDailyCalculationValues } from "../calculadora-infonavit/models";
+import { MINIMUM_SALARIES } from '../constants';
 import { BigCalculatorImpl } from "./calculadora";
 import { sortDescendingByEffectiveDate } from "./generics";
 import { CalculadoraFiniquitoLiquidacion, ICalculator, ISRCalculator } from "./interface";
@@ -134,7 +136,7 @@ export class ImplementationV1 implements CalculadoraFiniquitoLiquidacion {
           date: new Date(),
           affiliateMovementAction: AffiliateMovementAction.Alta,
           umiValue: 100.81,
-          minimumSalary: 315.04, // Salario mínimo general 2025
+          minimumSalary: MINIMUM_SALARIES[BorderZone.NO_FRONTERIZA], // Salario mínimo general 2025
           variableSalary: 0,
           dailySalary: input.factoresCalculo.salarioDiario,
           integratedDailySalary: input.factoresCalculo.salarioDiarioIntegrado,

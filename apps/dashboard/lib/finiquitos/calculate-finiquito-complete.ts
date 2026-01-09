@@ -50,6 +50,7 @@
  */
 
 import { BorderZone } from '@workspace/database';
+import { MINIMUM_SALARIES } from './constants';
 import { DefaultTerminationProportionalImpl } from './calculadora-factores/implementation';
 import { ImplementationV1 } from './calculadora-finiquitos/implementation';
 import { ISRCalculatorImpl } from './calculadora-isr/implementation';
@@ -214,8 +215,8 @@ const MINIMUM_SALARY_VALUES = [
   },
   {
     effectiveDate: '2025-01-01T06:00:00.000Z',
-    generalSalary: 315.04,
-    borderZoneSalary: 440.87,
+    generalSalary: MINIMUM_SALARIES[BorderZone.NO_FRONTERIZA],
+    borderZoneSalary: MINIMUM_SALARIES[BorderZone.FRONTERIZA],
   },
 ];
 
