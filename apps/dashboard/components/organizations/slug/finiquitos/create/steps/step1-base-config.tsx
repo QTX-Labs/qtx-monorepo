@@ -30,6 +30,7 @@ import { step1BaseConfigSchema, type Step1BaseConfig as Step1BaseConfigType } fr
 import { calculateFiniquitoComplete } from '~/lib/finiquitos/calculate-finiquito-complete';
 import { getEmployeeVacationDays, getEmployeeIntegrationFactor, applyUMALimit } from '~/lib/finiquitos/utils';
 import { hasStep1DataChanged } from '~/lib/finiquitos/utils/has-step1-data-changed';
+import { MINIMUM_SALARIES } from '~/lib/finiquitos/constants';
 import { useWizard } from '../wizard-context';
 import { Step1ChangesWarningModal } from '../step1-changes-warning-modal';
 import type { EmpresaSelectorDto } from '~/data/finiquitos/get-empresas-for-selector';
@@ -57,7 +58,7 @@ export function Step1BaseConfig({ empresas }: Step1BaseConfigProps) {
       clientName: '',
       hireDate: new Date(),
       terminationDate: new Date(),
-      fiscalDailySalary: 278.80, // Default for NO_FRONTERIZA
+      fiscalDailySalary: MINIMUM_SALARIES[BorderZone.NO_FRONTERIZA], // Default for NO_FRONTERIZA
       integratedDailySalary: 0,
       integrationFactor: 0,
       borderZone: BorderZone.NO_FRONTERIZA,
@@ -103,7 +104,7 @@ export function Step1BaseConfig({ empresas }: Step1BaseConfigProps) {
   const previousBorderZone = useRef(step1Data?.borderZone ?? null);
 
   // AUTO-CÁLCULO 1: Salario Diario Fiscal según Zona Fronteriza (Default Value)
-  // NO_FRONTERIZA: 278.80 | FRONTERIZA: 419.88
+  // NO_FRONTERIZA: $315.04 | FRONTERIZA: $440.87 (2025)
   // Solo recalcula si NO fue editado manualmente O si la zona fronteriza cambió realmente
   // IMPORTANTE: NO ejecutar si el usuario permite salarios menores al mínimo
   useEffect(() => {
@@ -112,7 +113,7 @@ export function Step1BaseConfig({ empresas }: Step1BaseConfigProps) {
       return;
     }
 
-    const fiscalSalary = borderZone === BorderZone.FRONTERIZA ? 419.88 : 278.80;
+    const fiscalSalary = MINIMUM_SALARIES[borderZone];
 
     // Solo actualizar si:
     // 1. Usuario NO ha editado manualmente Y es montaje inicial, O
@@ -731,7 +732,7 @@ export function Step1BaseConfig({ empresas }: Step1BaseConfigProps) {
                     />
                   </FormControl>
                   <FormDescription>
-                    Mínimo según zona: ${borderZone === BorderZone.FRONTERIZA ? '419.88' : '278.80'}
+                    Mínimo según zona: ${MINIMUM_SALARIES[borderZone].toFixed(2)}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

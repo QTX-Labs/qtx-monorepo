@@ -44,7 +44,7 @@ export const step1BaseConfigSchema = z.object({
   terminationDate: z.coerce.date({ required_error: 'La fecha de baja es requerida' }),
 
   // Salario Diario Fiscal - Auto-calculado según zona fronteriza
-  // NO_FRONTERIZA: 278.80 | FRONTERIZA: 419.88
+  // NO_FRONTERIZA: $315.04 | FRONTERIZA: $440.87 (2025)
   fiscalDailySalary: z.coerce.number().min(0, 'El salario diario fiscal no puede ser negativo'),
 
   // Salario Diario Integrado - Auto-calculado usando factor de integración

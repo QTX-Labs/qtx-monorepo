@@ -4,7 +4,7 @@
  * Datos del Excel de referencia:
  * - Empleado: 29 días laborados
  * - Salario Mensual Real: $12,999.90
- * - SDF: $278.80
+ * - SDF: $315.04 (actualizado 2025)
  * - Aguinaldo: 15 días
  * - Vacaciones: 12 días
  * - Prima Vacacional: 25%
@@ -17,6 +17,7 @@
 
 import { SalaryFrequency, BorderZone } from '@workspace/database';
 import { calculateFiniquito } from './calculate-finiquito';
+import { MINIMUM_SALARIES } from './constants';
 
 export function runTestExample() {
   console.log('=== TEST DEL MOTOR DE FINIQUITOS ===\n');
@@ -30,7 +31,7 @@ export function runTestExample() {
     salary: 12999.90, // Mensual
     salaryFrequency: SalaryFrequency.MONTHLY,
     borderZone: BorderZone.NO_FRONTERIZA,
-    fiscalDailySalary: 278.80, // Salario mínimo
+    fiscalDailySalary: MINIMUM_SALARIES[BorderZone.NO_FRONTERIZA], // Salario mínimo 2025
 
     // Prestaciones (defaults)
     aguinaldoDays: 15,

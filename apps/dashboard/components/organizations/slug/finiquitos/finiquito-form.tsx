@@ -53,6 +53,7 @@ import {
   getEmployeeVacationDays,
   formatMoney,
 } from '~/lib/finiquitos/utils';
+import { MINIMUM_SALARIES } from '~/lib/finiquitos/constants';
 import type { FiniquitoCalculationResult } from '~/lib/finiquitos/types';
 
 interface FiniquitoFormProps {
@@ -96,7 +97,7 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
       clientName: '',
       hireDate: undefined,
       terminationDate: new Date(),
-      fiscalDailySalary: 278.80,
+      fiscalDailySalary: MINIMUM_SALARIES[BorderZone.NO_FRONTERIZA],
       salaryFrequency: SalaryFrequency.MONTHLY,
       borderZone: BorderZone.NO_FRONTERIZA,
       enableComplement: false,
@@ -202,7 +203,7 @@ export function FiniquitoForm({ onCancel, onSuccess, isAdmin }: FiniquitoFormPro
 
   // Auto-actualizar salario diario fiscal según zona fronteriza
   useEffect(() => {
-    const fiscalSalary = borderZone === BorderZone.FRONTERIZA ? 419.88 : 278.80;
+    const fiscalSalary = MINIMUM_SALARIES[borderZone];
     form.setValue('fiscalDailySalary', fiscalSalary);
   }, [borderZone, form]);
 
