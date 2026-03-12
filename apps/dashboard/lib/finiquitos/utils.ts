@@ -243,6 +243,7 @@ const UMA_VALUES = [
   { value: 103.74, effectiveDate: new Date('2024-01-01') },
   { value: 108.57, effectiveDate: new Date('2024-02-01') },
   { value: 113.14, effectiveDate: new Date('2025-02-01') },
+  { value: 117.31, effectiveDate: new Date('2026-02-01') },
 ];
 
 /**

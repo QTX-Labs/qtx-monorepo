@@ -2,6 +2,7 @@ import { BorderZone } from '@workspace/database';
 import { InfonavitCalculatorImp } from "../calculadora-infonavit/calculadora-infonavit";
 import { InfonavitDailyCalculationValues } from "../calculadora-infonavit/models";
 import { MINIMUM_SALARIES } from '../constants';
+import { getMostRecentUMA } from '../utils';
 import { BigCalculatorImpl } from "./calculadora";
 import { sortDescendingByEffectiveDate } from "./generics";
 import { CalculadoraFiniquitoLiquidacion, ICalculator, ISRCalculator } from "./interface";
@@ -36,7 +37,8 @@ export class ImplementationV1 implements CalculadoraFiniquitoLiquidacion {
     const percepcionesLiquidacion = this.calcularPercepcionesLiquidacion(
       input.factoresCalculo.salarioDiario,
       input.factoresCalculo.conceptosLiquidacion,
-      input.factoresCalculo.antiguedad.factor
+      input.factoresCalculo.antiguedad.factor,
+      MINIMUM_SALARIES[BorderZone.NO_FRONTERIZA]
     );
 
     if (input.payrollConstants.isrRates.length == 0) {
@@ -238,7 +240,8 @@ export class ImplementationV1 implements CalculadoraFiniquitoLiquidacion {
           this.calcularPercepcionesLiquidacion(
             input.factoresComplemento.salarioDiario,
             input.factoresComplemento.conceptosLiquidacion,
-            input.factoresComplemento.antiguedad.factor
+            input.factoresComplemento.antiguedad.factor,
+            MINIMUM_SALARIES[BorderZone.NO_FRONTERIZA]
           );
 
         result.percepcionesLiquidacionComplemento =
@@ -446,20 +449,20 @@ export class ImplementationV1 implements CalculadoraFiniquitoLiquidacion {
         salarioDiario,
         conceptosFiniquito.primaVacacional,
         acumuladoPercepciones,
-        113.14,
+        getMostRecentUMA(),
         benefitConfig?.primaVacacional
       ),
       primaVacacionalPendiente: this.calcularPrimaVacacional(
         salarioDiario,
         conceptosFiniquito.primaVacacionalPendiente,
         acumuladoPercepciones,
-        113.14,
+        getMostRecentUMA(),
         benefitConfig?.primaVacacional
       ),
       aguinaldo: this.calcularAguinaldo(
         salarioDiario,
         conceptosFiniquito.aguinaldo,
-        113.14
+        getMostRecentUMA()
       ),
       diasRetroactivosSueldo: this.calcularConcepto(
         salarioDiario,
@@ -473,10 +476,11 @@ export class ImplementationV1 implements CalculadoraFiniquitoLiquidacion {
   private calcularPercepcionesLiquidacion(
     salarioDiario: number,
     conceptosLiquidacion: ConceptosLiquidacion,
-    factorAntiguedad: number
+    factorAntiguedad: number,
+    salarioMinimo: number = MINIMUM_SALARIES[BorderZone.NO_FRONTERIZA]
   ): PercepcionesLiquidacion {
     const aniosExentos = this.customRound(factorAntiguedad);
-    const umaValue = 113.14;
+    const umaValue = getMostRecentUMA();
     let montoExento: ICalculator = new BigCalculatorImpl(aniosExentos)
       .multiply(90)
       .multiply(umaValue);
@@ -491,7 +495,8 @@ export class ImplementationV1 implements CalculadoraFiniquitoLiquidacion {
       ),
       primaAntiguedad: this.calcularPrimaAntiguedad(
         salarioDiario,
-        conceptosLiquidacion.primaAntiguedad
+        conceptosLiquidacion.primaAntiguedad,
+        salarioMinimo
       ),
     };
 
@@ -521,9 +526,9 @@ export class ImplementationV1 implements CalculadoraFiniquitoLiquidacion {
 
   private calcularPrimaAntiguedad(
     salarioDiario: number,
-    factor: number
+    factor: number,
+    salarioMinimo: number
   ): Perception {
-    const salarioMinimo = 248.93;
     const topeSalario: ICalculator = new BigCalculatorImpl(
       salarioMinimo
     ).multiply(2);
