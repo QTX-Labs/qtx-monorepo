@@ -80,7 +80,7 @@ import {
 } from './utils';
 import { DECIMAL_PRECISION } from './constants';
 
-// ===== CONSTANTES DE PAYROLL 2024-2025 =====
+// ===== CONSTANTES DE PAYROLL 2024-2026 =====
 
 // Tabla ISR 2024 (Mensual)
 const ISR_RATES_2024: ISRRates = {
@@ -100,11 +100,30 @@ const ISR_RATES_2024: ISRRates = {
   ]
 };
 
+// Tabla ISR 2026 (Mensual)
+const ISR_RATES_2026: ISRRates = {
+  effectiveDate: new Date('2026-01-01'),
+  rangeValues: [
+    { lowerLimit: 0.01, upperLimit: 844.59, fixedFee: 0.00, percentageOverSurplus: 1.92 },
+    { lowerLimit: 844.60, upperLimit: 7168.51, fixedFee: 16.22, percentageOverSurplus: 6.40 },
+    { lowerLimit: 7168.52, upperLimit: 12598.02, fixedFee: 420.95, percentageOverSurplus: 10.88 },
+    { lowerLimit: 12598.03, upperLimit: 14644.64, fixedFee: 1011.68, percentageOverSurplus: 16.00 },
+    { lowerLimit: 14644.65, upperLimit: 17533.64, fixedFee: 1339.14, percentageOverSurplus: 17.92 },
+    { lowerLimit: 17533.65, upperLimit: 35362.83, fixedFee: 1856.84, percentageOverSurplus: 21.36 },
+    { lowerLimit: 35362.84, upperLimit: 55736.68, fixedFee: 5665.16, percentageOverSurplus: 23.52 },
+    { lowerLimit: 55736.69, upperLimit: 106410.50, fixedFee: 10457.09, percentageOverSurplus: 30.00 },
+    { lowerLimit: 106410.51, upperLimit: 141880.66, fixedFee: 25659.23, percentageOverSurplus: 32.00 },
+    { lowerLimit: 141880.67, upperLimit: 425641.99, fixedFee: 37009.69, percentageOverSurplus: 34.00 },
+    { lowerLimit: 425642.00, upperLimit: 0, fixedFee: 133488.54, percentageOverSurplus: 35.00 },
+  ]
+};
+
 // Valores UMA históricos
 const UMA_VALUES = [
   { value: 103.74, effectiveDate: new Date('2024-01-01') },
   { value: 108.57, effectiveDate: new Date('2024-02-01') },
   { value: 113.14, effectiveDate: new Date('2025-02-01') },
+  { value: 117.31, effectiveDate: new Date('2026-02-01') },
 ];
 
 // Valores UMI históricos
@@ -200,6 +219,21 @@ const CESANTIA_VEJEZ_FEES_2025 = {
   ],
 };
 
+// Cesantía y Vejez 2026
+const CESANTIA_VEJEZ_FEES_2026 = {
+  effectiveDate: new Date('2026-01-01'),
+  rangeValues: [
+    { lowerLimit: 0, upperLimit: 1, percentage: 3.15 },
+    { lowerLimit: 1.01, upperLimit: 1.5, percentage: 3.676 },
+    { lowerLimit: 1.51, upperLimit: 2.15, percentage: 4.851 },
+    { lowerLimit: 2.16, upperLimit: 2.5, percentage: 5.56 },
+    { lowerLimit: 2.51, upperLimit: 3, percentage: 6.026 },
+    { lowerLimit: 3.01, upperLimit: 3.5, percentage: 6.361 },
+    { lowerLimit: 3.51, upperLimit: 4, percentage: 6.613 },
+    { lowerLimit: 4.01, upperLimit: 0, percentage: 7.513 },
+  ],
+};
+
 // Prima de Riesgo de Trabajo 2025
 const LABOR_RISK_PREMIUM_2025 = {
   percentage: 1.65325,
@@ -215,6 +249,11 @@ const MINIMUM_SALARY_VALUES = [
   },
   {
     effectiveDate: '2025-01-01T06:00:00.000Z',
+    generalSalary: MINIMUM_SALARIES[BorderZone.NO_FRONTERIZA],
+    borderZoneSalary: MINIMUM_SALARIES[BorderZone.FRONTERIZA],
+  },
+  {
+    effectiveDate: '2026-01-01T06:00:00.000Z',
     generalSalary: MINIMUM_SALARIES[BorderZone.NO_FRONTERIZA],
     borderZoneSalary: MINIMUM_SALARIES[BorderZone.FRONTERIZA],
   },
@@ -240,12 +279,12 @@ const DEFAULT_PAYROLL_SETTINGS: PayrollSettings = {
 
 // PayrollConstants por defecto
 const DEFAULT_PAYROLL_CONSTANTS: PayrollConstants = {
-  isrRates: [ISR_RATES_2024],
+  isrRates: [ISR_RATES_2024, ISR_RATES_2026],
   isnValues: ISN_VALUES,
   umaValues: UMA_VALUES,
   umiValues: UMI_VALUES,
   socialCostFees: [SOCIAL_COST_FEES_2024],
-  cesantiaVejezFees: [CESANTIA_VEJEZ_FEES_2024, CESANTIA_VEJEZ_FEES_2025],
+  cesantiaVejezFees: [CESANTIA_VEJEZ_FEES_2024, CESANTIA_VEJEZ_FEES_2025, CESANTIA_VEJEZ_FEES_2026],
   laborRiskPremiums: [LABOR_RISK_PREMIUM_2025],
   minimumSalaryValues: MINIMUM_SALARY_VALUES,
 }
