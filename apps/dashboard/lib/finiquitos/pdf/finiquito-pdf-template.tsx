@@ -254,12 +254,13 @@ export function FiniquitoPDF({ finiquito, pdfConfig }: FiniquitoPDFProps) {
   // Filtrar solo los conceptos con monto > 0
   const concepts = allConcepts.filter(c => c.amount > 0);
 
-  // Calcular total neto de percepciones fiscales (incluyendo complemento y liquidación complemento)
-  const totalPercepcionesFiscales =
-    toNumber(finiquito.totalPercepcionesFiniquito) +
-    (finiquito.liquidacionActivada ? toNumber(finiquito.totalPercepcionesLiquidacion) : 0) +
-    (finiquito.complementoActivado ? toNumber(finiquito.totalPercepcionesComplemento) : 0) +
-    ((finiquito.liquidacionActivada && finiquito.complementoActivado) ? toNumber(finiquito.totalPercepcionesLiquidacionComplemento) : 0);
+  // Total de percepciones = suma EXACTA de los conceptos listados arriba.
+  // Se deriva de `concepts` (no de los campos agregados almacenados) para garantizar
+  // que el total impreso siempre coincida con la suma de las líneas mostradas.
+  // Los campos agregados (totalPercepcionesFiniquito, etc.) pueden contener valores netos
+  // (post-deducciones) en finiquitos legacy, lo que producía un TOTAL DE PERCEPCIONES
+  // menor que la suma real de conceptos.
+  const totalPercepcionesFiscales = _.sum(concepts.map(c => c.amount));
 
   // Definir todos los conceptos posibles de deducciones
   // NOTA: El ISR se calcula globalmente para fiscal + complemento (no hay campos separados de ISR para complemento)
@@ -301,15 +302,15 @@ export function FiniquitoPDF({ finiquito, pdfConfig }: FiniquitoPDFProps) {
   // Filtrar solo las deducciones con monto > 0
   const deductions = allDeductions.filter(d => d.amount > 0);
 
-  // Calcular total de deducciones fiscales
-  // NOTA: El ISR es global (cubre fiscal + complemento), pero totalDeduccionesFiniquito y totalDeduccionesLiquidacion
-  // ya incluyen el ISR correspondiente más las deducciones manuales
-  const totalDeduccionesFiscales =
-    toNumber(finiquito.totalDeduccionesFiniquito) +
-    (finiquito.liquidacionActivada ? toNumber(finiquito.totalDeduccionesLiquidacion) : 0);
+  // Total de deducciones = suma EXACTA de las deducciones listadas arriba.
+  // Igual que percepciones, se deriva de `deductions` (no de campos agregados) para que
+  // el recibo siempre cuadre internamente en finiquitos legacy con agregados inconsistentes.
+  const totalDeduccionesFiscales = _.sum(deductions.map(d => d.amount));
 
-  // Total neto final (usar totalAPagar que incluye finiquito + liquidación + complemento + liquidación complemento)
-  const totalNeto = toNumber(finiquito.totalAPagar || 0);
+  // Total neto = percepciones impresas − deducciones impresas.
+  // Para data correcta esto es idéntico a `totalAPagar`; para finiquitos legacy
+  // garantiza que TOTAL NETO = TOTAL PERCEPCIONES − TOTAL DEDUCCIONES en el documento.
+  const totalNeto = totalPercepcionesFiscales - totalDeduccionesFiscales;
 
   // Calcular número de líneas en la tabla de conceptos
   // Percepciones + 1 línea de total percepciones + deducciones + 1 línea de total deducciones + 1 línea de total neto
