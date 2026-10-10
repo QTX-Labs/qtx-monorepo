@@ -72,12 +72,13 @@ export function FiniquitoDetailContent({ finiquito }: FiniquitoDetailContentProp
 
       // If complemento is active, show configuration dialog
       if (finiquito.complementoActivado) {
-        // Get active complemento concepts (with amount > 0)
+        // Get active complemento concepts (non-zero amount; negative net differences
+        // must be included so the PDF total matches the page)
         const activeConcepts = ALL_COMPLEMENTO_CONCEPTS
           .map(c => c.field)
           .filter(field => {
             const amount = finiquito[field as keyof Finiquito];
-            return amount && Number(amount) > 0;
+            return amount && Number(amount) !== 0;
           });
 
         // Show configuration modal

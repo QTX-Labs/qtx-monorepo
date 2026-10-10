@@ -49,7 +49,7 @@ import {
 
 export type PDFComplementoConfigModalProps = NiceModalHocProps & {
   /**
-   * Active complemento concepts (with amount > 0)
+   * Active complemento concepts (with non-zero amount, including negative net differences)
    * Used to filter available concepts in the UI
    */
   activeConcepts: string[];

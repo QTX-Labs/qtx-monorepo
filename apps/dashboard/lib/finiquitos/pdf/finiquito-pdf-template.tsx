@@ -157,7 +157,8 @@ export function FiniquitoPDF({ finiquito, pdfConfig }: FiniquitoPDFProps) {
   /**
    * Helper function to render complemento concepts dynamically based on configuration
    * @param config - Optional PDF configuration (defaults to DEFAULT_COMPLEMENTO_CONFIG)
-   * @returns Array of concept objects with label and amount
+   * @returns Array of concept objects with label and amount. Amounts can be negative because
+   * complemento fields store NET differences (complemento − fiscal).
    */
   const renderComplementoConcepts = (config?: PDFComplementoConfig): Concepto[] => {
     if (!finiquito.complementoActivado) return [];
@@ -171,7 +172,7 @@ export function FiniquitoPDF({ finiquito, pdfConfig }: FiniquitoPDFProps) {
         .filter(c => {
           const fieldValue = finiquito[c.field as keyof Finiquito];
           const amount = toNumber(fieldValue as number | null | { toNumber?: () => number });
-          return amount > 0;
+          return amount !== 0;
         })
         .map(c => {
           const fieldValue = finiquito[c.field as keyof Finiquito];
@@ -195,8 +196,25 @@ export function FiniquitoPDF({ finiquito, pdfConfig }: FiniquitoPDFProps) {
           })
         ),
       }))
-      .filter(group => group.amount > 0); // Filter out groups with zero amount
+      .filter(group => group.amount !== 0); // Filter out groups with zero amount
   };
+
+  // Los conceptos de complemento son diferencias netas (complemento − fiscal) y pueden ser
+  // negativos. Un recibo no puede listar percepciones negativas, así que:
+  // - Si el neto del complemento es negativo, no se listan percepciones de complemento y el
+  //   neto se muestra como una sola deducción "AJUSTE COMPLEMENTO".
+  // - Si el neto es positivo pero alguna línea es negativa, esa línea se muestra como deducción.
+  // En ambos casos TOTAL NETO coincide con el total a pagar mostrado en la página.
+  const complementoLines = renderComplementoConcepts(pdfConfig);
+  const netoComplemento = _.round(_.sum(complementoLines.map(c => c.amount)), 2);
+  const complementoPercepciones: Concepto[] = netoComplemento < 0
+    ? []
+    : complementoLines.filter(c => c.amount > 0);
+  const complementoDeducciones: Concepto[] = netoComplemento < 0
+    ? [{ label: 'AJUSTE COMPLEMENTO', amount: -netoComplemento }]
+    : complementoLines
+        .filter(c => c.amount < 0)
+        .map(c => ({ label: `AJUSTE ${c.label}`, amount: -c.amount }));
 
   const allConcepts: Concepto[] = [
     // Conceptos de Finiquito Fiscal
@@ -248,7 +266,7 @@ export function FiniquitoPDF({ finiquito, pdfConfig }: FiniquitoPDFProps) {
       }
     ] : []),
     // Conceptos de Complemento (dinámicos basados en configuración)
-    ...renderComplementoConcepts(pdfConfig)
+    ...complementoPercepciones
   ];
 
   // Filtrar solo los conceptos con monto > 0
@@ -296,7 +314,9 @@ export function FiniquitoPDF({ finiquito, pdfConfig }: FiniquitoPDFProps) {
     {
       label: 'OTRAS DEDUCCIONES',
       amount: toNumber(finiquito.montoDeduccionOtrasDeducciones)
-    }
+    },
+    // Complemento neto negativo (ver complementoDeducciones)
+    ...complementoDeducciones
   ];
 
   // Filtrar solo las deducciones con monto > 0
